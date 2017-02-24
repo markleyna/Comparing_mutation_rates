@@ -1642,7 +1642,7 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 #CLUSAL Run on Genes
 #while (n <= nrow(Genes)){
-  while(n<=20){ #testing line when not running full version of code
+while(n<=20){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test<-toString(G3[n,1])
@@ -1793,6 +1793,7 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   }
   #end of intra-gene break identification
 }
+
 DF$PostCount <- as.integer(DF$PostCount)
 DF$PreCount <- as.integer((DF$PreCount))
 ModDF = DF #DF is the entries from tallying up the mismatches
