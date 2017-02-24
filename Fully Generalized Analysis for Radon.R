@@ -1642,7 +1642,7 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 #CLUSAL Run on Genes
 #while (n <= nrow(Genes)){
-while(n<=20){ #testing line when not running full version of code
+  while(n<=20){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test<-toString(G3[n,1])
@@ -1663,72 +1663,15 @@ while(n<=20){ #testing line when not running full version of code
   cat(Gene2Test)
   sink()
   #Call the clustalw function 
-  
+  system("clustalw2 -infile=FastaIn.txt -type=DNA")
   #pull the gapped strings out of the .aln file
- 
-  p= 0
-  flag = FALSE
-  tempstring=""
-  Gene1Bit <- vector(mode="character", length=10)
-  counter = 0
-  while (p<=nchar(pagecode))
-  {
-    if (substring(pagecode,p,p)=='E'){
-      if(substring(pagecode,p,p+4)=='ECGap'){
-        flag = TRUE
-      }
-    }
-    if(flag){
-      if(substring(pagecode,p,p)=='S')
-      {
-        flag = FALSE
-        Gene1Bit[counter] = tempstring
-        tempstring = ""
-        counter = counter +1 
-      }
-      if(substring(pagecode,p,p)!='S')
-      {
-        tempstring = paste(tempstring, substring(pagecode,p,p),sep="")
-      }
-      
-    }
-    p= p+1
-  }
-  Gene1gapstring = str_c(substring(Gene1Bit, 1+nchar(Gene1RunTitle)),collapse = "")
-  Gene1gapstring = substring(Gene1gapstring,0,nchar(Gene1gapstring)-9)
-  nchar(Gene1gapstring)
-  ##replacingblock
-  p= 0
-  flag = FALSE
-  tempstring=""
-  Gene2Bit <- vector(mode="character", length=10)
-  counter = 0
-  while (p<=nchar(pagecode))
-  {
-    if (substring(pagecode,p,p)=='S'){
-      if(substring(pagecode,p,p+5)=='SalGap'){
-        flag = TRUE
-      }
-    }
-    if(flag){
-      if(substring(pagecode,p,p)=='*'||substring(pagecode,p,p)=='<'||substring(pagecode,p,p)=='E')
-      {
-        flag = FALSE
-        Gene2Bit[counter] = tempstring
-        tempstring = ""
-        counter = counter +1 
-      }
-      if(substring(pagecode,p,p)!='*')
-      {
-        tempstring = paste(tempstring, substring(pagecode,p,p),sep="")
-      }
-      
-    }
-    p= p+1
-  }
-  Gene2gapstring = str_c(substring(Gene2Bit, 1+nchar(Gene2RunTitle)),collapse = "")
-  Gene2gapstring = substring(Gene2gapstring,0,nchar(Gene2gapstring)-10)
-  nchar(Gene2gapstring)
+  alnlines<-readLines("FastaIn.aln")
+  alnlines1<-grep(Gene1RunTitle, alnlines, value=TRUE)
+  alnlines2<-grep(Gene2RunTitle, alnlines, value=TRUE)
+  alnlines1<-gsub(Gene1RunTitle, "", alnlines1)
+  alnlines1<-gsub(" ", "", alnlines1)
+  alnlines2<-gsub(Gene1RunTitle, "", alnlines2)
+  alnlines1<-gsub(" ", "", alnlines2)
   
   r=1
   matchstring = ""
@@ -1746,7 +1689,6 @@ while(n<=20){ #testing line when not running full version of code
   }
   
   n=n+1
-  Sys.sleep(3) # done to preven getting kicked off the CLUSTALw website, probably can bring this down that I'm doing more analysis, but w/e
   s = 2
   Flag1 = FALSE
   Flag2 = FALSE
@@ -1793,7 +1735,6 @@ while(n<=20){ #testing line when not running full version of code
   }
   #end of intra-gene break identification
 }
-
 DF$PostCount <- as.integer(DF$PostCount)
 DF$PreCount <- as.integer((DF$PreCount))
 ModDF = DF #DF is the entries from tallying up the mismatches
@@ -1834,211 +1775,3 @@ pdf('CBECgeneplot.pdf')
 barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names) #constructing barplot of mutation frequencies
 dev.off()
 
-
-#Now onto the gap analysis
-
-#variable declaration for gaps
-
-Gaps <- read.csv("RVersionCBECGaps.csv")
-CitroBacDNA<-read_file("CitroBacKPureDNA.txt")
-CitroBacDNA<-gsub("\n","",CitroBacDNA)
-EColiDNA <- read_file("EColiPureDNA.txt")
-EColiDNA<-gsub("\n","",EColiDNA)
-Genes$cbggapseq<-substring(CitroBacDNA, Genes$cbgenestart, Genes$cbgeneend)
-Genes$ecgapseq<-substring(EColiDNA, Genes$ecgenestart, Genes$ecgeneend)
-Gaps <- data.frame(Gaps$gapnum, Gaps$cbgapseq, Gaps$ecgapseq)
-G1<-as.vector(Gaps$Gaps.gapnum)
-G2<-data.frame(Gaps$Gaps.cbgapseq)
-G3<-data.frame(Gaps$Gaps.ecgapseq)
-n=1
-
-#redeclaring everything resets the variables since I didn't bother to rename when I adapted code, and this is probably was a mistake
-buildchar = "Q"
-ECBase <- c(buildchar,buildchar)
-SalBase<-c(buildchar,buildchar)
-PreCount<-c(-1,-1)
-PostCount<-c(-1,-1)
-ECbreak = ""
-Salbreak = ""
-DF = data.frame(ECBase,SalBase,PreCount,PostCount)
-DF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
-
-#while (n <= nrow(Gaps)){
-  while(n<=20){ #testing line when not running full version of code
-    myDriver$navigate("http://www.genome.jp/tools/clustalw")
-    DNACheckBox <- myDriver$findElement(using = 'xpath', "//*/input[@value = 'dna']")
-    DNACheckBox$clickElement()
-    testnum<-G1[n]
-    Gap1Test <- toString(G2[n,1])
-    Gap2Test<-toString(G3[n,1])
-    TextBox <- myDriver$findElement(using = 'xpath', "//textarea[@name = 'sequence']")
-    TextBox$clickElement()
-    Gap1RunTitle <- paste(">","ECGap_number","k", sep = "") #I don't feel like rewriting this to hold generality, so these need to stay as is to keep the parsing working correctly
-    Gap2RunTitle <- paste(">","SalGap_number","k", sep = "")
-    TextBox$sendKeysToElement(list(Gap1RunTitle))
-    TextBox$sendKeysToElement(list("\uE007")) #line break
-    TextBox$sendKeysToElement(list(Gap1Test))
-    TextBox$sendKeysToElement(list("\uE007"))
-    TextBox$sendKeysToElement(list(Gap2RunTitle))
-    TextBox$sendKeysToElement(list("\uE007"))
-    TextBox$sendKeysToElement(list(Gap2Test))
-    GoButton <- myDriver$findElement(using = 'xpath', "//*/input[@value = 'Execute Multiple Alignment']")
-    GoButton$clickElement()
-    pagecode <- myDriver$getPageSource()
-    pagecode<-as.character(pagecode)#this is basically wizardry to pull the page code and parse everything useful out of it
-    pagecode<-gsub("\n","",pagecode)# this was build on lots of trial and error, don't break it please
-    Gap1RunTitle <- substring(Gap1RunTitle, 2)
-    Gap2RunTitle <- substring(Gap2RunTitle,2)
-    pagecode <- str_replace_all(string=pagecode, pattern=" ", repl="")
-    
-    p= 0
-    flag = FALSE
-    tempstring=""
-    Gap1Bit <- vector(mode="character", length=10)
-    counter = 0
-    while (p<=nchar(pagecode))
-    {
-      if (substring(pagecode,p,p)=='E'){
-        if(substring(pagecode,p,p+4)=='ECGap'){
-          flag = TRUE
-        }
-      }
-      if(flag){
-        if(substring(pagecode,p,p)=='S')
-        {
-          flag = FALSE
-          Gap1Bit[counter] = tempstring
-          tempstring = ""
-          counter = counter +1 
-        }
-        if(substring(pagecode,p,p)!='S')
-        {
-          tempstring = paste(tempstring, substring(pagecode,p,p),sep="")
-        }
-        
-      }
-      p= p+1
-    }
-    Gap1gapstring = str_c(substring(Gap1Bit, 1+nchar(Gap1RunTitle)),collapse = "")
-    Gap1gapstring = substring(Gap1gapstring,0,nchar(Gap1gapstring)-9)
-    nchar(Gap1gapstring)
-    
-    q=0
-    Gap2Flag = FALSE
-    tempstring=""
-    Gap2Bit <- vector(mode="character", length=10)
-    counter = 0
-    while (q<=nchar(pagecode))
-    {
-      if (substring(pagecode,q,q)=='S'){
-        if(substring(pagecode,q,q+6)=='SalGap_'){
-          Gap2Flag = TRUE
-        }
-      }
-      if(Gap2Flag){
-        if(substring(pagecode,q,q)=='*'||substring(pagecode,q,q)=='<'||substring(pagecode,q,q)=='E')
-        {
-          Gap2Flag = FALSE
-          Gap2Bit[counter] = tempstring
-          tempstring = ""
-          counter = counter + 1 
-        }
-        if(substring(pagecode,q,q)!='*')
-        {
-          tempstring = paste(tempstring, substring(pagecode,q,q),sep="")
-        }
-        
-      }
-      q= q+1
-    }
-    Gap2gapstring = str_c(substring(Gap2Bit, 1+nchar(Gap2RunTitle)),collapse = "")
-    Gap2gapstring = substring(Gap2gapstring,0,nchar(Gap2gapstring)-10)
-    Gap2gapstring = gsub("k","",Gap2gapstring)
-    nchar(Gap2gapstring)
-    
-   
-    n=n+1
-    Sys.sleep(3) # done to preven getting kicked off the CLUSTALw website, probably can bring this down that I'm doing more analysis, but w/e
-    s = 1
-    Flag1 = FALSE
-    Flag2 = FALSE
-    PreCounter = 0
-    PostCounter =0
-    
-    while (s <= nchar(Gap1gapstring)){
-      
-      Gap1workingcharacter = substring(Gap1gapstring,s,s)
-      Gap2workingcharacter = substring(Gap2gapstring,s,s)
-      s = s+1
-      if(Gap1workingcharacter != Gap2workingcharacter && Flag2 == TRUE)
-      {
-        Addrow = c(Gap1break,Gap2break,PreCounter,PostCounter)
-        DF = rbind(DF,Addrow)
-        Flag2=FALSE
-        PostCounter=0
-        PreCounter=0
-      }
-      else if(Gap1workingcharacter == Gap2workingcharacter && Flag2==TRUE)
-      {
-        PostCounter = PostCounter +1
-        #print(PostCounter) causes too much lag
-      }
-      else if(Gap1workingcharacter != Gap2workingcharacter && Flag1==TRUE)
-      {
-        Flag1 = FALSE
-        Flag2 = TRUE
-        Gap1break = Gap1workingcharacter
-        Gap2break = Gap2workingcharacter
-      }
-      else if(Gap1workingcharacter == Gap2workingcharacter && Flag1==TRUE)
-      {
-        PreCounter = PreCounter+1
-      }
-      else if(Gap1workingcharacter==Gap2workingcharacter && Flag1==FALSE)
-      {
-        Flag1 = TRUE
-      }
-      
-      
-      
-    }
-  }
-DF$PostCount <- as.integer(DF$PostCount)
-DF$PreCount <- as.integer((DF$PreCount))
-ModDF = DF
-ModDF = subset(ModDF, PostCount > 0)
-PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
-gapAdash = subset(DF, (ECBase == "A" & SalBase == "-")) #subsetting out all the relevant data to chart Transition and PAM later
-gapdashA = subset(DF, (ECBase == "-" & SalBase == "A"))
-gapAC = subset(DF, (ECBase == "A" & SalBase == "C"))
-gapCA = subset(DF, (ECBase == "C" & SalBase == "A"))
-gapAG = subset(DF, (ECBase == "A" & SalBase == "G"))
-gapGA = subset(DF, (ECBase == "G" & SalBase == "A"))
-gapAT = subset(DF, (ECBase == "A" & SalBase == "T"))
-gapTA = subset(DF, (ECBase == "T" & SalBase == "A"))
-gapTC = subset(DF, (ECBase == "T" & SalBase == "C"))
-gapCT = subset(DF, (ECBase == "C" & SalBase == "T"))
-gapTG = subset(DF, (ECBase == "T" & SalBase == "G"))
-gapGT = subset(DF, (ECBase == "G" & SalBase == "T"))
-gapTdash =subset(DF, (ECBase == "T" & SalBase == "-"))
-gapdashT = subset(DF, (ECBase == "-" & SalBase == "T"))
-gapCG = subset(DF, (ECBase == "C" & SalBase == "G"))
-gapGC= subset(DF, (ECBase == "G" & SalBase == "C"))
-gapCdash = subset(DF, (ECBase == "C" & SalBase == "-"))
-gapdashC = subset(DF, (ECBase == "-" & SalBase == "C"))
-gapGdash = subset(DF, (ECBase == "G" & SalBase == "-"))
-gapdashG = subset(DF, (ECBase == "-" & SalBase == "G"))
-
-gap_vector_of_lengths = c(nrow(gapAdash),nrow(gapdashA),nrow(gapAC),nrow(gapCA),nrow(gapAG),nrow(gapGA),nrow(gapAT),nrow(gapTA),nrow(gapTC),nrow(gapCT),nrow(gapTG),nrow(gapGT),nrow(gapTdash),nrow(gapdashT),nrow(gapCG),nrow(gapGC),nrow(gapCdash),nrow(gapdashC),nrow(gapGdash),nrow(gapdashG))
-gap_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
-
-pdf("CBECGap Plots")
-hist(as.numeric(PlotData$PreCount))
-hist(as.numeric(PlotData$PostCount))
-hist(as.numeric(ModDF$PreCount))
-hist(as.numeric(ModDF$PostCount))
-plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
-plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
-barplot(gap_vector_of_lengths,names.arg = gap_vector_of_names) #constructing barplot of mutation frequencies
-
-dev.off()
