@@ -1,10 +1,13 @@
 #Import Packages
-install.packages("RSelenium")
-install.packages("stringr")
-install.packages("readr")
+print("entered the script")
+setwd("/home/french15")
+#install.packages("RSelenium")
+#install.packages("stringr")
+#install.packages("readr")
 library("RSelenium")
 library(stringr)
 library('readr')
+print("loaded everything successfully")
 #Predeclaration of Functions
 WhatAmino<-function(threebase){
   #converts a 3 base region of DNA to the corresponding amino acid
@@ -1666,13 +1669,20 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   system("clustalw2 -infile=FastaIn.txt -type=DNA")
   #pull the gapped strings out of the .aln file
   alnlines<-readLines("FastaIn.aln")
-  alnlines1<-grep(Gene1RunTitle, alnlines, value=TRUE)
-  alnlines2<-grep(Gene2RunTitle, alnlines, value=TRUE)
-  alnlines1<-gsub(Gene1RunTitle, "", alnlines1)
+
+  print(Gene1RunTitle)
+  print(Gene2RunTitle)
+  alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
+  alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
+  alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
   alnlines1<-gsub(" ", "", alnlines1)
-  alnlines2<-gsub(Gene1RunTitle, "", alnlines2)
-  alnlines1<-gsub(" ", "", alnlines2)
-  
+  alnlines2<-gsub(substring(Gene2RunTitle,2), "", alnlines2)
+  alnlines2<-gsub(" ", "", alnlines2)
+  alnlines1<-paste(alnlines1, collapse='')
+  alnlines2<-paste(alnlines2, collapse='')
+  print(alnlines2)
+  Gene1gapstring <- alnlines1
+  Gene2gapstring <- alnlines2
   r=1
   matchstring = ""
   while (r<=nchar(Gene1gapstring))
@@ -1704,7 +1714,7 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
     {
       Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
       DF = rbind(DF,Addrow)
-      print("ASDF")
+#      print("ASDF")
       Flag2=FALSE
       PostCounter=0
       PreCounter=0
@@ -1735,6 +1745,7 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   }
   #end of intra-gene break identification
 }
+print(names(DF))
 DF$PostCount <- as.integer(DF$PostCount)
 DF$PreCount <- as.integer((DF$PreCount))
 ModDF = DF #DF is the entries from tallying up the mismatches
@@ -1747,26 +1758,26 @@ hist(as.numeric(ModDF$PostCount))
 plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
 plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
 
-GeneAdash = subset(DF, (ECBase == "A" & SalBase == "-")) #subsetting out all the relevant data to chart Transition and PAM later
-GenedashA = subset(DF, (ECBase == "-" & SalBase == "A"))
-GeneAC = subset(DF, (ECBase == "A" & SalBase == "C"))
-GeneCA = subset(DF, (ECBase == "C" & SalBase == "A"))
-GeneAG = subset(DF, (ECBase == "A" & SalBase == "G"))
-GeneGA = subset(DF, (ECBase == "G" & SalBase == "A"))
-GeneAT = subset(DF, (ECBase == "A" & SalBase == "T"))
-GeneTA = subset(DF, (ECBase == "T" & SalBase == "A"))
-GeneTC = subset(DF, (ECBase == "T" & SalBase == "C"))
-GeneCT = subset(DF, (ECBase == "C" & SalBase == "T"))
-GeneTG = subset(DF, (ECBase == "T" & SalBase == "G"))
-GeneGT = subset(DF, (ECBase == "G" & SalBase == "T"))
-GeneTdash =subset(DF, (ECBase == "T" & SalBase == "-"))
-GenedashT = subset(DF, (ECBase == "-" & SalBase == "T"))
-GeneCG = subset(DF, (ECBase == "C" & SalBase == "G"))
-GeneGC= subset(DF, (ECBase == "G" & SalBase == "C"))
-GeneCdash = subset(DF, (ECBase == "C" & SalBase == "-"))
-GenedashC = subset(DF, (ECBase == "-" & SalBase == "C"))
-GeneGdash = subset(DF, (ECBase == "G" & SalBase == "-"))
-GenedashG = subset(DF, (ECBase == "-" & SalBase == "G"))
+GeneAdash = subset(DF, (Gene1Base == "A" & Gene2Base == "-")) #subsetting out all the relevant data to chart Transition and PAM later
+GenedashA = subset(DF, (Gene1Base == "-" & Gene2Base == "A"))
+GeneAC = subset(DF, (Gene1Base == "A" & Gene2Base == "C"))
+GeneCA = subset(DF, (Gene1Base == "C" & Gene2Base == "A"))
+GeneAG = subset(DF, (Gene1Base == "A" & Gene2Base == "G"))
+GeneGA = subset(DF, (Gene1Base == "G" & Gene2Base == "A"))
+GeneAT = subset(DF, (Gene1Base == "A" & Gene2Base == "T"))
+GeneTA = subset(DF, (Gene1Base == "T" & Gene2Base == "A"))
+GeneTC = subset(DF, (Gene1Base == "T" & Gene2Base == "C"))
+GeneCT = subset(DF, (Gene1Base == "C" & Gene2Base == "T"))
+GeneTG = subset(DF, (Gene1Base == "T" & Gene2Base == "G"))
+GeneGT = subset(DF, (Gene1Base == "G" & Gene2Base == "T"))
+GeneTdash =subset(DF, (Gene1Base == "T" & Gene2Base == "-"))
+GenedashT = subset(DF, (Gene1Base == "-" & Gene2Base == "T"))
+GeneCG = subset(DF, (Gene1Base == "C" & Gene2Base == "G"))
+GeneGC= subset(DF, (Gene1Base == "G" & Gene2Base == "C"))
+GeneCdash = subset(DF, (Gene1Base == "C" & Gene2Base == "-"))
+GenedashC = subset(DF, (Gene1Base == "-" & Gene2Base == "C"))
+GeneGdash = subset(DF, (Gene1Base == "G" & Gene2Base == "-"))
+GenedashG = subset(DF, (Gene1Base == "-" & Gene2Base == "G"))
 
 Gene_vector_of_lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
 Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
