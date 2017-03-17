@@ -1,5 +1,12 @@
+#Import Packages
+#install.packages("RSelenium")
+#install.packages("stringr")
+#install.packages("readr")
+library("RSelenium")
+library(stringr)
+library('readr')
 # Additional package
-install.packages("parallel")
+#install.packages("parallel")
 library("parallel")
 
 #Variable Declaration Block
@@ -19,21 +26,24 @@ Gene1Base <- c(buildchar,buildchar)
 Gene2Base<-c(buildchar,buildchar) 
 PreCount<-c(-1,-1)
 PostCount<-c(-1,-1)
-Gene1break = ""
-Gene2break = ""
 DF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
 DF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE) #done to stop shenanigans with strings later on
 Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #must be 2 digit representation for code to work
 Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit representation for code to work
 
 clusal_run <- function(testNum, Gene1, Gene2) {
+  # Temp DF to be returned at the end
+  tempDF <- data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
+  
   Gene1Test = toString(Gene1[1])
   Gene2Test = toString(Gene2[1])
+  Gene1break = ""
+  Gene2break = ""
   
   Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #I don't feel like rewriting this to hold generality, so these need to stay as is to keep the parsing working correctly
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
-  fileName <- paste("FastaIn", testNum, sep = "") # want the files to be unique when going parallel
+  fileName <- paste("FastaIn", testNum, ".txt", sep = "") # want the files to be unique when going parallel
   fileConn<-file(fileName) #reset the file to being blank text again
   writeLines("\n",fileConn)
   close(fileConn)
@@ -47,169 +57,121 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   cat(Gene2Test)
   sink()
   #Call the clustalw function 
-  
+  systemCAll = paste("clustalw2 -infile=", fileName, " -type=DNA", sep = "")
+  system(systemCall)
   #pull the gapped strings out of the .aln file
+  alnlines <- readLines(paste("FastaIn", testNum, ".aln", sep = ""))
   
-  # Will either steal from Brian or help him look at it more
+  print(Gene1RunTitle)
+  print(Gene2RunTitle)
+  alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
+  alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
+  alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
+  alnlines1<-gsub(" ", "", alnlines1)
+  alnlines2<-gsub(substring(Gene2RunTitle,2), "", alnlines2)
+  alnlines2<-gsub(" ", "", alnlines2)
+  alnlines1<-paste(alnlines1, collapse='')
+  alnlines2<-paste(alnlines2, collapse='')
+  print(alnlines2)
+  Gene1gapstring <- alnlines1
+  Gene2gapstring <- alnlines2
+  
+  r = 1
+  matchstring = ""
+  # wonder if there's a way to do this without a while loop
+  while (r<=nchar(Gene1gapstring)) {
+    if (substring(Gene1gapstring,r,r) == substring(Gene2gapstring,r,r)) {
+      matchstring = paste(matchstring, 'T', sep="")
+    }
+    if (substring(Gene1gapstring,r,r) != substring(Gene2gapstring,r,r)) {
+      matchstring = paste(matchstring, 'F', sep="")
+    }
+    r = r + 1  
+  }
+  
+  #intra-gene break isolation
+  s = 2
+  Flag1 = FALSE
+  Flag2 = FALSE
+  PreCounter = 0
+  PostCounter = 0
+  while (s <= nchar(Gene1gapstring)) {
+    Gene1workingcharacter = substring(Gene1gapstring,s,s)
+    Gene2workingcharacter = substring(Gene2gapstring,s,s)
+    s = s + 1
+    if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE) {
+      Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
+      tempDF = rbind(tempDF, Addrow)
+      Flag2 = FALSE
+      PostCounter = 0
+      PreCounter = 0
+    }
+    else if (Gene1workingcharacter == Gene2workingcharacter && Flag2 == TRUE) {
+      PostCounter = PostCounter + 1
+    }
+    else if (Gene1workingcharacter != Gene2workingcharacter && Flag1 == TRUE) {
+      Flag1 = FALSE
+      Flag2 = TRUE
+      Gene1break = Gene1workingcharacter
+      Gene2break = Gene2workingcharacter
+    }
+    else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == TRUE) {
+      PreCounter = PreCounter + 1
+    }
+    else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == FALSE) {
+      Flag1 = TRUE
+    }
+    
+    # end of intra-gene break identification
+  }
+  return(tempDF)
 }
 
 # need to test to make sure bread and butter mapply works first but here's the parallel version:
 # mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores=parallel::detectCores()-1)
 # need to reevaluate the number of cores to use--probably too many
 
-DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
-finalDF <- do.call(rbind, DF)
+returnThings <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
+finalDF <- do.call(rbind, returnThings)
 
-#CLUSAL Run on Genes
-#while (n <= nrow(Genes)){
-while(n<=20){ #testing line when not running full version of code
-  testnum<-G1[n]
-  Gene1Test <- toString(G2[n,1])
-  Gene2Test<-toString(G3[n,1])
-  Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #I don't feel like rewriting this to hold generality, so these need to stay as is to keep the parsing working correctly
-  Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
-  
-  #write a text file that is in proper FASTA format
-  fileConn<-file("FastaIn.txt") #reset the file to being blank text again
-  writeLines("\n",fileConn)
-  close(fileConn)
-  sink("FastaIn.txt")
-  cat(Gene1RunTitle)
-  cat("\n")
-  cat(Gene1Test)
-  cat("\n")
-  cat(Gene2RunTitle)
-  cat("\n")
-  cat(Gene2Test)
-  sink()
-  #Call the clustalw function 
-  
-  #pull the gapped strings out of the .aln file
-  
-  p= 0
-  flag = FALSE
-  tempstring=""
-  Gene1Bit <- vector(mode="character", length=10)
-  counter = 0
-  while (p<=nchar(pagecode))
-  {
-    if (substring(pagecode,p,p)=='E'){
-      if(substring(pagecode,p,p+4)=='ECGap'){
-        flag = TRUE
-      }
-    }
-    if(flag){
-      if(substring(pagecode,p,p)=='S')
-      {
-        flag = FALSE
-        Gene1Bit[counter] = tempstring
-        tempstring = ""
-        counter = counter +1 
-      }
-      if(substring(pagecode,p,p)!='S')
-      {
-        tempstring = paste(tempstring, substring(pagecode,p,p),sep="")
-      }
-      
-    }
-    p= p+1
-  }
-  Gene1gapstring = str_c(substring(Gene1Bit, 1+nchar(Gene1RunTitle)),collapse = "")
-  Gene1gapstring = substring(Gene1gapstring,0,nchar(Gene1gapstring)-9)
-  nchar(Gene1gapstring)
-  ##replacingblock
-  p= 0
-  flag = FALSE
-  tempstring=""
-  Gene2Bit <- vector(mode="character", length=10)
-  counter = 0
-  while (p<=nchar(pagecode))
-  {
-    if (substring(pagecode,p,p)=='S'){
-      if(substring(pagecode,p,p+5)=='SalGap'){
-        flag = TRUE
-      }
-    }
-    if(flag){
-      if(substring(pagecode,p,p)=='*'||substring(pagecode,p,p)=='<'||substring(pagecode,p,p)=='E')
-      {
-        flag = FALSE
-        Gene2Bit[counter] = tempstring
-        tempstring = ""
-        counter = counter +1 
-      }
-      if(substring(pagecode,p,p)!='*')
-      {
-        tempstring = paste(tempstring, substring(pagecode,p,p),sep="")
-      }
-      
-    }
-    p= p+1
-  }
-  Gene2gapstring = str_c(substring(Gene2Bit, 1+nchar(Gene2RunTitle)),collapse = "")
-  Gene2gapstring = substring(Gene2gapstring,0,nchar(Gene2gapstring)-10)
-  nchar(Gene2gapstring)
-  
-  r=1
-  matchstring = ""
-  while (r<=nchar(Gene1gapstring))
-  {
-    if (substring(Gene1gapstring,r,r) == substring(Gene2gapstring,r,r))
-    {
-      matchstring = paste(matchstring, 'T', sep="")
-    }
-    if(substring(Gene1gapstring,r,r) != substring(Gene2gapstring,r,r))
-    {
-      matchstring = paste(matchstring, 'F', sep="")
-    }
-    r=r+1
-  }
-  
-  n=n+1
-  Sys.sleep(3) # done to preven getting kicked off the CLUSTALw website, probably can bring this down that I'm doing more analysis, but w/e
-  s = 2
-  Flag1 = FALSE
-  Flag2 = FALSE
-  PreCounter = 0
-  PostCounter =0
-  #start of intra-gene break isolation
-  while (s <= nchar(Gene1gapstring)){
-    
-    Gene1workingcharacter = substring(Gene1gapstring,s,s)
-    Gene2workingcharacter = substring(Gene2gapstring,s,s)
-    s = s+1
-    if(Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE)
-    {
-      Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
-      DF = rbind(DF,Addrow)
-      print("ASDF")
-      Flag2=FALSE
-      PostCounter=0
-      PreCounter=0
-    }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag2==TRUE)
-    {
-      PostCounter = PostCounter +1
-      #print(PostCounter) causes too much lag
-    }
-    else if(Gene1workingcharacter != Gene2workingcharacter && Flag1==TRUE)
-    {
-      Flag1 = FALSE
-      Flag2 = TRUE
-      Gene1break = Gene1workingcharacter
-      Gene2break = Gene2workingcharacter
-    }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag1==TRUE)
-    {
-      PreCounter = PreCounter+1
-    }
-    else if(Gene1workingcharacter== Gene2workingcharacter && Flag1==FALSE)
-    {
-      Flag1 = TRUE
-    }
-    
-    
-    
-  }
-  #end of intra-gene break identification
-}
+# graphs and whatnot, I think
+print(names(finalDF))
+finalDF$PostCount <- as.integer(DF$PostCount)
+finalDF$PreCount <- as.integer(DF$PreCount)
+Modfinal = finalDF
+Modfinal = subset(Modfinal, PostCount > 0)
+PlotData = subset(Modfinal, PostCount >= 3 & PreCount >= 3)
+hist(as.numeric(PlotData$PreCount))
+hist(as.numeric(PlotData$PostCount))
+hist(as.numeric(Modfinal$PreCount))
+hist(as.numerica(Modfinal$PostCount))
+plot(jitter(as.numeric(finalDF$PreCount)),jitter(as.numerica(finalDF$PostCount)))
+plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
+
+GeneAdash = subset(finalDF, (Gene1Base == "A" & Gene2Base == "-"))
+GenedashA = subset(finalDF, (Gene1Base == "-" & Gene2Base == "A"))
+GeneAC = subset(finalDF, (Gene1Base == "A" & Gene2Base == "C"))
+GeneCA = subset(finalDF, (Gene1Base == "C" & Gene2Base == "A"))
+GeneAG = subset(finalDF, (Gene1Base == "A" & Gene2Base == "G"))
+GeneGA = subset(finalDF, (Gene1Base == "G" & Gene2Base == "A"))
+GeneAT = subset(finalDF, (Gene1Base == "A" & Gene2Base == "T"))
+GeneTA = subset(finalDF, (Gene1Base == "T" & Gene2Base == "A"))
+GeneTC = subset(finalDF, (Gene1Base == "T" & Gene2Base == "C"))
+GeneCT = subset(finalDF, (Gene1Base == "C" & Gene2Base == "T"))
+GeneTG = subset(finalDF, (Gene1Base == "T" & Gene2Base == "G"))
+GeneGT = subset(finalDF, (Gene1Base == "G" & Gene2Base == "T"))
+GeneTdash = subset(finalDF, (Gene1Base == "T" & Gene2Base == "-"))
+GenedashT = subset(finalDF, (Gene1Base == "-" & Gene2Base == "T"))
+GeneCG = subset(finalDF, (Gene1Base == "C" & Gene2Base == "G"))
+GeneGC = subset(finalDF, (Gene1Base == "G" & Gene2Base == "C"))
+GeneCdash = subset(finalDF, (Gene1Base == "C" & Gene2Base == "-"))
+GenedashC = subset(finalDF, (Gene1Base == "-" & Gene2Base == "C"))
+GeneGdash = subset(finalDF, (Gene1Base == "G" & Gene2Base == "-"))
+GenedashG = subset(finalDF, (Gene1Base == "-" & Gene2Base == "G"))
+
+Gene_vector_of_Lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrwo(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
+Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
+
+pdf('CBECgeneplotMapply.pdf')
+barplot(Gene_vector_of_Lengths,names.arg = Gene_vector_of_names)
+dev.off()
