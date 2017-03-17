@@ -131,8 +131,8 @@ clusal_run <- function(testNum, Gene1, Gene2) {
 # mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores=parallel::detectCores()-1)
 # need to reevaluate the number of cores to use--probably too many
 
-returnThings <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
-finalDF <- do.call(rbind, returnThings)
+DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
+finalDF <- do.call(rbind, DF)
 
 # graphs and whatnot, I think
 print(names(finalDF))
