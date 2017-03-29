@@ -1,13 +1,13 @@
 #Import Packages
-#install.packages("RSelenium")
-#install.packages("stringr")
-#install.packages("readr")
+install.packages("RSelenium")
+install.packages("stringr")
+install.packages("readr")
 library("RSelenium")
 library(stringr)
 library('readr')
 # Additional package
 #install.packages("parallel")
-library("parallel")
+#library("parallel")
 
 #Variable Declaration Block
 Genes <- read.csv("RVersionCBECGenes.csv", stringsAsFactors = FALSE)
