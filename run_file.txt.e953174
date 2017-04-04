@@ -1,0 +1,9 @@
+
+Lmod is automatically replacing "intel/16.0.1.150" with "gcc/5.2.0"
+
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) openmpi/1.8.1
+
+This software stack is maintained by the Purdue Bioinformatics Core. Please direct inquires regarding Bioinformatics software to bioinformatics@purdue.edu
+/var/spool/torque/mom_priv/jobs/953174.radon-adm.rcac.purdue.edu.SC: line 5: gene_apply.R: No such file or directory

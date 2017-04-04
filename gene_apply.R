@@ -1,8 +1,6 @@
 #Import Packages
-install.packages("RSelenium")
 install.packages("stringr")
 install.packages("readr")
-library("RSelenium")
 library(stringr)
 library('readr')
 # Additional package
