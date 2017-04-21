@@ -1,8 +1,8 @@
 #Import Packages
 #install.packages("stringr")
-install.packages('readr',"~/Rlibs","https://cran.cnr.berkeley.edu/")
+#install.packages('readr',"~/Rlibs","https://cran.cnr.berkeley.edu/")
 library(stringr)
-library(readr)
+if (!library(readr, logical.return = TRUE)) { }
 # Additional package
 #install.packages("parallel")
 #library("parallel")
