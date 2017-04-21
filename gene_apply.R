@@ -7,6 +7,8 @@ if (!library(readr, logical.return = TRUE)) { }
 #install.packages("parallel")
 #library("parallel")
 
+setwd("/home/nmarkle/Comparing_mutation__rates")
+
 #Variable Declaration Block
 Genes <- read.csv("RVersionCBECGenes.csv", stringsAsFactors = FALSE)
 CitroBacDNA<-read_file("CitroBacKPureDNA.txt")
