@@ -2,21 +2,24 @@
 #install.packages("stringr")
 #install.packages('readr',"~/Rlibs","https://cran.cnr.berkeley.edu/")
 library(stringr)
-if (!library(readr, logical.return = TRUE)) { }
+#if (!library(readr, logical.return = TRUE)) { }
+library('readr', lib.loc = "/home/nmarkle/Rlibs/");
 # Additional package
 #install.packages("parallel")
 #library("parallel")
 
-setwd("/home/nmarkle/Comparing_mutation__rates")
+#setwd("/home/nmarkle/Comparing_mutation__rates")
 
 #Variable Declaration Block
-Genes <- read.csv("RVersionCBECGenes.csv", stringsAsFactors = FALSE)
-CitroBacDNA<-read_file("CitroBacKPureDNA.txt")
+Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionCBECGenes.csv", stringsAsFactors = FALSE)
+CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
-EColiDNA <- read_file("EColiPureDNA.txt")
+EColiDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
 Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
-
+#-------Testing line!--------
+Genes <- head(Genes, n=20)
+#----------------------------
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-data.frame(Genes$Genes.cbgeneseq)
 G3<-data.frame(Genes$Genes.ecgeneseq)
@@ -57,7 +60,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   cat(Gene2Test)
   sink()
   #Call the clustalw function 
-  systemCAll = paste("clustalw2 -infile=", fileName, " -type=DNA", sep = "")
+  systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep = "")
   system(systemCall)
   #pull the gapped strings out of the .aln file
   alnlines <- readLines(paste("FastaIn", testNum, ".aln", sep = ""))
@@ -136,16 +139,16 @@ finalDF <- do.call(rbind, DF)
 
 # graphs and whatnot, I think
 print(names(finalDF))
-finalDF$PostCount <- as.integer(DF$PostCount)
-finalDF$PreCount <- as.integer(DF$PreCount)
+finalDF$PostCount <- as.integer(finalDF$PostCount)
+finalDF$PreCount <- as.integer(finalDF$PreCount)
 Modfinal = finalDF
 Modfinal = subset(Modfinal, PostCount > 0)
 PlotData = subset(Modfinal, PostCount >= 3 & PreCount >= 3)
 hist(as.numeric(PlotData$PreCount))
 hist(as.numeric(PlotData$PostCount))
 hist(as.numeric(Modfinal$PreCount))
-hist(as.numerica(Modfinal$PostCount))
-plot(jitter(as.numeric(finalDF$PreCount)),jitter(as.numerica(finalDF$PostCount)))
+hist(as.numeric(Modfinal$PostCount))
+plot(jitter(as.numeric(finalDF$PreCount)),jitter(as.numeric(finalDF$PostCount)))
 plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
 
 GeneAdash = subset(finalDF, (Gene1Base == "A" & Gene2Base == "-"))
@@ -169,7 +172,7 @@ GenedashC = subset(finalDF, (Gene1Base == "-" & Gene2Base == "C"))
 GeneGdash = subset(finalDF, (Gene1Base == "G" & Gene2Base == "-"))
 GenedashG = subset(finalDF, (Gene1Base == "-" & Gene2Base == "G"))
 
-Gene_vector_of_Lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrwo(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
+Gene_vector_of_Lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
 Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
 
 pdf('CBECgeneplotMapply.pdf')
