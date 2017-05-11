@@ -4,6 +4,7 @@
 library(stringr)
 #if (!library(readr, logical.return = TRUE)) { }
 library('readr', lib.loc = "/home/nmarkle/Rlibs/");
+#library('readr')
 # Additional package
 #install.packages("parallel")
 #library("parallel")
