@@ -117,19 +117,18 @@ Mutation in genes has a double constrainment of DNA's built in error-handling as
 \begin{column}{.32 \linewidth}
 
 \begin{block}{\large Illustrations}
-Put some ideas here, to tell about the ideas.
+Figure 1
 	\includegraphics[scale = .455]{SalECPercentage.jpeg}
 	\newline
+Figure 2
  \includegraphics[scale = .455]{CBSalPercentage.jpeg}
  \newline
+Figure 3
  \includegraphics[scale = .455]{CBECPercentage.jpeg}
-                       The end.
+
 
 \end{block}
 
-\begin{block}{\large Statistical Testing}
-  Talk about chi-square testing
-\end{block}
 
 \begin{block}{\large Application}
   Now I can discuss why that result matters to people.
@@ -144,9 +143,13 @@ Put some ideas here, to tell about the ideas.
 \begin{column}{.32 \linewidth}
 
 \begin{block}{\large Conclusion}
-Put some concluding remarks here
+Looking at the three figures off to the left, we have depictions of the three pairwise comparisons. The plots show the relative frequency of mutations in genes vs gaps. Gaps are shown in black, genes are in white. What immediately stands out is that the A to G/G to A and T to C/C to T mutation is clearly more frequent. Likely, this is because A and G are the two purine bases and T and C are the two pyrimidines.
 
-                         \lipsum[7-12] % This generates extra text!
+Running statistical tests across the comparison, the gene and gap mutations are clearly from different distributions. Comparing the distribution of gene and gap mutations for Salmonella and E Coli with insertions and deletions left in, a chi-squared test returns a probability that they came from the same distribution of less than 2.2x10\^-16. When insertions and deletions are ignored, the likelihood that gene and gap mutations are from the same distribution rises to 1.766x10\^-13. Similar numbers arise from chi-squared testing the other two pairwise comparisons. 
+
+{\color{red} Really should say something about randomness testing, but I'm not 100\% sure how to go about that.}
+
+https://cran.r-project.org/web/packages/entropy/entropy.pdf--package to look at entropy?
 
 \end{block}
 
@@ -160,8 +163,7 @@ Put some concluding remarks here
 %%%	 \end{block}
 	
 	  \begin{block}{Acknowledgments}
-The research of Student Name is supported by NSF grant DMS \#1246818.
-{\color{red} That it totally not the right grant number}
+This research is supported by NSF grant DMS \#1246818.
 	 \end{block}
 
 
