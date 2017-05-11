@@ -93,6 +93,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   }
   
   #intra-gene break isolation
+  #n=n+1
   s = 2
   Flag1 = FALSE
   Flag2 = FALSE
