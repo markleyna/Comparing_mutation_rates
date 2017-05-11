@@ -80,40 +80,7 @@ while(n<=20){ #testing line when not running full version of code
     r=r+1
   }
 
-  p= 0
-  flag = FALSE
-  tempstring=""
-  Gap1Bit <- vector(mode="character", length=10)
-  counter = 0
-  while (p<=nchar(pagecode))
-  {
-    if (substring(pagecode,p,p)=='E'){
-      if(substring(pagecode,p,p+4)=='ECGap'){
-        flag = TRUE
-      }
-    }
-    if(flag){
-      if(substring(pagecode,p,p)=='S')
-      {
-        flag = FALSE
-        Gap1Bit[counter] = tempstring
-        tempstring = ""
-        counter = counter +1 
-      }
-      if(substring(pagecode,p,p)!='S')
-      {
-        tempstring = paste(tempstring, substring(pagecode,p,p),sep="")
-      }
-      
-    }
-    p= p+1
-  }
-  Gap1gapstring = str_c(substring(Gap1Bit, 1+nchar(Gap1RunTitle)),collapse = "")
-  Gap1gapstring = substring(Gap1gapstring,0,nchar(Gap1gapstring)-9)
-  nchar(Gap1gapstring)
-  
-  numInRow = 2
-  #findMismatches <- function(numInRow, Gap1gapstring, Gap2gapstring) {
+  #findMismatches <- function(numInRow, Gap1gapstring, Gap2gapstring) 
   n=n+1
   s = 2
   Flag1 = FALSE
