@@ -6,5 +6,14 @@ Due to MODULEPATH changes the following have been reloaded:
   1) openmpi/1.8.1
 
 This software stack is maintained by the Purdue Bioinformatics Core. Please direct inquires regarding Bioinformatics software to bioinformatics@purdue.edu
-Error: unexpected end of input
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+Error in file(con, "r") : cannot open the connection
+Calls: readLines -> file
+In addition: Warning message:
+In file(con, "r") :
+  cannot open file 'FastaIn.aln': No such file or directory
 Execution halted

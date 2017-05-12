@@ -21,6 +21,7 @@ Type 'q()' to quit R.
 > library(stringr)
 > #if (!library(readr, logical.return = TRUE)) { }
 > library('readr', lib.loc = "/home/nmarkle/Rlibs/");
+> #library('readr')
 > # Additional package
 > #install.packages("parallel")
 > #library("parallel")
@@ -110,6 +111,7 @@ Type 'q()' to quit R.
 +   }
 +   
 +   #intra-gene break isolation
++   #n=n+1
 +   s = 2
 +   Flag1 = FALSE
 +   Flag2 = FALSE

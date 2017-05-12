@@ -99,40 +99,7 @@ Type 'q()' to quit R.
 +     r=r+1
 +   }
 + 
-+   p= 0
-+   flag = FALSE
-+   tempstring=""
-+   Gap1Bit <- vector(mode="character", length=10)
-+   counter = 0
-+   while (p<=nchar(pagecode))
-+   {
-+     if (substring(pagecode,p,p)=='E'){
-+       if(substring(pagecode,p,p+4)=='ECGap'){
-+         flag = TRUE
-+       }
-+     }
-+     if(flag){
-+       if(substring(pagecode,p,p)=='S')
-+       {
-+         flag = FALSE
-+         Gap1Bit[counter] = tempstring
-+         tempstring = ""
-+         counter = counter +1 
-+       }
-+       if(substring(pagecode,p,p)!='S')
-+       {
-+         tempstring = paste(tempstring, substring(pagecode,p,p),sep="")
-+       }
-+       
-+     }
-+     p= p+1
-+   }
-+   Gap1gapstring = str_c(substring(Gap1Bit, 1+nchar(Gap1RunTitle)),collapse = "")
-+   Gap1gapstring = substring(Gap1gapstring,0,nchar(Gap1gapstring)-9)
-+   nchar(Gap1gapstring)
-+   
-+   numInRow = 2
-+   #findMismatches <- function(numInRow, Gap1gapstring, Gap2gapstring) {
++   #findMismatches <- function(numInRow, Gap1gapstring, Gap2gapstring) 
 +   n=n+1
 +   s = 2
 +   Flag1 = FALSE
@@ -185,32 +152,13 @@ Type 'q()' to quit R.
 +       Flag1 = TRUE
 +     }
 +     s = s+1
++   }
 + }
-+ 
-+ # now looking at results for n mismatches--but isn't depedent on n.
-+ print(names(DF))
-+ DF$PostCount <- as.integer(DF$PostCount)
-+ DF$PreCount <- as.integer((DF$PreCount))
-+ ModDF = DF
-+ ModDF = subset(ModDF, PostCount > 0)
-+ PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
-+ 
-+ #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
-+ counts <- data.frame(table(PlotData$ECBase, PlotData$SalBase)) 
-+ #for future reference data.frame(table(PlotData$ECBase, PlotData$SalBase)[,]) is another way
-+ #for this method each row represents a unique value for ECBase
-+ #each of the columns then is the count for each unique value of SalBase
-+ 
-+ gap_vector_of_names <- paste(counts$ECBase, counts$SalBase)
-+ 
-+ pdf("SalCBGap Plots")
-+ hist(as.numeric(PlotData$PreCount))
-+ hist(as.numeric(PlotData$PostCount))
-+ hist(as.numeric(ModDF$PreCount))
-+ hist(as.numeric(ModDF$PostCount))
-+ plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
-+ plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
-+ barplot(counts$count,names.arg = names(counts)) #constructing barplot of mutation frequencies
-+ #^-- don't actually know what the name of this column will be
-+ dev.off()
-+ 
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
