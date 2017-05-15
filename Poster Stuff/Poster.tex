@@ -92,22 +92,27 @@ The aim of our analysis was to compare the rates of evolution of DNA sequences o
 Pairwise comparisons using BLASTN were used to identify regions that had shared genes. ClustalW was then used to identify single base mutations in both genes and inter-gene regions. Mutation frequencies were determined for all paired comparisons. This analysis indicated that the mutation frequencies are significantly higher in intergenic spacers do not have specific sequence-dependent functions, and therefore, they can accumulate mutations more liberally than genes, which are constrained by their function.
     \end{block}
 
-\begin{block}{\large Introduction}
-Genomes have both useful genetic information and presumed useless inter-gene regions termed as gaps. Gene pairs between organisms can be isolated using a tool called \textbf{B}asic \textbf{L}ocal \textbf{A}lignment \textbf{S}earch \textbf{T}ool, commonly referred to as BLAST. 
+\begin{block}{\large Background}
+Genomes have both useful genetic information coded in genes and presumed useless inter-gene regions termed as gaps. Gene pairs between organisms can be isolated using a tool called \textbf{B}asic \textbf{L}ocal \textbf{A}lignment \textbf{S}earch \textbf{T}ool, commonly referred to as BLAST. Local alignment can be done with an algorithm called CLUSTALw, and the results from this can be used to isolate base-level changes in sections of DNA.
 
 \newline
-\textit{Salmonella Typhimurium LT2}, \textit{Citrobacter Koseri}, and \textit{Escherchia Coli MG1655} were chosen because Dr. Csonka told me to use them--add real reason later
+\textit{Salmonella Typhimurium LT2}, \textit{Citrobacter Koseri}, and \textit{Escherchia Coli MG1655} were chosen because they are closely related members of \textit{Enterobacteriaceae}
+\includegraphics[scale = 1]{phylogeny.png}
+\newline
+The phylogeny tree shows the relative relations of the three bacteria chosen to be analyzed. 
 \end{block}
 
  \begin{block}{\large Motivation}
-Mutation in genes has a double constrainment of DNA's built in error-handling as well as maintaining function. We suspected that looking at both genes and gaps it could be determined how much similarity there would be in accumulation of mutations at the base level.
-	\end{block}
+Mutation in genes has a double constrainment of DNA's built in error-handling as well as maintaining function. Gaps are suspected to have no function {\color{red} need a citation here probably}, so they should mutate faster. We suspected that choosing pairs of bacteria that were closely related could be used to show rates of mutation in homologous genes and gap regions.
+\end{block}
 
- \begin{block}{\large Research Question}
-	{\color{red} We want to characterize something. }
-                       The end.
-                       \newline
-                       TL;DR: Do mutations happen in genes and gaps at the same rate?
+\begin{block}{\large Question}
+What degree of similarity is there between gene and gap mutation rates, and can this be used to determine if there is any functional constrainment in gaps? 
+\end{block}
+
+ \begin{block}{\large Hypothesis}
+We hypothesize that there is no preservation of order shown in gap regions, so they should be substantially more random than genes.
+
 	\end{block}
 
 \end{column}
@@ -142,14 +147,19 @@ Figure 3
 
 \begin{column}{.32 \linewidth}
 
+\begin{block}{Procedure}
+Genomes were run through BLAST to identify matching regions for each pair comparison. BLAST matches were presumed to be homologous genes. Two matching regions with a non-matching region between them led the non-matching region to be labeled as a gap. Any gap longer than 500 bases was presumed to contain a gene that wasn't present in the compared genome and was therefore discarded.
+\newline
+Matched regions (both genes and gaps) were run through CLUSTALw and any base mismatch preceded and followed by at least 3 matching bases was presumed to be a mutation. Mutation rates were then tabulated, plotted, and statistically tested.
+\end{block}
 \begin{block}{\large Conclusion}
 Looking at the three figures off to the left, we have depictions of the three pairwise comparisons. The plots show the relative frequency of mutations in genes vs gaps. Gaps are shown in black, genes are in white. What immediately stands out is that the A to G/G to A and T to C/C to T mutation is clearly more frequent. Likely, this is because A and G are the two purine bases and T and C are the two pyrimidines.
 
 Running statistical tests across the comparison, the gene and gap mutations are clearly from different distributions. Comparing the distribution of gene and gap mutations for Salmonella and E Coli with insertions and deletions left in, a chi-squared test returns a probability that they came from the same distribution of less than 2.2x10\^-16. When insertions and deletions are ignored, the likelihood that gene and gap mutations are from the same distribution rises to 1.766x10\^-13. Similar numbers arise from chi-squared testing the other two pairwise comparisons. 
 
-{\color{red} Really should say something about randomness testing, but I'm not 100\% sure how to go about that.}
+This is conclusive evidence that genes and gaps have differing distributions for mutation frequencies. From this, we can conclude that there is some mechanism limiting mutations in genes. As mentioned in the background section, this is likely due to genes having to maintain function despite mutation, while gaps can mutate freely.
 
-https://cran.r-project.org/web/packages/entropy/entropy.pdf--package to look at entropy?
+
 
 \end{block}
 
@@ -173,7 +183,7 @@ This research is supported by NSF grant DMS \#1246818.
     \end{columns}
 
   \end{frame}
-\end{document}
+\end{document}	
 
 
 
