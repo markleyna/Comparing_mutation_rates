@@ -53,7 +53,7 @@ while(n<=20){ #testing line when not running full version of code
   cat(Gene2Test)
   sink()
   system("clustalw2 -infile=FastaIn.txt -type=DNA")
-  alnlines<-readLines("FastaIn.aln")
+  alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaIn.aln")
   
   print(Gene1RunTitle)
   print(Gene2RunTitle)
