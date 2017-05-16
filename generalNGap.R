@@ -4,6 +4,7 @@
 #install.packages("binman", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
 library(stringr)
 #library(binman)
+#library('readr')
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
@@ -15,8 +16,8 @@ EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
 Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
 G1<-as.vector(Genes$Genes.gapnum)
-G2<-data.frame(Genes$Genes.cbgapseq)
-G3<-data.frame(Genes$Genes.ecgapseq)
+G2<-data.frame(Genes$Genes.cbgeneseq)
+G3<-data.frame(Genes$Genes.ecgeneseq)
 n=1
 
 #redeclaring everything resets the variables since I didn't bother to rename when I adapted code, and this is probably was a mistake

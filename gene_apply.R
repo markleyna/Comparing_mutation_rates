@@ -36,11 +36,18 @@ Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #must be 2 digit repres
 Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit representation for code to work
 
 clusal_run <- function(testNum, Gene1, Gene2) {
+  #print(paste("testNum: ", testNum, sep=""))
+  #print(paste("Gene1: ", head(Gene1), sep=""))
+  #print(paste("Gene2: ", head(Gene2), sep=""))
+  #return(data.frame(Gene1,Gene2))
   # Temp DF to be returned at the end
   tempDF <- data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
-  
-  Gene1Test = toString(Gene1[1])
-  Gene2Test = toString(Gene2[1])
+  print(typeof(Gene1))
+  print(typeof(Gene2))
+  Gene1Test = toString(Gene1)
+  Gene2Test = toString(Gene2)
+  #print(paste("Gene1Test:", strsplit(Gene1Test,1,5,'')[[1]], sep=""))
+  return(data.frame(Gene1Test,Gene2Test))
   Gene1break = ""
   Gene2break = ""
   
