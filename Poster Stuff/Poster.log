@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6300 64-bit) (preloaded format=pdflatex 2017.5.9)  15 MAY 2017 14:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6300 64-bit) (preloaded format=pdflatex 2017.5.9)  16 MAY 2017 13:26
 entering extended mode
 **./Poster.tex
 (Poster.tex
@@ -1777,7 +1777,7 @@ Overfull \hbox (72.45084pt too wide) detected at line 81
  []
 
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <24.88> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 185.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 188.
 
 ! LaTeX Error: There's no line here to end.
 
@@ -1785,50 +1785,56 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.185   \end{frame}
+l.188   \end{frame}
                    
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <24.88> not available
-(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 185.
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 188.
 <phylogeny.png, id=22, 403.5075pt x 223.58531pt>
 File: phylogeny.png Graphic file (type png)
  <use phylogeny.png>
-Package pdftex.def Info: phylogeny.png used on input line 185.
+Package pdftex.def Info: phylogeny.png used on input line 188.
 (pdftex.def)             Requested size: 403.50652pt x 223.58475pt.
 
 <SalECPercentage.jpeg, id=23, 1927.2pt x 1084.05pt>
 File: SalECPercentage.jpeg Graphic file (type jpg)
  <use SalECPercentage.jpeg>
-Package pdftex.def Info: SalECPercentage.jpeg used on input line 185.
+Package pdftex.def Info: SalECPercentage.jpeg used on input line 188.
 (pdftex.def)             Requested size: 876.8774pt x 493.24353pt.
 
 <CBSalPercentage.jpeg, id=24, 1927.2pt x 1084.05pt>
 File: CBSalPercentage.jpeg Graphic file (type jpg)
  <use CBSalPercentage.jpeg>
-Package pdftex.def Info: CBSalPercentage.jpeg used on input line 185.
+Package pdftex.def Info: CBSalPercentage.jpeg used on input line 188.
 (pdftex.def)             Requested size: 876.8774pt x 493.24353pt.
 
 <CBECPercentage.jpeg, id=25, 1927.2pt x 1084.05pt>
 File: CBECPercentage.jpeg Graphic file (type jpg)
  <use CBECPercentage.jpeg>
-Package pdftex.def Info: CBECPercentage.jpeg used on input line 185.
+Package pdftex.def Info: CBECPercentage.jpeg used on input line 188.
 (pdftex.def)             Requested size: 876.8774pt x 493.24353pt.
+
+<hit_matrixECSal.png, id=26, 602.25pt x 301.125pt>
+File: hit_matrixECSal.png Graphic file (type png)
+ <use hit_matrixECSal.png>
+Package pdftex.def Info: hit_matrixECSal.png used on input line 188.
+(pdftex.def)             Requested size: 752.81064pt x 376.4053pt.
 File: transparentStatisticsLaura201617.jpg Graphic file (type jpg)
 
 <use transparentStatisticsLaura201617.jpg>
 Package pdftex.def Info: transparentStatisticsLaura201617.jpg used on input lin
-e 185.
+e 188.
 (pdftex.def)             Requested size: 422.80428pt x 145.55228pt.
 File: nsf.png Graphic file (type png)
  <use nsf.png>
-Package pdftex.def Info: nsf.png used on input line 185.
+Package pdftex.def Info: nsf.png used on input line 188.
 (pdftex.def)             Requested size: 144.54295pt x 144.54295pt.
 File: Purduelogo.jpg Graphic file (type jpg)
  <use Purduelogo.jpg>
-Package pdftex.def Info: Purduelogo.jpg used on input line 185.
+Package pdftex.def Info: Purduelogo.jpg used on input line 188.
 (pdftex.def)             Requested size: 162.6071pt x 146.22594pt.
 
 Overfull \hbox (72.45084pt too wide) has occurred while \output is active
@@ -1840,7 +1846,7 @@ Overfull \hbox (72.45084pt too wide) has occurred while \output is active
 
  <./transparentStatisticsLaura201617.jpg> <./nsf.png> <./Purduelogo.jpg> <./phy
 logeny.png> <./SalECPercentage.jpeg> <./CBSalPercentage.jpeg> <./CBECPercentage
-.jpeg>]
+.jpeg> <./hit_matrixECSal.png (PNG copy)>]
 \tf@nav=\write6
 \openout6 = `Poster.nav'.
 
@@ -1850,20 +1856,19 @@ logeny.png> <./SalECPercentage.jpeg> <./CBSalPercentage.jpeg> <./CBECPercentage
 \tf@snm=\write8
 \openout8 = `Poster.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 186.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 186.
-
-(Poster.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 186.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 186.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 189.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 189.
+ (Poster.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 189.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 189.
 Package rerunfilecheck Info: File `Poster.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 31541 strings out of 493328
- 747409 string characters out of 3139125
- 1122679 words of memory out of 3000000
- 34403 multiletter control sequences out of 15000+200000
+ 31546 strings out of 493328
+ 747523 string characters out of 3139125
+ 1132520 words of memory out of 3000000
+ 34407 multiletter control sequences out of 15000+200000
  14665 words of font info for 29 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  64i,21n,98p,793b,959s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1871,9 +1876,9 @@ Here is how much of TeX's memory you used:
 KTeX 2.9/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts
 /type1/urw/helvetic/uhvr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/hel
 vetic/uhvro8a.pfb>
-Output written on Poster.pdf (1 page, 1681270 bytes).
+Output written on Poster.pdf (1 page, 1729404 bytes).
 PDF statistics:
- 70 PDF objects out of 1000 (max. 8388607)
+ 71 PDF objects out of 1000 (max. 8388607)
  3 named destinations out of 1000 (max. 500000)
- 96 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 101 words of extra memory for PDF output out of 10000 (max. 10000000)
 

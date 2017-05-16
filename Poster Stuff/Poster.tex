@@ -96,31 +96,32 @@ Pairwise comparisons using BLASTN were used to identify regions that had shared 
 Genomes have both useful genetic information coded in genes and presumed useless inter-gene regions termed as gaps. Gene pairs between organisms can be isolated using a tool called \textbf{B}asic \textbf{L}ocal \textbf{A}lignment \textbf{S}earch \textbf{T}ool, commonly referred to as BLAST. Local alignment can be done with an algorithm called CLUSTALw, and the results from this can be used to isolate base-level changes in sections of DNA.
 
 \newline
-\textit{Salmonella Typhimurium LT2}, \textit{Citrobacter Koseri}, and \textit{Escherchia Coli MG1655} were chosen because they are closely related members of \textit{Enterobacteriaceae}
+\textit{Salmonella Typhimurium LT2}, \textit{Citrobacter Koseri}, and \textit{Escherchia Coli MG1655} were chosen because they are closely related members of \textit{Enterobacteriaceae}.Additionally, the relations of genes can been in the dot plot shown. Barring the region that's inverted, there are large regions of matching genetic information.
+\newline
 \includegraphics[scale = 1]{phylogeny.png}
 \newline
-The phylogeny tree shows the relative relations of the three bacteria chosen to be analyzed. 
+The phylogeny tree shows the relative relations of the three bacteria chosen to be analyzed, which is an explanation of why E. Coli and Citrobacter have smaller common regions than Citrobacter and Salmonella.
 \end{block}
 
  \begin{block}{\large Motivation}
-Mutation in genes has a double constrainment of DNA's built in error-handling as well as maintaining function. Gaps are suspected to have no function {\color{red} need a citation here probably}, so they should mutate faster. We suspected that choosing pairs of bacteria that were closely related could be used to show rates of mutation in homologous genes and gap regions.
+Mutation in genes has a double constrainment of DNA?s built in error-handling as well as maintaining function. Gaps are suspected to have no function need a citation here probably, so they should mutate faster and more randomly. We suspected that choosing pairs of bacteria that were closely related could be used to show rates of mutation in homologous genes and gap regions. By comparing these rates we hoped to show that gaps either are functionless and have random mutations or that they are functional and their mutations have a non-random distribution.
 \end{block}
 
 \begin{block}{\large Question}
 What degree of similarity is there between gene and gap mutation rates, and can this be used to determine if there is any functional constrainment in gaps? 
 \end{block}
 
- \begin{block}{\large Hypothesis}
-We hypothesize that there is no preservation of order shown in gap regions, so they should be substantially more random than genes.
 
-	\end{block}
 
 \end{column}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{column}{.32 \linewidth}
-
+ \begin{block}{\large Hypothesis}
+	We hypothesize that there is no preservation of order shown in gap regions, so they should be substantially more random than genes.
+	
+\end{block}
 \begin{block}{\large Illustrations}
 Figure 1
 	\includegraphics[scale = .455]{SalECPercentage.jpeg}
@@ -134,10 +135,6 @@ Figure 3
 
 \end{block}
 
-
-\begin{block}{\large Application}
-  Now I can discuss why that result matters to people.
-\end{block}
 
 \end{column}
 
@@ -175,6 +172,12 @@ This is conclusive evidence that genes and gaps have differing distributions for
 	  \begin{block}{Acknowledgments}
 This research is supported by NSF grant DMS \#1246818.
 	 \end{block}
+\begin{block}{Citations}
+References will go here as they're filled in since BibTeX is hard
+\end{block}
+\begin{block}{Dot Plot Example}
+\includegraphics[scale = 1.25]{hit_matrixECSal.png}
+\end{block}
 
 
 
