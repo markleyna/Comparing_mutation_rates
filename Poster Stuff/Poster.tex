@@ -100,7 +100,7 @@ Genomes have both useful genetic information coded in genes and presumed useless
 \newline
 \includegraphics[scale = 1]{phylogeny.png}
 \newline
-The phylogeny tree shows the relative relations of the three bacteria chosen to be analyzed, which is an explanation of why E. Coli and Citrobacter have smaller common regions than Citrobacter and Salmonella.
+The phylogeny tree built from 16s rRNA shows the relative relations of the three bacteria chosen to be analyzed, which is an explanation of why E. Coli and Citrobacter have smaller common regions than Citrobacter and Salmonella.
 \end{block}
 
  \begin{block}{\large Motivation}
@@ -147,7 +147,7 @@ Figure 3
 \begin{block}{Procedure}
 Genomes were run through BLAST to identify matching regions for each pair comparison. BLAST matches were presumed to be homologous genes. Two matching regions with a non-matching region between them led the non-matching region to be labeled as a gap. Any gap longer than 500 bases was presumed to contain a gene that wasn't present in the compared genome and was therefore discarded.
 \newline
-Matched regions (both genes and gaps) were run through CLUSTALw and any base mismatch preceded and followed by at least 3 matching bases was presumed to be a mutation. Mutation rates were then tabulated, plotted, and statistically tested.
+Matched regions (both genes and gaps) were run through CLUSTALw and any base mismatch preceded and followed by at least 3 matching bases was presumed to be a mutation. Mutation rates were then tabulated, plotted, and chi-squared tested on mutation counts.
 \end{block}
 \begin{block}{\large Conclusion}
 Looking at the three figures off to the left, we have depictions of the three pairwise comparisons. The plots show the relative frequency of mutations in genes vs gaps. Gaps are shown in black, genes are in white. What immediately stands out is that the A to G/G to A and T to C/C to T mutation is clearly more frequent. Likely, this is because A and G are the two purine bases and T and C are the two pyrimidines.
@@ -173,7 +173,13 @@ This is conclusive evidence that genes and gaps have differing distributions for
 This research is supported by NSF grant DMS \#1246818.
 	 \end{block}
 \begin{block}{Citations}
-References will go here as they're filled in since BibTeX is hard
+	\footnotesize
+Thompson, J. D., Gibson, T. J. and Higgins, D. G. 2002. Multiple Sequence Alignment Using ClustalW and ClustalX. Current Protocols in Bioinformatics. 00:2.3:2.3.1?2.3.22.
+
+Stephen F. Altschul, Warren Gish, Webb Miller, Eugene W. Myers, David J. Lipman, Basic local alignment search tool, Journal of Molecular Biology, Volume 215, Issue 3, 1990, Pages 403-410, ISSN 0022-2836, http://dx.doi.org/10.1016/S0022-2836(05)80360-2.
+(http://www.sciencedirect.com/science/article/pii/S0022283605803602)
+BLAST accessed through https://blast.ncbi.nlm.nih.gov/Blast.cgi
+
 \end{block}
 \begin{block}{Dot Plot Example}
 \includegraphics[scale = 1.25]{hit_matrixECSal.png}
