@@ -146,10 +146,10 @@ clusal_run <- function(testNum, Gene1, Gene2) {
 DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
 finalDF <- do.call(rbind, DF)
 
-print(substr(finalDF[[2]],start=1,stop=40))
+#print(substr(finalDF[[2]],start=1,stop=40))
 
-print(nrows(finalDF))
-print(head(finalDF))
+#print(nrows(finalDF))
+#print(head(finalDF))
 
 # graphs and whatnot, I think
 print(names(finalDF))
