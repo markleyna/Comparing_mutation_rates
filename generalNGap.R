@@ -143,7 +143,10 @@ DF$PostCount <- as.integer(DF$PostCount)
 DF$PreCount <- as.integer((DF$PreCount))
 ModDF = DF
 ModDF = subset(ModDF, PostCount > 0)
-PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
+#PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
+PlotData = ModDF
+summary(PlotData$PreCount)
+
 
 #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
 counts <- data.frame(table(PlotData$ECBase, PlotData$SalBase)) 
