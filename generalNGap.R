@@ -89,7 +89,7 @@ while(n<=20){ #testing line when not running full version of code
   PreCounter = 0
   PostCounter =0
   #start of intra-gene break isolation
-  while (s <= nchar(Gap1gapstring)){
+  while (s <= nchar(Gene1gapstring)){
   
     Gene1workingcharacter = substring(Gene1gapstring,s,s)
     Gene2workingcharacter = substring(Gene2gapstring,s,s)
