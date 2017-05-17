@@ -22,8 +22,10 @@ Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFac
 Genes <- head(Genes, n=20)
 #----------------------------
 G1<-as.vector(Genes$Genes.gapnum)
-G2<-data.frame(Genes$Genes.cbgeneseq)
-G3<-data.frame(Genes$Genes.ecgeneseq)
+G2<-as.vector(Genes$Genes.cbgeneseq)
+#G2Test <- data.frame(lapply(G2, as.character), stringsAsFactors = FALSE)
+G3<-as.vector(Genes$Genes.ecgeneseq)
+#G3Test <- data.frame(lapply(G3, as.character), stringsAsFactors = FALSE)
 n=1
 buildchar = "Q" #done to prevent things from crashing later on, don't ask
 Gene1Base <- c(buildchar,buildchar)
@@ -36,18 +38,16 @@ Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #must be 2 digit repres
 Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit representation for code to work
 
 clusal_run <- function(testNum, Gene1, Gene2) {
-  #print(paste("testNum: ", testNum, sep=""))
-  #print(paste("Gene1: ", head(Gene1), sep=""))
-  #print(paste("Gene2: ", head(Gene2), sep=""))
+  ##print(paste("testNum: ", testNum, sep=""))
   #return(data.frame(Gene1,Gene2))
   # Temp DF to be returned at the end
   tempDF <- data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
-  print(typeof(Gene1))
-  print(typeof(Gene2))
+  #print(typeof(Gene1))
+  #print(typeof(Gene2))
   Gene1Test = toString(Gene1)
   Gene2Test = toString(Gene2)
   #print(paste("Gene1Test:", strsplit(Gene1Test,1,5,'')[[1]], sep=""))
-  return(data.frame(Gene1Test,Gene2Test))
+  #return(data.frame(Gene1Test,Gene2Test))
   Gene1break = ""
   Gene2break = ""
   
@@ -144,9 +144,10 @@ clusal_run <- function(testNum, Gene1, Gene2) {
 # need to reevaluate the number of cores to use--probably too many
 
 DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
-print(nrows(DF))
-print(head(DF))
 finalDF <- do.call(rbind, DF)
+
+print(substr(finalDF[[2]],start=1,stop=40))
+
 print(nrows(finalDF))
 print(head(finalDF))
 
