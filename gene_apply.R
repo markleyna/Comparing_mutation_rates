@@ -38,10 +38,15 @@ Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #must be 2 digit repres
 Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit representation for code to work
 
 clusal_run <- function(testNum, Gene1, Gene2) {
-  ##print(paste("testNum: ", testNum, sep=""))
+  #print(paste("testNum: ", testNum, sep=""))
   #return(data.frame(Gene1,Gene2))
   # Temp DF to be returned at the end
+  Gene1Base <- c(buildchar,buildchar)
+  Gene2Base<-c(buildchar,buildchar) 
+  PreCount<-c(-1,-1)
+  PostCount<-c(-1,-1)
   tempDF <- data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
+  tempDF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
   #print(typeof(Gene1))
   #print(typeof(Gene2))
   Gene1Test = toString(Gene1)
@@ -55,6 +60,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
   fileName <- paste("FastaIn", testNum, ".txt", sep = "") # want the files to be unique when going parallel
+  #Where to start commenting out for llc.stat.purdue.edu
   fileConn<-file(fileName) #reset the file to being blank text again
   writeLines("\n",fileConn)
   close(fileConn)
@@ -72,9 +78,11 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   system(systemCall)
   #pull the gapped strings out of the .aln file
   alnlines <- readLines(paste("FastaIn", testNum, ".aln", sep = ""))
+  #Stop commenting and un-comment the next line
+  #alnlines <- readLines(paste("Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep = ""))
   
-  print(Gene1RunTitle)
-  print(Gene2RunTitle)
+  #print(Gene1RunTitle)
+  #print(Gene2RunTitle)
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
   alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
@@ -83,9 +91,10 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   alnlines2<-gsub(" ", "", alnlines2)
   alnlines1<-paste(alnlines1, collapse='')
   alnlines2<-paste(alnlines2, collapse='')
-  print(alnlines2)
+  #print(alnlines2)
   Gene1gapstring <- alnlines1
   Gene2gapstring <- alnlines2
+  #return(data.frame(Gene1gapstring,Gene2gapstring))
   
   r = 1
   matchstring = ""
