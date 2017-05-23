@@ -1,0 +1,98 @@
+CLUSTAL 2.1 multiple sequence alignment
+
+
+ECGap_numberk       --------------ATTTCCACTTCGCTA-CGCTGTTGCCCCT-CACCCAGCAGGGATGC
+SalGap_numberk      GCAGCAACATGCCCAGCAGCAGACTGCCGGTGCTGATGCTTCTGCAAACAACGCGAAAGA
+                                  *    **    **    **** ***  ** **  ** *  * * * 
+
+ECGap_numberk       C-ACGTTAACCCCCAGGTGCTGGCCTAACAGATCAAGCAGCGCCGCTTCAATGCCGGTGA
+SalGap_numberk      TGACGATGTTGTCGACGCTGAATTTGAAGAAGTCAAAGACAAAAAATAATCGCCCTATAA
+                      *** *     * * *         ** *  ****  *       *      **  * *
+
+ECGap_numberk       CCACATGA--ATGGTGGTACGTAAGTCGAAGGTTTGTAAGCCGCGCCCGCCCGCATCACG
+SalGap_numberk      ACGGGTAATTATACTGACACGGGCGAAGGGGAATT-TCCTCTCCGCCCGTGCATTCATCT
+                     *   * *  **  **  ***   *  *  *  ** *   *  ******  *      * 
+
+ECGap_numberk       ATCGGCGAACTGATGACGCACGGCATTCAGCACGTTTTTGTACTCACCCAGCGTTTTACC
+SalGap_numberk      AGGGGCAATTTAAAAAAG-ATGGC--TAAGCAAGATTATTACGAGATTTTAGGCGTTTCC
+                    *  *** *  * *  * * * ***  * **** * ** *      *      *  ** **
+
+ECGap_numberk       CACCACCAGCGGGATCGCCTCTTCCAGCGTCTGGCGGATTTTCTCGCCGCCAGGGATTTC
+SalGap_numberk      AA--AACAGCGGAAGAGCGTGAAATCA-GAAAGGCCTACAAACGCCTGGCCATGAAATAC
+                     *  * ****** *  ** *        *   ***  *    * *   **** * * * *
+
+ECGap_numberk       CCCCACGCCGGTGTGACCAGAATTGTCTTTAA-TAATGACGATATTACGGGTGAAGAACG
+SalGap_numberk      CACCCGGAC--CGTAACCAGGGTGACAAAGAGGCCGAGGCGAAATTTAAAGAGATCAAGG
+                    * **  * *   ** *****  *       *      * *** ***    * **  ** *
+
+ECGap_numberk       GCGCATGCGCCCCGCTCAGGTTCATCAGCATACTGTCATGCCCCGCAACCGGGATAACCT
+SalGap_numberk      AAGCTTATGAA--GTTCTGACCGACTCGCAAAAACGTGCGGCATACGATCAGTATGGTC-
+                      ** *  *    * ** *    *   *** *       * *   * * * * **   * 
+
+ECGap_numberk       GCATAGCGGTAACAACAGGGGTCGTAAATTGTGTACTCATCATTCAGTCCTTATATGAAT
+SalGap_numberk      ATGCTGCGTTTGAGCAAGGTGGCATGGGCGGCGG--CGGTTTTGGCGGCGGCGCAGACTT
+                         *** *      *** * * *     * *      *  *   * *     *    *
+
+ECGap_numberk       TAGCGACGGCCGAAAACGGGGCGTTTACGATCAAAAGTCCAGCCGGGGATCAGGTATT--
+SalGap_numberk      CAGCGATATTTTTG---GTGACGTTTTCGGCGATATTTTTGGCGGCGGACGTGGTCGTCA
+                     *****           * * ***** **   * *  *   ** * ***   ***  *  
+
+ECGap_numberk       GCATCGGGCCTGCGTCATTG---CGCGCGCCGCCGGGCAGTTT---CTTGTAAGCGTCAT
+SalGap_numberk      ACGTGCGGCGCGCGGTGCTGATTTACGCTATAACATGGAGCTCACCCTCGAAGAAGCTGT
+                     * *  ***  ***    **     ***     *  * ** *    ** * *   *   *
+
+ECGap_numberk       GCGCTTTCTGCACCTGCTCCCAGTCCAGCTCCACGCCAAGACCCGGCG-CATCCGGCACT
+SalGap_numberk      ACGTGGCGTG-ACCAAAGAGATCCGCATTCCGACTCTGGAAGAGTGTGACGTTTGCCACG
+                     **     ** ***           **   * ** *    *    * * * *  * *** 
+
+ECGap_numberk       GCAATTTTTCCGTCTTTAATTTCCAGCGGTTGCTTCGTCAGGCG-ACAATCGCCCTCCTG
+SalGap_numberk      GTAGCGGTGCAAAACCAGGTACACAGCCGCAGACTTGTCCGACCTGTCATGGTTCTGGTC
+                    * *    * *         *   **** *  *  * *** * *     ** *  **  * 
+
+ECGap_numberk       C----CAGATCCAGTGGGTGTCAATCGCCGT---------CGGTTTAC-CCGGCGCGGCA
+SalGap_numberk      AGGTGCAGATGCGCCAGGGATTCTTCGCTGTACAGCAGACCTGTCCACACTGTCAGGGCC
+                         ***** *    **  *   **** **         * **  ** * * *  *** 
+
+ECGap_numberk       GCGCCAACATGAGTGAACATC-GCCAGGGAAATATCGAA---ATGGTTGTTCGAATGGCA
+SalGap_numberk      GCGGTACGCTGATCAAAGATCCGTGCAACAAATGTCATGGTCATGGTCGTGTTGAGCGCA
+                    ***  *   ***   ** *** *      **** **      ***** **    *  ***
+
+ECGap_numberk       GCCCCAGGTCAGCCCCCAG--TCATCGCATAATTGCGCCACGCGCACCGCG-CCGGAGAG
+SalGap_numberk      GCAAAACGCTGTCCGTTAAAATCCCGGCAGGGGTGGACACTGGAGACCGCATCCGTCTTG
+                    **   * *    **   *   **   ***    **  *   *   *****  ***    *
+
+ECGap_numberk       CGTCCAGAAGTGCGGGTCGGCGAGCGGAATATCCACCGCGTTTAACATCACCGCATGGCC
+SalGap_numberk      CGGGCGAAGGTG-AAGCGGGCGAGCATGGCGCAC-CGGCAGGCGAT----CTGTACGTTC
+                    **  *  * ***   *  *******        * * **     *     * * * *  *
+
+ECGap_numberk       CATTTCACGCCAGTTGGTGGCAATCATGTTGGTCGCGACCGGCAGCCCCGTCGCACGACG
+SalGap_numberk      AGGTTCAGGTTAAACAGCACCCGAT-TTTCGAGCGTGAA-GGCAACAAC-CTGTATTGCG
+                       **** *  *    *   *     * * *  ** **  **** *  *   * *   **
+
+ECGap_numberk       GAACTCCGCCATCACTTCACGCCCGGAGAATCCTTGTTCTGCGCCACACGGATCTTCAGC
+SalGap_numberk      AAGTCCCG--ATCAACTT-CGCTATGGCGGCGCTGGGTG-GCGAAATCGAAGTACCGACC
+                     *   ***  ****  *  ***   *      ** * *  ***  *      *    * *
+
+ECGap_numberk       ATACGTGAGCACATCGTTCAGCCCTTTACACAGTGCGATGGCTTCATCCAGCAGCCAGGC
+SalGap_numberk      CTTGATGGTCGCGTCAAACTG--------AAAGTGCC-TGGCGAAACCCAG-ACCGGTAA
+                     *   **  * * **   * *        * *****  ****   * **** * *     
+
+ECGap_numberk       GCCGTTTGGATCAACCGTGATTCGCGCATCCGGGAAGCGTTTTTTCAGCGCGCGGGCCGT
+SalGap_numberk      GCTATTCCG--TATGCGCGGTAAAGGCGTCAAGTCTGTCCGCGGT-GGCGCACAGGGTGA
+                    **  **  *   *  ** * *    ** **  *   *       *  **** * **  * 
+
+ECGap_numberk       GTCGATCTCCTGCTCGCCGGGCAACACGCCGCCCTTCAGTTTGAAATCTTTAAAGCCGTA
+SalGap_numberk      TTTGCTGTGCCGCGTTGTCGTCGAAACACCGG---TAGGCCTGAA---CGAAAGGCAGAA
+                     * * * * * **      * * * ** ***    *  *  ****      ** ** * *
+
+ECGap_numberk       GCGATC-CTGCGCCGCCTGCGCCAGATGCACAACCGCGTCGCTGGTGAGCGCTTCCTGAT
+SalGap_numberk      ACAGCTGCTGCAAGAGCTGCAAGAAAGCTTCGGTGGCCCAACCGGCGAGCACAACAGCCC
+                     *     ****     ****   * *    *    **    * ** **** *  *     
+
+ECGap_numberk       G-GCGCAGGTGATACCAGTCATGATTGCCCGGCGTTTTTTCGAGATAAGGTAAATCCGTT
+SalGap_numberk      GCGCTCAAAGAGCTTCTTTGATGGTGTGAAGAAGTTTTTTGACGACCTGACCCGCTAACC
+                    * ** **        *  * *** *     *  *******   **   *           
+
+ECGap_numberk       TTGGTGCGATCGCCCACGTAGAAAAGGTAGC--
+SalGap_numberk      TCCCCAAAAGCCTGCCCGTGGGCAGGCCTGGGT
+                    *       * *   * *** *  * *   *   

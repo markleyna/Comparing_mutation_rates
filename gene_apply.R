@@ -19,7 +19,7 @@ EColiDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
 Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
 #-------Testing line!--------
-Genes <- head(Genes, n=20)
+#Genes <- head(Genes, n=20)
 #----------------------------
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-as.vector(Genes$Genes.cbgeneseq)
