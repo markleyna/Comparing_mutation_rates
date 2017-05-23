@@ -2,16 +2,14 @@
 #install.packages("stringr")
 #install.packages('readr',"~/Rlibs","https://cran.cnr.berkeley.edu/")
 library(stringr)
-#if (!library(readr, logical.return = TRUE)) { }
 library('readr', lib.loc = "/home/nmarkle/Rlibs/");
 #library('readr')
 # Additional package
 #install.packages("parallel")
 #library("parallel")
 
-#setwd("/home/nmarkle/Comparing_mutation__rates")
-
 #Variable Declaration Block
+# Where you enter the files you'll need
 Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionCBECGenes.csv", stringsAsFactors = FALSE)
 CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
@@ -23,10 +21,7 @@ Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFac
 #----------------------------
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-as.vector(Genes$Genes.cbgeneseq)
-#G2Test <- data.frame(lapply(G2, as.character), stringsAsFactors = FALSE)
 G3<-as.vector(Genes$Genes.ecgeneseq)
-#G3Test <- data.frame(lapply(G3, as.character), stringsAsFactors = FALSE)
-n=1
 buildchar = "Q" #done to prevent things from crashing later on, don't ask
 Gene1Base <- c(buildchar,buildchar)
 Gene2Base<-c(buildchar,buildchar) 
@@ -38,6 +33,7 @@ Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #must be 2 digit repres
 Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit representation for code to work
 
 clusal_run <- function(testNum, Gene1, Gene2) {
+  # TESTING LINES
   #print(paste("testNum: ", testNum, sep=""))
   #return(data.frame(Gene1,Gene2))
   # Temp DF to be returned at the end
@@ -47,10 +43,9 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   PostCount<-c(-1,-1)
   tempDF <- data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
   tempDF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
-  #print(typeof(Gene1))
-  #print(typeof(Gene2))
   Gene1Test = toString(Gene1)
   Gene2Test = toString(Gene2)
+  # TESTING LINES
   #print(paste("Gene1Test:", strsplit(Gene1Test,1,5,'')[[1]], sep=""))
   #return(data.frame(Gene1Test,Gene2Test))
   Gene1break = ""
@@ -81,8 +76,6 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   #Stop commenting and un-comment the next line
   #alnlines <- readLines(paste("Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep = ""))
   
-  #print(Gene1RunTitle)
-  #print(Gene2RunTitle)
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
   alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
@@ -91,26 +84,12 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   alnlines2<-gsub(" ", "", alnlines2)
   alnlines1<-paste(alnlines1, collapse='')
   alnlines2<-paste(alnlines2, collapse='')
-  #print(alnlines2)
   Gene1gapstring <- alnlines1
   Gene2gapstring <- alnlines2
+  # TESTING LINE
   #return(data.frame(Gene1gapstring,Gene2gapstring))
-  
-  r = 1
-  matchstring = ""
-  # wonder if there's a way to do this without a while loop
-  while (r<=nchar(Gene1gapstring)) {
-    if (substring(Gene1gapstring,r,r) == substring(Gene2gapstring,r,r)) {
-      matchstring = paste(matchstring, 'T', sep="")
-    }
-    if (substring(Gene1gapstring,r,r) != substring(Gene2gapstring,r,r)) {
-      matchstring = paste(matchstring, 'F', sep="")
-    }
-    r = r + 1  
-  }
-  
+   
   #intra-gene break isolation
-  #n=n+1
   s = 2
   Flag1 = FALSE
   Flag2 = FALSE
@@ -148,19 +127,14 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   return(tempDF)
 }
 
-# need to test to make sure bread and butter mapply works first but here's the parallel version:
+# here's the parallel version:
 # mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores=parallel::detectCores()-1)
 # need to reevaluate the number of cores to use--probably too many
 
 DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
 finalDF <- do.call(rbind, DF)
 
-#print(substr(finalDF[[2]],start=1,stop=40))
-
-#print(nrows(finalDF))
-#print(head(finalDF))
-
-# graphs and whatnot, I think
+# Graphs
 print(names(finalDF))
 finalDF$PostCount <- as.integer(finalDF$PostCount)
 finalDF$PreCount <- as.integer(finalDF$PreCount)

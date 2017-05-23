@@ -1,15 +1,12 @@
 #Import Packages
 #http://stackoverflow.com/questions/27893230/installation-of-package-file-path-had-non-zero-exit-status-in-r
 #install.packages("stringr", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
-#install.packages("binman", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
 library(stringr)
-#library(binman)
 #library('readr')
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
 Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionCBECGenes.csv", stringsAsFactors = FALSE)
-print(names(Genes))
 CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
 EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
@@ -35,7 +32,7 @@ Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
 
 #CLUSAL Run on Genes
 #while (n <= nrow(Genes)){
-while(n<=20){ #testing line when not running full version of code
+while(n<=1){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test <- toString(G3[n,1])
@@ -69,19 +66,7 @@ while(n<=20){ #testing line when not running full version of code
   print(alnlines2)
   Gene1gapstring <- alnlines1
   Gene2gapstring <- alnlines2
-  r=1
-  matchstring = ""
-  while (r<=nchar(Gene1gapstring)) {
-    if (substring(Gene1gapstring,r,r) == substring(Gene2gapstring,r,r)) {
-      matchstring = paste(matchstring, 'T', sep="")
-    }
-    else {
-      matchstring = paste(matchstring, 'F', sep="")
-    }
-    r=r+1
-  }
-
-  #findMismatches <- function(numInRow, Gap1gapstring, Gap2gapstring) 
+   
   n=n+1
   s = 2
   Flag1 = FALSE
@@ -105,7 +90,6 @@ while(n<=20){ #testing line when not running full version of code
     else if(Gene1workingcharacter == Gene2workingcharacter && Flag2==TRUE)
     {
       PostCounter = PostCounter +1
-      #print(PostCounter) causes too much lag
     }
     else if(Gene1workingcharacter != Gene2workingcharacter && Flag1==TRUE)
     {
@@ -138,15 +122,12 @@ while(n<=20){ #testing line when not running full version of code
 }
 
 # now looking at results for n mismatches--but isn't depedent on n.
-print(names(DF))
 DF$PostCount <- as.integer(DF$PostCount)
 DF$PreCount <- as.integer((DF$PreCount))
 ModDF = DF
 ModDF = subset(ModDF, PostCount > 0)
 #PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
 PlotData = ModDF
-summary(PlotData$PreCount)
-
 
 #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
 counts <- data.frame(table(PlotData$ECBase, PlotData$SalBase)) 
