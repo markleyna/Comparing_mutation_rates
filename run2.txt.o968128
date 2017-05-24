@@ -9316,16 +9316,16 @@ CLUSTAL-Alignment file created  [FastaIn.aln]
 > DF$PreCount <- as.integer((DF$PreCount))
 > ModDF = DF
 > ModDF = subset(ModDF, PostCount > 0)
-> #PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
-> PlotData = ModDF
+> PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
+> #PlotData = ModDF
 > 
 > #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
-> counts <- data.frame(table(PlotData$ECBase, PlotData$SalBase)) 
+> counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base)) 
 > #for future reference data.frame(table(PlotData$ECBase, PlotData$SalBase)[,]) is another way
 > #for this method each row represents a unique value for ECBase
 > #each of the columns then is the count for each unique value of SalBase
 > 
-> gap_vector_of_names <- paste(counts$ECBase, counts$SalBase)
+> gap_vector_of_names <- paste(counts$Var1, counts$Var2)
 > 
 > pdf("SalCBGap Plots")
 > hist(as.numeric(PlotData$PreCount))
@@ -9334,4 +9334,9 @@ CLUSTAL-Alignment file created  [FastaIn.aln]
 > hist(as.numeric(ModDF$PostCount))
 > plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
 > plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
-> barplot(counts$count,names.arg = names(counts)) #constructing barplot of mutation frequencies
+> barplot(counts$Freq,names.arg = gap_vector_of_names) #constructing barplot of mutation frequencies
+> #^-- don't actually know what the name of this column will be
+> dev.off()
+null device 
+          1 
+> 
