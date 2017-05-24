@@ -1,0 +1,9337 @@
+
+R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #Import Packages
+> #http://stackoverflow.com/questions/27893230/installation-of-package-file-path-had-non-zero-exit-status-in-r
+> #install.packages("stringr", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
+> library(stringr)
+> #library('readr')
+> library('readr', lib.loc="/home/nmarkle/Rlibs/")
+> 
+> #Variable Declaration Block
+> numInRow <- 2
+> Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionCBECGenes.csv", stringsAsFactors = FALSE)
+> CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
+> CitroBacDNA<-gsub("\n","",CitroBacDNA)
+> EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
+> EColiDNA<-gsub("\n","",EColiDNA)
+> Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
+> G1<-as.vector(Genes$Genes.gapnum)
+> G2<-data.frame(Genes$Genes.cbgeneseq)
+> G3<-data.frame(Genes$Genes.ecgeneseq)
+> 
+> #redeclaring everything resets the variables since I didn't bother to rename when I adapted code, and this is probably was a mistake
+> buildchar = "Q"
+> Gene1Base <- c(buildchar,buildchar)
+> Gene2Base<-c(buildchar,buildchar)
+> PreCount<-c(-1,-1)
+> PostCount<-c(-1,-1)
+> Gene1break = ""
+> Gene2break = ""
+> DF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
+> DF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
+> Gene1RunTitle <- paste(">", "ECGap_number","k",sep = "")
+> Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
+> n = 1
+> #CLUSAL Run on Genes
+> while (n <= nrow(Genes)){
++ #while(n<=1){ #testing line when not running full version of code
++   testnum<-G1[n]
++   Gene1Test <- toString(G2[n,1])
++   Gene2Test <- toString(G3[n,1])
++   
++   #write text file
++   fileConn<-file("FastaIn.txt")
++   writeLines("\n",fileConn)
++   close(fileConn)
++   sink("FastaIn.txt")
++   cat(Gene1RunTitle)
++   cat("\n")
++   cat(Gene1Test)
++   cat("\n")
++   cat(Gene2RunTitle)
++   cat("\n")
++   cat(Gene2Test)
++   sink()
++   system("clustalw2 -infile=FastaIn.txt -type=DNA")
++   alnlines<-readLines("/home/nmarkle/FastaIn.aln")
++   #Testing line for llc server
++   #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
++   
++   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
++   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
++   alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
++   alnlines1<-gsub(" ", "", alnlines1)
++   alnlines2<-gsub(substring(Gene2RunTitle,2), "", alnlines2)
++   alnlines2<-gsub(" ", "", alnlines2)
++   alnlines1<-paste(alnlines1, collapse='')
++   alnlines2<-paste(alnlines2, collapse='')
++   Gene1gapstring <- alnlines1
++   Gene2gapstring <- alnlines2
++    
++   n=n+1
++   s = 1
++   Flag1 = FALSE
++   Flag2 = FALSE
++   PreCounter = 0
++   PostCounter =0
++   #start of intra-gene break isolation
++   while (s <= nchar(Gene1gapstring)) {
++     Gene1workingcharacter = substring(Gene1gapstring,s,s)
++     Gene2workingcharacter = substring(Gene2gapstring,s,s)
++     s = s + 1
++     if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE && PostCounter > 0) {
++       #print(Gene1break)
++       #print(Gene2break)
++       #print(nchar(Gene1break))
++       if (nchar(Gene1break) == numInRow) {
++         Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
++         DF = rbind(DF, Addrow)
++       }
++       Flag2 = TRUE
++       Flag1 = FALSE
++       PreCounter = PostCounter
++       PostCounter = 0
++       Gene1break = Gene1workingcharacter
++       Gene2break = Gene2workingcharacter
++     }
++     else if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE && PostCounter == 0) {
++       #Gene1break <- c(Gene1break, Gene1workingcharacter)
++       Gene1break <- paste(Gene1break, Gene1workingcharacter, sep = '')
++       #Gene2break <- c(Gene2break, Gene2workingcharacter)
++       Gene2break <- paste(Gene2break, Gene2workingcharacter,sep = '')
++     }
++     else if (Gene1workingcharacter == Gene2workingcharacter && Flag2 == TRUE) {
++       PostCounter = PostCounter + 1
++     }
++     else if (Gene1workingcharacter != Gene2workingcharacter && Flag1 == TRUE) {
++       Flag1 = FALSE
++       Flag2 = TRUE
++       Gene1break = Gene1workingcharacter
++       Gene2break = Gene2workingcharacter
++     }
++     else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == TRUE) {
++       PreCounter = PreCounter + 1
++     }
++     else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == FALSE) {
++       PreCounter = PreCounter + 1
++       Flag1 = TRUE
++     }
++     
++     # end of intra-gene break identification
++   }
++ }
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  28154 bp
+Sequence 2: SalGap_numberk 28235 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 60878
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  17471 bp
+Sequence 2: SalGap_numberk 17467 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 38641
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  18797 bp
+Sequence 2: SalGap_numberk 18847 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 41584
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  14947 bp
+Sequence 2: SalGap_numberk 14964 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 33028
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  14847 bp
+Sequence 2: SalGap_numberk 14935 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 33677
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  10487 bp
+Sequence 2: SalGap_numberk 10486 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 23183
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9864 bp
+Sequence 2: SalGap_numberk  9858 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19896
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  14261 bp
+Sequence 2: SalGap_numberk 14350 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 31066
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  12003 bp
+Sequence 2: SalGap_numberk 11959 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 24739
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  13977 bp
+Sequence 2: SalGap_numberk 14023 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 29733
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9880 bp
+Sequence 2: SalGap_numberk  9884 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 20646
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9516 bp
+Sequence 2: SalGap_numberk  9516 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19916
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9348 bp
+Sequence 2: SalGap_numberk  9351 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19440
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7801 bp
+Sequence 2: SalGap_numberk  7821 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 16828
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  10543 bp
+Sequence 2: SalGap_numberk 10575 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 23685
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9608 bp
+Sequence 2: SalGap_numberk  9609 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 21230
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8353 bp
+Sequence 2: SalGap_numberk  8373 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 17751
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9624 bp
+Sequence 2: SalGap_numberk  9663 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 20349
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9522 bp
+Sequence 2: SalGap_numberk  9557 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 20559
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9188 bp
+Sequence 2: SalGap_numberk  9246 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19138
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk  10753 bp
+Sequence 2: SalGap_numberk 10763 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 21969
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7478 bp
+Sequence 2: SalGap_numberk  7476 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15921
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8657 bp
+Sequence 2: SalGap_numberk  8756 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19422
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6639 bp
+Sequence 2: SalGap_numberk  6652 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14220
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   9425 bp
+Sequence 2: SalGap_numberk  9454 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 17528
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8541 bp
+Sequence 2: SalGap_numberk  8553 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 18080
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8545 bp
+Sequence 2: SalGap_numberk  8562 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 17413
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5323 bp
+Sequence 2: SalGap_numberk  5325 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11989
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8297 bp
+Sequence 2: SalGap_numberk  8296 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 17105
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5221 bp
+Sequence 2: SalGap_numberk  5221 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11886
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5066 bp
+Sequence 2: SalGap_numberk  5063 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11167
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7189 bp
+Sequence 2: SalGap_numberk  7195 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14810
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8736 bp
+Sequence 2: SalGap_numberk  8742 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 18022
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8145 bp
+Sequence 2: SalGap_numberk  8200 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 16695
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7414 bp
+Sequence 2: SalGap_numberk  7456 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15358
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7077 bp
+Sequence 2: SalGap_numberk  7083 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15196
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7047 bp
+Sequence 2: SalGap_numberk  7055 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15268
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8447 bp
+Sequence 2: SalGap_numberk  8449 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19466
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6720 bp
+Sequence 2: SalGap_numberk  6710 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14703
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7446 bp
+Sequence 2: SalGap_numberk  7401 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15287
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8119 bp
+Sequence 2: SalGap_numberk  8100 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 17920
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8224 bp
+Sequence 2: SalGap_numberk  8213 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 18750
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8866 bp
+Sequence 2: SalGap_numberk  8834 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19092
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6083 bp
+Sequence 2: SalGap_numberk  6065 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 13482
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6585 bp
+Sequence 2: SalGap_numberk  6566 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 13924
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8418 bp
+Sequence 2: SalGap_numberk  8468 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 17663
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7073 bp
+Sequence 2: SalGap_numberk  7084 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 16369
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5981 bp
+Sequence 2: SalGap_numberk  6075 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 13875
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6668 bp
+Sequence 2: SalGap_numberk  6668 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14721
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   8553 bp
+Sequence 2: SalGap_numberk  8621 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 19028
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7451 bp
+Sequence 2: SalGap_numberk  7487 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15211
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7191 bp
+Sequence 2: SalGap_numberk  7190 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 16280
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6634 bp
+Sequence 2: SalGap_numberk  6633 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14641
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6497 bp
+Sequence 2: SalGap_numberk  6500 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14468
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6446 bp
+Sequence 2: SalGap_numberk  6481 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14035
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7536 bp
+Sequence 2: SalGap_numberk  7544 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 17491
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5693 bp
+Sequence 2: SalGap_numberk  5696 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12313
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6900 bp
+Sequence 2: SalGap_numberk  6965 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15418
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6600 bp
+Sequence 2: SalGap_numberk  6626 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14453
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5276 bp
+Sequence 2: SalGap_numberk  5271 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11834
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5222 bp
+Sequence 2: SalGap_numberk  5226 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11232
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6386 bp
+Sequence 2: SalGap_numberk  6388 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14515
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5667 bp
+Sequence 2: SalGap_numberk  5674 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12282
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5284 bp
+Sequence 2: SalGap_numberk  5269 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11418
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6478 bp
+Sequence 2: SalGap_numberk  6478 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14626
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   7196 bp
+Sequence 2: SalGap_numberk  7241 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 15470
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5375 bp
+Sequence 2: SalGap_numberk  5386 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11700
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5814 bp
+Sequence 2: SalGap_numberk  5832 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12832
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3514 bp
+Sequence 2: SalGap_numberk  3519 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7568
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5269 bp
+Sequence 2: SalGap_numberk  5307 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10277
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4863 bp
+Sequence 2: SalGap_numberk  4892 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9962
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5406 bp
+Sequence 2: SalGap_numberk  5460 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12170
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5670 bp
+Sequence 2: SalGap_numberk  5728 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12696
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5486 bp
+Sequence 2: SalGap_numberk  5473 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11441
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3395 bp
+Sequence 2: SalGap_numberk  3391 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7535
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4818 bp
+Sequence 2: SalGap_numberk  4819 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9840
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3369 bp
+Sequence 2: SalGap_numberk  3363 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7285
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5673 bp
+Sequence 2: SalGap_numberk  5681 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10668
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3388 bp
+Sequence 2: SalGap_numberk  3392 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6460
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3384 bp
+Sequence 2: SalGap_numberk  3388 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7743
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3392 bp
+Sequence 2: SalGap_numberk  3394 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6938
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5299 bp
+Sequence 2: SalGap_numberk  5299 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9600
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5710 bp
+Sequence 2: SalGap_numberk  5698 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12832
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4585 bp
+Sequence 2: SalGap_numberk  4583 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10184
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5208 bp
+Sequence 2: SalGap_numberk  5229 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10605
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4703 bp
+Sequence 2: SalGap_numberk  4704 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9585
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5422 bp
+Sequence 2: SalGap_numberk  5420 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11958
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3248 bp
+Sequence 2: SalGap_numberk  3242 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6765
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5528 bp
+Sequence 2: SalGap_numberk  5509 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11699
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5007 bp
+Sequence 2: SalGap_numberk  5025 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11018
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3230 bp
+Sequence 2: SalGap_numberk  3228 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7365
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3273 bp
+Sequence 2: SalGap_numberk  3277 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7005
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3250 bp
+Sequence 2: SalGap_numberk  3257 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6080
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6235 bp
+Sequence 2: SalGap_numberk  6223 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12551
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3221 bp
+Sequence 2: SalGap_numberk  3228 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7353
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3232 bp
+Sequence 2: SalGap_numberk  3238 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6737
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5170 bp
+Sequence 2: SalGap_numberk  5206 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11372
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6365 bp
+Sequence 2: SalGap_numberk  6409 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 14293
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4569 bp
+Sequence 2: SalGap_numberk  4588 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9968
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3083 bp
+Sequence 2: SalGap_numberk  3079 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6406
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3082 bp
+Sequence 2: SalGap_numberk  3079 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6491
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3072 bp
+Sequence 2: SalGap_numberk  3079 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7003
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3072 bp
+Sequence 2: SalGap_numberk  3080 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6378
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4019 bp
+Sequence 2: SalGap_numberk  4032 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8726
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4406 bp
+Sequence 2: SalGap_numberk  4403 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9920
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3970 bp
+Sequence 2: SalGap_numberk  3967 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8932
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5065 bp
+Sequence 2: SalGap_numberk  5082 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11581
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5751 bp
+Sequence 2: SalGap_numberk  5768 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11000
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3851 bp
+Sequence 2: SalGap_numberk  3855 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8080
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4916 bp
+Sequence 2: SalGap_numberk  4930 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10996
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5048 bp
+Sequence 2: SalGap_numberk  5104 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11072
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5306 bp
+Sequence 2: SalGap_numberk  5308 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 11417
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5567 bp
+Sequence 2: SalGap_numberk  5600 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12039
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4765 bp
+Sequence 2: SalGap_numberk  4765 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10284
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3362 bp
+Sequence 2: SalGap_numberk  3389 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7532
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4925 bp
+Sequence 2: SalGap_numberk  4933 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10851
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5918 bp
+Sequence 2: SalGap_numberk  5998 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12654
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   6479 bp
+Sequence 2: SalGap_numberk  6435 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 12370
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4157 bp
+Sequence 2: SalGap_numberk  4162 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9155
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4303 bp
+Sequence 2: SalGap_numberk  4315 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8993
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4235 bp
+Sequence 2: SalGap_numberk  4231 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8804
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4931 bp
+Sequence 2: SalGap_numberk  4935 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8371
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4276 bp
+Sequence 2: SalGap_numberk  4280 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9276
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5039 bp
+Sequence 2: SalGap_numberk  5039 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10489
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3131 bp
+Sequence 2: SalGap_numberk  3134 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6474
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4439 bp
+Sequence 2: SalGap_numberk  4444 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8941
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4392 bp
+Sequence 2: SalGap_numberk  4385 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10213
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4592 bp
+Sequence 2: SalGap_numberk  4587 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9901
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3865 bp
+Sequence 2: SalGap_numberk  3879 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8221
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2845 bp
+Sequence 2: SalGap_numberk  2848 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5956
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4269 bp
+Sequence 2: SalGap_numberk  4270 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9328
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4369 bp
+Sequence 2: SalGap_numberk  4378 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10064
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4153 bp
+Sequence 2: SalGap_numberk  4103 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8698
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4178 bp
+Sequence 2: SalGap_numberk  4180 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9070
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3957 bp
+Sequence 2: SalGap_numberk  2590 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5576
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4991 bp
+Sequence 2: SalGap_numberk  5028 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10464
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4001 bp
+Sequence 2: SalGap_numberk  3981 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8257
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4724 bp
+Sequence 2: SalGap_numberk  4773 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10569
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3087 bp
+Sequence 2: SalGap_numberk  3085 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6900
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3235 bp
+Sequence 2: SalGap_numberk  3252 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7253
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3583 bp
+Sequence 2: SalGap_numberk  3584 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8564
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4583 bp
+Sequence 2: SalGap_numberk  4595 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10215
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5160 bp
+Sequence 2: SalGap_numberk  5181 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10287
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4086 bp
+Sequence 2: SalGap_numberk  4086 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8060
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3357 bp
+Sequence 2: SalGap_numberk  3363 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7047
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4504 bp
+Sequence 2: SalGap_numberk  4506 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10137
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3204 bp
+Sequence 2: SalGap_numberk  3202 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6940
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3324 bp
+Sequence 2: SalGap_numberk  3378 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7378
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3285 bp
+Sequence 2: SalGap_numberk  3285 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5667
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3130 bp
+Sequence 2: SalGap_numberk  3132 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6068
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3390 bp
+Sequence 2: SalGap_numberk  3390 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6380
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3779 bp
+Sequence 2: SalGap_numberk  3779 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7758
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4586 bp
+Sequence 2: SalGap_numberk  4603 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9683
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2918 bp
+Sequence 2: SalGap_numberk  2918 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6932
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3492 bp
+Sequence 2: SalGap_numberk  3492 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7756
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3466 bp
+Sequence 2: SalGap_numberk  3467 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7540
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3050 bp
+Sequence 2: SalGap_numberk  3051 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6663
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3174 bp
+Sequence 2: SalGap_numberk  3180 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6848
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   5146 bp
+Sequence 2: SalGap_numberk  5158 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10157
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3849 bp
+Sequence 2: SalGap_numberk  3864 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8091
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3109 bp
+Sequence 2: SalGap_numberk  3107 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7313
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3475 bp
+Sequence 2: SalGap_numberk  3479 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7296
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4405 bp
+Sequence 2: SalGap_numberk  4439 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 9223
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3020 bp
+Sequence 2: SalGap_numberk  3021 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6352
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3966 bp
+Sequence 2: SalGap_numberk  3967 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8718
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2863 bp
+Sequence 2: SalGap_numberk  2793 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5985
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1964 bp
+Sequence 2: SalGap_numberk  1963 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4462
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4088 bp
+Sequence 2: SalGap_numberk  4168 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8132
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1965 bp
+Sequence 2: SalGap_numberk  1965 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4193
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1958 bp
+Sequence 2: SalGap_numberk  1957 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3927
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3393 bp
+Sequence 2: SalGap_numberk  3397 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7213
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1994 bp
+Sequence 2: SalGap_numberk  1992 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4140
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3044 bp
+Sequence 2: SalGap_numberk  3043 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6315
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3104 bp
+Sequence 2: SalGap_numberk  3117 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6611
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1904 bp
+Sequence 2: SalGap_numberk  1901 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3844
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2483 bp
+Sequence 2: SalGap_numberk  2513 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5580
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2891 bp
+Sequence 2: SalGap_numberk  2865 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6548
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1965 bp
+Sequence 2: SalGap_numberk  1967 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4346
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1894 bp
+Sequence 2: SalGap_numberk  1890 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3464
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2899 bp
+Sequence 2: SalGap_numberk  2946 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6176
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4641 bp
+Sequence 2: SalGap_numberk  4642 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10189
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3799 bp
+Sequence 2: SalGap_numberk  3806 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7188
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1803 bp
+Sequence 2: SalGap_numberk  1801 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3757
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3340 bp
+Sequence 2: SalGap_numberk  3354 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7555
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1816 bp
+Sequence 2: SalGap_numberk  1815 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3988
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3192 bp
+Sequence 2: SalGap_numberk  3189 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6763
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1816 bp
+Sequence 2: SalGap_numberk  1815 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3739
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2700 bp
+Sequence 2: SalGap_numberk  2700 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5698
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1803 bp
+Sequence 2: SalGap_numberk  1798 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3989
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3552 bp
+Sequence 2: SalGap_numberk  3555 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6957
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2892 bp
+Sequence 2: SalGap_numberk  2888 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6277
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1800 bp
+Sequence 2: SalGap_numberk  1799 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4088
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1803 bp
+Sequence 2: SalGap_numberk  1798 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3948
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3211 bp
+Sequence 2: SalGap_numberk  3223 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6342
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3437 bp
+Sequence 2: SalGap_numberk  3461 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6997
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2852 bp
+Sequence 2: SalGap_numberk  2852 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6234
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3424 bp
+Sequence 2: SalGap_numberk  3433 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5934
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3068 bp
+Sequence 2: SalGap_numberk  3069 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6911
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2490 bp
+Sequence 2: SalGap_numberk  2483 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4883
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3922 bp
+Sequence 2: SalGap_numberk  3925 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8395
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2800 bp
+Sequence 2: SalGap_numberk  2824 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6240
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3696 bp
+Sequence 2: SalGap_numberk  3694 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8073
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2392 bp
+Sequence 2: SalGap_numberk  2389 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4908
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3638 bp
+Sequence 2: SalGap_numberk  3638 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7471
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2810 bp
+Sequence 2: SalGap_numberk  2824 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6171
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2931 bp
+Sequence 2: SalGap_numberk  2944 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6015
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2148 bp
+Sequence 2: SalGap_numberk  2147 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4868
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3490 bp
+Sequence 2: SalGap_numberk  3491 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7767
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2927 bp
+Sequence 2: SalGap_numberk  2929 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6232
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2228 bp
+Sequence 2: SalGap_numberk  2248 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4752
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3011 bp
+Sequence 2: SalGap_numberk  3014 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6855
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2158 bp
+Sequence 2: SalGap_numberk  2158 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4742
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2673 bp
+Sequence 2: SalGap_numberk  2679 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5176
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1884 bp
+Sequence 2: SalGap_numberk  1885 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4681
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2616 bp
+Sequence 2: SalGap_numberk  2634 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4927
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2589 bp
+Sequence 2: SalGap_numberk  2662 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5407
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4799 bp
+Sequence 2: SalGap_numberk  4840 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 10432
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2243 bp
+Sequence 2: SalGap_numberk  2237 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5221
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2779 bp
+Sequence 2: SalGap_numberk  2778 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5971
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2121 bp
+Sequence 2: SalGap_numberk  2120 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4521
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2422 bp
+Sequence 2: SalGap_numberk  2428 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5411
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2256 bp
+Sequence 2: SalGap_numberk  2300 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5017
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2205 bp
+Sequence 2: SalGap_numberk  2205 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4743
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1928 bp
+Sequence 2: SalGap_numberk  1940 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4059
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1915 bp
+Sequence 2: SalGap_numberk  1913 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4407
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4110 bp
+Sequence 2: SalGap_numberk  4154 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8341
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1887 bp
+Sequence 2: SalGap_numberk  1889 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3946
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2507 bp
+Sequence 2: SalGap_numberk  2505 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4556
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3127 bp
+Sequence 2: SalGap_numberk  3133 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6595
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2104 bp
+Sequence 2: SalGap_numberk  2118 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4616
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2351 bp
+Sequence 2: SalGap_numberk  2350 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4739
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1991 bp
+Sequence 2: SalGap_numberk  1991 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4156
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1984 bp
+Sequence 2: SalGap_numberk  1988 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4338
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2609 bp
+Sequence 2: SalGap_numberk  2620 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5559
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2364 bp
+Sequence 2: SalGap_numberk  2382 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5312
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3250 bp
+Sequence 2: SalGap_numberk  3246 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6876
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2111 bp
+Sequence 2: SalGap_numberk  2111 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3920
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1185 bp
+Sequence 2: SalGap_numberk  1185 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2519
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3754 bp
+Sequence 2: SalGap_numberk  3752 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8221
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1998 bp
+Sequence 2: SalGap_numberk  1999 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4532
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2212 bp
+Sequence 2: SalGap_numberk  2220 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4466
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2207 bp
+Sequence 2: SalGap_numberk  2206 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4612
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2180 bp
+Sequence 2: SalGap_numberk  2219 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4481
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1519 bp
+Sequence 2: SalGap_numberk  1518 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2927
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2390 bp
+Sequence 2: SalGap_numberk  2403 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5173
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2538 bp
+Sequence 2: SalGap_numberk  2540 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5111
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1746 bp
+Sequence 2: SalGap_numberk  1740 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3524
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1127 bp
+Sequence 2: SalGap_numberk  1127 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2309
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1627 bp
+Sequence 2: SalGap_numberk  1627 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3549
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2156 bp
+Sequence 2: SalGap_numberk  2147 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3798
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1988 bp
+Sequence 2: SalGap_numberk  1994 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  8
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4180
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1705 bp
+Sequence 2: SalGap_numberk  1705 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3477
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2074 bp
+Sequence 2: SalGap_numberk  2077 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4144
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2228 bp
+Sequence 2: SalGap_numberk  2232 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4968
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2071 bp
+Sequence 2: SalGap_numberk  2071 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4651
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1763 bp
+Sequence 2: SalGap_numberk  1791 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  4
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4100
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2242 bp
+Sequence 2: SalGap_numberk  2242 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5479
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1639 bp
+Sequence 2: SalGap_numberk  1640 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3750
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1257 bp
+Sequence 2: SalGap_numberk  1260 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2450
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1433 bp
+Sequence 2: SalGap_numberk  1433 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3214
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1872 bp
+Sequence 2: SalGap_numberk  1886 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3755
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1501 bp
+Sequence 2: SalGap_numberk  1502 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2878
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3407 bp
+Sequence 2: SalGap_numberk  3395 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6867
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1608 bp
+Sequence 2: SalGap_numberk  1610 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2821
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1108 bp
+Sequence 2: SalGap_numberk  1109 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 1974
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1602 bp
+Sequence 2: SalGap_numberk  1603 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3300
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1383 bp
+Sequence 2: SalGap_numberk  1390 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3142
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1545 bp
+Sequence 2: SalGap_numberk  1545 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2639
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2646 bp
+Sequence 2: SalGap_numberk  2648 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6082
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1851 bp
+Sequence 2: SalGap_numberk  1894 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4374
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1477 bp
+Sequence 2: SalGap_numberk  1476 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2816
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2331 bp
+Sequence 2: SalGap_numberk  2335 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4790
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1880 bp
+Sequence 2: SalGap_numberk  1896 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4133
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1607 bp
+Sequence 2: SalGap_numberk  1615 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3708
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1258 bp
+Sequence 2: SalGap_numberk  1258 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2346
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1994 bp
+Sequence 2: SalGap_numberk  1992 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4103
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2507 bp
+Sequence 2: SalGap_numberk  2516 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5020
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1550 bp
+Sequence 2: SalGap_numberk  1550 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3288
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1331 bp
+Sequence 2: SalGap_numberk  1333 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3077
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3082 bp
+Sequence 2: SalGap_numberk  3085 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 7042
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1582 bp
+Sequence 2: SalGap_numberk  1588 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3085
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1574 bp
+Sequence 2: SalGap_numberk  1574 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2937
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1545 bp
+Sequence 2: SalGap_numberk  1546 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3083
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1669 bp
+Sequence 2: SalGap_numberk  1669 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3681
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1639 bp
+Sequence 2: SalGap_numberk  1631 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3315
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1444 bp
+Sequence 2: SalGap_numberk  1451 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3228
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2244 bp
+Sequence 2: SalGap_numberk  2244 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4536
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2178 bp
+Sequence 2: SalGap_numberk  2152 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4849
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1373 bp
+Sequence 2: SalGap_numberk  1372 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2867
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1558 bp
+Sequence 2: SalGap_numberk  1558 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3455
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1358 bp
+Sequence 2: SalGap_numberk  1363 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  4
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2904
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1574 bp
+Sequence 2: SalGap_numberk  1577 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3313
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1613 bp
+Sequence 2: SalGap_numberk  1613 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3304
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1891 bp
+Sequence 2: SalGap_numberk  1902 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4093
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1857 bp
+Sequence 2: SalGap_numberk  1884 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3688
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1507 bp
+Sequence 2: SalGap_numberk  1511 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3261
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2032 bp
+Sequence 2: SalGap_numberk  2045 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4098
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1164 bp
+Sequence 2: SalGap_numberk  1165 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2339
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   4081 bp
+Sequence 2: SalGap_numberk  4106 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 8460
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1870 bp
+Sequence 2: SalGap_numberk  1870 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3851
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1411 bp
+Sequence 2: SalGap_numberk  1414 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2898
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1487 bp
+Sequence 2: SalGap_numberk  1514 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3064
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1411 bp
+Sequence 2: SalGap_numberk  1412 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3125
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1239 bp
+Sequence 2: SalGap_numberk  1239 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2469
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2283 bp
+Sequence 2: SalGap_numberk  2271 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 5043
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1049 bp
+Sequence 2: SalGap_numberk  1064 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2625
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1349 bp
+Sequence 2: SalGap_numberk  1349 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2687
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2060 bp
+Sequence 2: SalGap_numberk  2080 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4475
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1426 bp
+Sequence 2: SalGap_numberk  1426 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2789
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1555 bp
+Sequence 2: SalGap_numberk  1554 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3305
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1289 bp
+Sequence 2: SalGap_numberk  1289 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2879
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1146 bp
+Sequence 2: SalGap_numberk  1144 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2425
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1046 bp
+Sequence 2: SalGap_numberk  1046 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  9
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2324
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1919 bp
+Sequence 2: SalGap_numberk  1919 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3958
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1400 bp
+Sequence 2: SalGap_numberk  1400 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2722
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1014 bp
+Sequence 2: SalGap_numberk  1014 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2098
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1532 bp
+Sequence 2: SalGap_numberk  1552 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3282
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1271 bp
+Sequence 2: SalGap_numberk  1272 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  5
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2824
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1550 bp
+Sequence 2: SalGap_numberk  1550 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2966
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1823 bp
+Sequence 2: SalGap_numberk  1823 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3797
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1369 bp
+Sequence 2: SalGap_numberk  1371 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3096
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3089 bp
+Sequence 2: SalGap_numberk  3095 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6434
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1268 bp
+Sequence 2: SalGap_numberk  1268 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  4
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2512
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2280 bp
+Sequence 2: SalGap_numberk  2283 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4341
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1237 bp
+Sequence 2: SalGap_numberk  1249 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2722
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1232 bp
+Sequence 2: SalGap_numberk  1232 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2534
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2162 bp
+Sequence 2: SalGap_numberk  2150 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4097
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2058 bp
+Sequence 2: SalGap_numberk  2058 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4255
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1287 bp
+Sequence 2: SalGap_numberk  1293 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3092
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1348 bp
+Sequence 2: SalGap_numberk  1348 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2948
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1033 bp
+Sequence 2: SalGap_numberk  1037 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2403
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1027 bp
+Sequence 2: SalGap_numberk  1027 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2116
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1217 bp
+Sequence 2: SalGap_numberk  1259 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2809
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1075 bp
+Sequence 2: SalGap_numberk  1075 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2288
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2125 bp
+Sequence 2: SalGap_numberk  2143 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4577
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   3089 bp
+Sequence 2: SalGap_numberk  3095 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  0
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 6784
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1158 bp
+Sequence 2: SalGap_numberk  1158 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2520
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1023 bp
+Sequence 2: SalGap_numberk  1017 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 1902
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1167 bp
+Sequence 2: SalGap_numberk  1167 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  5
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2687
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   2088 bp
+Sequence 2: SalGap_numberk  2079 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4541
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1134 bp
+Sequence 2: SalGap_numberk  1140 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  4
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2313
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1263 bp
+Sequence 2: SalGap_numberk  1263 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2613
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1151 bp
+Sequence 2: SalGap_numberk  1151 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2700
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1094 bp
+Sequence 2: SalGap_numberk  1094 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2449
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1117 bp
+Sequence 2: SalGap_numberk  1117 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2188
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1137 bp
+Sequence 2: SalGap_numberk  1137 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2430
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1135 bp
+Sequence 2: SalGap_numberk  1183 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2755
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1560 bp
+Sequence 2: SalGap_numberk  1557 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2927
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1979 bp
+Sequence 2: SalGap_numberk  1985 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 4362
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1061 bp
+Sequence 2: SalGap_numberk  1010 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2243
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1330 bp
+Sequence 2: SalGap_numberk  1333 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2913
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1551 bp
+Sequence 2: SalGap_numberk  1551 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3448
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1410 bp
+Sequence 2: SalGap_numberk  1413 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3256
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1094 bp
+Sequence 2: SalGap_numberk  1094 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2300
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1122 bp
+Sequence 2: SalGap_numberk  1122 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  4
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2517
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1380 bp
+Sequence 2: SalGap_numberk  1380 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  3
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2620
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1517 bp
+Sequence 2: SalGap_numberk  1535 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3176
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1373 bp
+Sequence 2: SalGap_numberk  1376 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2531
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1096 bp
+Sequence 2: SalGap_numberk  1096 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2252
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1026 bp
+Sequence 2: SalGap_numberk  1025 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2174
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1661 bp
+Sequence 2: SalGap_numberk  1661 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3719
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1071 bp
+Sequence 2: SalGap_numberk  1015 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2319
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1286 bp
+Sequence 2: SalGap_numberk  1286 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2451
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1029 bp
+Sequence 2: SalGap_numberk  1030 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2134
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1062 bp
+Sequence 2: SalGap_numberk  1062 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 1899
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1537 bp
+Sequence 2: SalGap_numberk  1537 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  2
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 3271
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+
+
+
+ CLUSTAL 2.1 Multiple Sequence Alignments
+
+
+Sequence type explicitly set to DNA
+Sequence format is Pearson
+Sequence 1: ECGap_numberk   1058 bp
+Sequence 2: SalGap_numberk  1100 bp
+Start of Pairwise alignments
+Aligning...
+
+Sequences (1:2) Aligned. Score:  1
+Guide tree file created:   [FastaIn.dnd]
+
+There are 1 groups
+Start of Multiple Alignment
+
+Aligning...
+Group 1:                     Delayed
+Alignment Score 2117
+
+CLUSTAL-Alignment file created  [FastaIn.aln]
+
+> 
+> # now looking at results for n mismatches--but isn't depedent on n.
+> DF$PostCount <- as.integer(DF$PostCount)
+> DF$PreCount <- as.integer((DF$PreCount))
+> ModDF = DF
+> ModDF = subset(ModDF, PostCount > 0)
+> #PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
+> PlotData = ModDF
+> 
+> #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
+> counts <- data.frame(table(PlotData$ECBase, PlotData$SalBase)) 
+> #for future reference data.frame(table(PlotData$ECBase, PlotData$SalBase)[,]) is another way
+> #for this method each row represents a unique value for ECBase
+> #each of the columns then is the count for each unique value of SalBase
+> 
+> gap_vector_of_names <- paste(counts$ECBase, counts$SalBase)
+> 
+> pdf("SalCBGap Plots")
+> hist(as.numeric(PlotData$PreCount))
+> hist(as.numeric(PlotData$PostCount))
+> hist(as.numeric(ModDF$PreCount))
+> hist(as.numeric(ModDF$PostCount))
+> plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
+> plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
+> barplot(counts$count,names.arg = names(counts)) #constructing barplot of mutation frequencies

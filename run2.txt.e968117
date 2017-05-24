@@ -6,5 +6,7 @@ Due to MODULEPATH changes the following have been reloaded:
   1) openmpi/1.8.1
 
 This software stack is maintained by the Purdue Bioinformatics Core. Please direct inquires regarding Bioinformatics software to bioinformatics@purdue.edu
-Error: object 'numInRow' not found
+Error in barplot.default(counts$count, names.arg = names(counts)) : 
+  'height' must be a vector or a matrix
+Calls: barplot -> barplot.default
 Execution halted
