@@ -16,7 +16,6 @@ Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFac
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-data.frame(Genes$Genes.cbgeneseq)
 G3<-data.frame(Genes$Genes.ecgeneseq)
-n=1
 
 #redeclaring everything resets the variables since I didn't bother to rename when I adapted code, and this is probably was a mistake
 buildchar = "Q"
@@ -32,28 +31,29 @@ Gene1RunTitle <- paste(">", "ECGap_number","k",sep = "")
 Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
 n = 1
 #CLUSAL Run on Genes
-#while (n <= nrow(Genes)){
-while(n<=1){ #testing line when not running full version of code
+while (n <= nrow(Genes)){
+#while(n<=1){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test <- toString(G3[n,1])
   
   #write text file
-  #fileConn<-file("FastaIn.txt")
-  #writeLines("\n",fileConn)
-  #close(fileConn)
-  #sink("FastaIn.txt")
-  #cat(Gene1RunTitle)
-  #cat("\n")
-  #cat(Gene1Test)
-  #cat("\n")
-  #cat(Gene2RunTitle)
-  #cat("\n")
-  #cat(Gene2Test)
-  #sink()
-  #system("clustalw2 -infile=FastaIn.txt -type=DNA")
-  #alnlines<-readLines("/home/nmarkle/FastaIn.aln")
-  alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
+  fileConn<-file("FastaIn.txt")
+  writeLines("\n",fileConn)
+  close(fileConn)
+  sink("FastaIn.txt")
+  cat(Gene1RunTitle)
+  cat("\n")
+  cat(Gene1Test)
+  cat("\n")
+  cat(Gene2RunTitle)
+  cat("\n")
+  cat(Gene2Test)
+  sink()
+  system("clustalw2 -infile=FastaIn.txt -type=DNA")
+  alnlines<-readLines("/home/nmarkle/FastaIn.aln")
+  #Testing line for llc server
+  #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
   
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
@@ -67,7 +67,7 @@ while(n<=1){ #testing line when not running full version of code
   Gene2gapstring <- alnlines2
    
   n=n+1
-  s = 2
+  s = 1
   Flag1 = FALSE
   Flag2 = FALSE
   PreCounter = 0
@@ -78,18 +78,21 @@ while(n<=1){ #testing line when not running full version of code
     Gene2workingcharacter = substring(Gene2gapstring,s,s)
     s = s + 1
     if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE && PostCounter > 0) {
-      print(Gene1break)
-      print(Gene2break)
-      print(nchar(Gene1break))
+      #print(Gene1break)
+      #print(Gene2break)
+      #print(nchar(Gene1break))
       if (nchar(Gene1break) == numInRow) {
         Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
         DF = rbind(DF, Addrow)
       }
-      Flag2 = FALSE
+      Flag2 = TRUE
+      Flag1 = FALSE
+      PreCounter = PostCounter
       PostCounter = 0
-      PreCounter = 0
+      Gene1break = Gene1workingcharacter
+      Gene2break = Gene2workingcharacter
     }
-    else if (Gene1workingcharacter !=Gene2workingcharacter && Flag2 == TRUE && PostCounter == 0) {
+    else if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE && PostCounter == 0) {
       #Gene1break <- c(Gene1break, Gene1workingcharacter)
       Gene1break <- paste(Gene1break, Gene1workingcharacter, sep = '')
       #Gene2break <- c(Gene2break, Gene2workingcharacter)
@@ -108,6 +111,7 @@ while(n<=1){ #testing line when not running full version of code
       PreCounter = PreCounter + 1
     }
     else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == FALSE) {
+      PreCounter = PreCounter + 1
       Flag1 = TRUE
     }
     
