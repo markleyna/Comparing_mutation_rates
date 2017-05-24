@@ -6,6 +6,7 @@ library(stringr)
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
+numInRow <- 2
 Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionCBECGenes.csv", stringsAsFactors = FALSE)
 CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
@@ -29,7 +30,7 @@ DF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
 DF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
 Gene1RunTitle <- paste(">", "ECGap_number","k",sep = "")
 Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
-
+n = 1
 #CLUSAL Run on Genes
 #while (n <= nrow(Genes)){
 while(n<=1){ #testing line when not running full version of code
@@ -38,23 +39,22 @@ while(n<=1){ #testing line when not running full version of code
   Gene2Test <- toString(G3[n,1])
   
   #write text file
-  fileConn<-file("FastaIn.txt")
-  writeLines("\n",fileConn)
-  close(fileConn)
-  sink("FastaIn.txt")
-  cat(Gene1RunTitle)
-  cat("\n")
-  cat(Gene1Test)
-  cat("\n")
-  cat(Gene2RunTitle)
-  cat("\n")
-  cat(Gene2Test)
-  sink()
-  system("clustalw2 -infile=FastaIn.txt -type=DNA")
-  alnlines<-readLines("/home/nmarkle/FastaIn.aln")
+  #fileConn<-file("FastaIn.txt")
+  #writeLines("\n",fileConn)
+  #close(fileConn)
+  #sink("FastaIn.txt")
+  #cat(Gene1RunTitle)
+  #cat("\n")
+  #cat(Gene1Test)
+  #cat("\n")
+  #cat(Gene2RunTitle)
+  #cat("\n")
+  #cat(Gene2Test)
+  #sink()
+  #system("clustalw2 -infile=FastaIn.txt -type=DNA")
+  #alnlines<-readLines("/home/nmarkle/FastaIn.aln")
+  alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
   
-  print(Gene1RunTitle)
-  print(Gene2RunTitle)
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
   alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
@@ -63,7 +63,6 @@ while(n<=1){ #testing line when not running full version of code
   alnlines2<-gsub(" ", "", alnlines2)
   alnlines1<-paste(alnlines1, collapse='')
   alnlines2<-paste(alnlines2, collapse='')
-  print(alnlines2)
   Gene1gapstring <- alnlines1
   Gene2gapstring <- alnlines2
    
@@ -74,50 +73,45 @@ while(n<=1){ #testing line when not running full version of code
   PreCounter = 0
   PostCounter =0
   #start of intra-gene break isolation
-  while (s <= nchar(Gene1gapstring)){
-  
+  while (s <= nchar(Gene1gapstring)) {
     Gene1workingcharacter = substring(Gene1gapstring,s,s)
     Gene2workingcharacter = substring(Gene2gapstring,s,s)
-    
-    if(Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE)
-    {
-      Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
-      DF = rbind(DF,Addrow)
-      Flag2=FALSE
-      PostCounter=0
-      PreCounter=0
-    }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag2==TRUE)
-    {
-      PostCounter = PostCounter +1
-    }
-    else if(Gene1workingcharacter != Gene2workingcharacter && Flag1==TRUE)
-    {
-      Flag3 = TRUE
-      for (i in 1:(numInRow-1)) {
-        if((i+s > nchar(Gene1gapstring)) || (substring(Gene1gapstring,s+i,s+i) == substring(Gene2gapstring,s+i,s+i))) {
-          s = s + i - 1
-          Flag3 = FALSE
-          break
-        }
+    s = s + 1
+    if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE && PostCounter > 0) {
+      print(Gene1break)
+      print(Gene2break)
+      print(nchar(Gene1break))
+      if (nchar(Gene1break) == numInRow) {
+        Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
+        DF = rbind(DF, Addrow)
       }
-      if (Flag3 == TRUE) {
-        Flag1 = FALSE
-        Flag2 = TRUE
-        Gene1break = substring(Gene1gapstring, s, s+numInRow-1)
-        Gene2break = substring(Gene2gapstring, s, s+numInRow-1)
-        s = s + numInRow - 1
-      }
+      Flag2 = FALSE
+      PostCounter = 0
+      PreCounter = 0
     }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag1==TRUE)
-    {
-      PreCounter = PreCounter+1
+    else if (Gene1workingcharacter !=Gene2workingcharacter && Flag2 == TRUE && PostCounter == 0) {
+      #Gene1break <- c(Gene1break, Gene1workingcharacter)
+      Gene1break <- paste(Gene1break, Gene1workingcharacter, sep = '')
+      #Gene2break <- c(Gene2break, Gene2workingcharacter)
+      Gene2break <- paste(Gene2break, Gene2workingcharacter,sep = '')
     }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag1==FALSE)
-    {
+    else if (Gene1workingcharacter == Gene2workingcharacter && Flag2 == TRUE) {
+      PostCounter = PostCounter + 1
+    }
+    else if (Gene1workingcharacter != Gene2workingcharacter && Flag1 == TRUE) {
+      Flag1 = FALSE
+      Flag2 = TRUE
+      Gene1break = Gene1workingcharacter
+      Gene2break = Gene2workingcharacter
+    }
+    else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == TRUE) {
+      PreCounter = PreCounter + 1
+    }
+    else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == FALSE) {
       Flag1 = TRUE
     }
-    s = s+1
+    
+    # end of intra-gene break identification
   }
 }
 
