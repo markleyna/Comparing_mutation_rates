@@ -73,7 +73,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   system(systemCall)
   #pull the gapped strings out of the .aln file
   alnlines <- readLines(paste("FastaIn", testNum, ".aln", sep = ""))
-  #Stop commenting and un-comment the next line
+  #Stop commenting and un-comment the next line for llc that is
   #alnlines <- readLines(paste("Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep = ""))
   
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
@@ -90,7 +90,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   #return(data.frame(Gene1gapstring,Gene2gapstring))
    
   #intra-gene break isolation
-  s = 2
+  s = 1
   Flag1 = FALSE
   Flag2 = FALSE
   PreCounter = 0
@@ -102,9 +102,12 @@ clusal_run <- function(testNum, Gene1, Gene2) {
     if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE) {
       Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
       tempDF = rbind(tempDF, Addrow)
-      Flag2 = FALSE
+      Flag2 = TRUE
+      Flag1 = FALSE
+      PreCounter = PostCounter
       PostCounter = 0
-      PreCounter = 0
+      Gene1break = Gene1workingcharacter
+      Gene2break = Gene2workingcharacter
     }
     else if (Gene1workingcharacter == Gene2workingcharacter && Flag2 == TRUE) {
       PostCounter = PostCounter + 1
@@ -119,6 +122,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
       PreCounter = PreCounter + 1
     }
     else if (Gene1workingcharacter == Gene2workingcharacter && Flag1 == FALSE) {
+      PreCounter = PreCounter + 1
       Flag1 = TRUE
     }
     
