@@ -6,7 +6,7 @@ library(stringr)
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
-numInRow <- 2
+numInRow <- 1
 Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionCBECGenes.csv", stringsAsFactors = FALSE)
 CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
@@ -31,29 +31,29 @@ Gene1RunTitle <- paste(">", "ECGap_number","k",sep = "")
 Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
 n = 1
 #CLUSAL Run on Genes
-while (n <= nrow(Genes)){
-#while(n<=1){ #testing line when not running full version of code
+#while (n <= nrow(Genes)){
+while(n<=1){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test <- toString(G3[n,1])
   
   #write text file
-  fileConn<-file("FastaIn.txt")
-  writeLines("\n",fileConn)
-  close(fileConn)
-  sink("FastaIn.txt")
-  cat(Gene1RunTitle)
-  cat("\n")
-  cat(Gene1Test)
-  cat("\n")
-  cat(Gene2RunTitle)
-  cat("\n")
-  cat(Gene2Test)
-  sink()
-  system("clustalw2 -infile=FastaIn.txt -type=DNA")
-  alnlines<-readLines("/home/nmarkle/FastaIn.aln")
+  #fileConn<-file("FastaIn.txt")
+  #writeLines("\n",fileConn)
+  #close(fileConn)
+  #sink("FastaIn.txt")
+  #cat(Gene1RunTitle)
+  #cat("\n")
+  #cat(Gene1Test)
+  #cat("\n")
+  #cat(Gene2RunTitle)
+  #cat("\n")
+  #cat(Gene2Test)
+  #sink()
+  #system("clustalw2 -infile=FastaIn.txt -type=DNA")
+  #alnlines<-readLines("/home/nmarkle/FastaIn.aln")
   #Testing line for llc server
-  #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
+  alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
   
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
