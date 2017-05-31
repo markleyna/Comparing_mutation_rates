@@ -5,8 +5,8 @@ library(stringr)
 library('readr', lib.loc = "/home/nmarkle/Rlibs/");
 #library('readr')
 # Additional package
-#install.packages("parallel")
-#library("parallel")
+install.packages("parallel", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
+library("parallel", lib.loc = "/home/nmarkle/Rlibs")
 
 #Variable Declaration Block
 # Where you enter the files you'll need
@@ -135,7 +135,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
 # mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores=parallel::detectCores()-1)
 # need to reevaluate the number of cores to use--probably too many
 
-DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
+DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores=8)
 finalDF <- do.call(rbind, DF)
 
 # Graphs

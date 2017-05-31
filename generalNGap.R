@@ -127,13 +127,40 @@ ModDF = subset(ModDF, PostCount > 0)
 PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
 #PlotData = ModDF
 
+make_graphs <- function(finalDF, firstM) {
+  GeneAdash = subset(finalDF, (substring(graphDF$Gene1Base,2) == "A" & substring(graphDF$Gene2Base,2) == "-"))
+  GenedashA = subset(finalDF, (substring(graphDF$Gene1Base,2) == "-" & substring(graphDF$Gene2Base,2) == "A"))
+  GeneAC = subset(finalDF, (substring(graphDF$Gene1Base,2) == "A" & substring(graphDF$Gene2Base,2) == "C"))
+  GeneCA = subset(finalDF, (substring(graphDF$Gene1Base,2) == "C" & substring(graphDF$Gene2Base,2) == "A"))
+  GeneAG = subset(finalDF, (substring(graphDF$Gene1Base,2) == "A" & substring(graphDF$Gene2Base,2) == "G"))
+  GeneGA = subset(finalDF, (substring(graphDF$Gene1Base,2) == "G" & substring(graphDF$Gene2Base,2) == "A"))
+  GeneAT = subset(finalDF, (substring(graphDF$Gene1Base,2) == "A" & substring(graphDF$Gene2Base,2) == "T"))
+  GeneTA = subset(finalDF, (substring(graphDF$Gene1Base,2) == "T" & substring(graphDF$Gene2Base,2) == "A"))
+  GeneTC = subset(finalDF, (substring(graphDF$Gene1Base,2) == "T" & substring(graphDF$Gene2Base,2) == "C"))
+  GeneCT = subset(finalDF, (substring(graphDF$Gene1Base,2) == "C" & substring(graphDF$Gene2Base,2) == "T"))
+  GeneTG = subset(finalDF, (substring(graphDF$Gene1Base,2) == "T" & substring(graphDF$Gene2Base,2) == "G"))
+  GeneGT = subset(finalDF, (substring(graphDF$Gene1Base,2) == "G" & substring(graphDF$Gene2Base,2) == "T"))
+  GeneTdash = subset(finalDF, (substring(graphDF$Gene1Base,2) == "T" & substring(graphDF$Gene2Base,2) == "-"))
+  GenedashT = subset(finalDF, (substring(graphDF$Gene1Base,2) == "-" & substring(graphDF$Gene2Base,2) == "T"))
+  GeneCG = subset(finalDF, (substring(graphDF$Gene1Base,2) == "C" & substring(graphDF$Gene2Base,2) == "G"))
+  GeneGC = subset(finalDF, (substring(graphDF$Gene1Base,2) == "G" & substring(graphDF$Gene2Base,2) == "C"))
+  GeneCdash = subset(finalDF, (substring(graphDF$Gene1Base,2) == "C" & substring(graphDF$Gene2Base,2) == "-"))
+  GenedashC = subset(finalDF, (substring(graphDF$Gene1Base,2) == "-" & substring(graphDF$Gene2Base,2) == "C"))
+  GeneGdash = subset(finalDF, (substring(graphDF$Gene1Base,2) == "G" & substring(graphDF$Gene2Base,2) == "-"))
+  GenedashG = subset(finalDF, (substring(graphDF$Gene1Base,2) == "-" & substring(graphDF$Gene2Base,2) == "G"))
+  
+  Gene_vector_of_Lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
+  Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
+  barplot(Gene_vector_of_Lengths,names.arg = Gene_vector_of_names, main=firstM)
+}
+
 #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
-counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base)) 
+#counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base)) 
 #for future reference data.frame(table(PlotData$ECBase, PlotData$SalBase)[,]) is another way
 #for this method each row represents a unique value for ECBase
 #each of the columns then is the count for each unique value of SalBase
 
-gap_vector_of_names <- paste(counts$Var1, counts$Var2)
+#gap_vector_of_names <- paste(counts$Var1, counts$Var2)
 
 pdf("SalCBGap Plots")
 hist(as.numeric(PlotData$PreCount))
@@ -146,144 +173,108 @@ plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
 # TC
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'T' & substring(Gene2Base,1,1) == 'C')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="TC")
+  make_graphs(graphDF, 'TC')
+  #old way
+  #graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
+  #graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
+  #barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="TC")
 }
 #TG
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'T' & substring(Gene2Base,1,1) == 'G')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="TG")
+  make_graphs(graphDF, 'TG')
 }
 #TA
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'T' & substring(Gene2Base,1,1) == 'A')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="TA")
+  make_graphs(graphDF, 'TA')
 }
 #T-
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'T' & substring(Gene2Base,1,1) == '-')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="T-")
+  make_graphs(graphDF, 'T-')
 }
 #-C
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == '-' & substring(Gene2Base,1,1) == 'C')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="-C")
+  make_graphs(graphDF, '-C')
 }
 #-G
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == '-' & substring(Gene2Base,1,1) == 'G')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="-G")
+  make_graphs(graphDF, '-G')
 }
 #-A
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == '-' & substring(Gene2Base,1,1) == 'A')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="-A")
+  make_graphs(graphDF, '-A')
 }
 #-T
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == '-' & substring(Gene2Base,1,1) == 'T')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="-T")
+  make_graphs(graphDF, '-T')
 }
 #AC
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'A' & substring(Gene2Base,1,1) == 'C')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="AC")
+  make_graphs(graphDF, 'AC')
 }
 #AG
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'A' & substring(Gene2Base,1,1) == 'G')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="AG")
+  make_graphs(graphDF, 'AG')
 }
 #AT
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'A' & substring(Gene2Base,1,1) == 'T')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="AT")
+  make_graphs(graphDF, 'AT')
 }
 #A-
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'A' & substring(Gene2Base,1,1) == '-')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="A-")
+  make_graphs(graphDF, 'A-')
 }
 #GC
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'G' & substring(Gene2Base,1,1) == 'C')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="GC")
+  make_graphs(graphDF, 'GC')
 }
 #GA
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'G' & substring(Gene2Base,1,1) == 'A')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="GA")
+  make_graphs(graphDF, 'GA')
 }
 #GT
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'G' & substring(Gene2Base,1,1) == 'T')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="GT")
+  make_graphs(graphDF, 'GT')
 }
 #G-
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'G' & substring(Gene2Base,1,1) == '-')
 if (nrow(graphDF) != 0) {
-graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="G-")
+  make_graphs(graphDF, 'G-')
 }
 #CG
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'C' & substring(Gene2Base,1,1) == 'G')
 if (nrow(graphDF) != 0) {
-  graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-  graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-  barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="CG")
+  make_graphs(graphDF, 'CG')
 }
 #CA
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'C' & substring(Gene2Base,1,1) == 'A')
 if (nrow(graphDF) != 0) {
-  graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-  graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-  barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="CA")
+  make_graphs(graphDF, 'CA')
 }
 #CT
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'C' & substring(Gene2Base,1,1) == 'T')
 if (nrow(graphDF) != 0) {
-  graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-  graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-  barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="CT")
+  make_graphs(graphDF, 'CT')
 }
 #C-
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'C' & substring(Gene2Base,1,1) == '-')
 if (nrow(graphDF) != 0) {
-  graphCounts <- data.frame(table(substring(graphDF$Gene1Base,2), substring(graphDF$Gene2Base,2)))
-  graph_vector_of_names <- paste(graphCounts$Var1, graphCounts$Var2)
-  barplot(graphCounts$Freq,names.arg = graph_vector_of_names,main="C-")
+  make_graphs(graphDF, 'C-')
 }
 
 barplot(counts$Freq,names.arg = gap_vector_of_names) #constructing barplot of mutation frequencies
-#^-- don't actually know what the name of this column will be
+
 dev.off()
