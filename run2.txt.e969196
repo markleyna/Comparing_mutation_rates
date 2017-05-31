@@ -1,0 +1,11 @@
+
+Lmod is automatically replacing "intel/16.0.1.150" with "gcc/5.2.0"
+
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) openmpi/1.8.1
+
+This software stack is maintained by the Purdue Bioinformatics Core. Please direct inquires regarding Bioinformatics software to bioinformatics@purdue.edu
+Error in barplot(counts$Freq, names.arg = gap_vector_of_names) : 
+  object 'counts' not found
+Execution halted

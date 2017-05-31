@@ -2,11 +2,11 @@
 #install.packages("stringr")
 #install.packages('readr',"~/Rlibs","https://cran.cnr.berkeley.edu/")
 library(stringr)
-library('readr', lib.loc = "/home/nmarkle/Rlibs/");
+library('readr', lib.loc = "/home/nmarkle/Rlibs/")
 #library('readr')
 # Additional package
-install.packages("parallel", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
-library("parallel", lib.loc = "/home/nmarkle/Rlibs")
+#install.packages("parallel", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
+library("parallel")
 
 #Variable Declaration Block
 # Where you enter the files you'll need

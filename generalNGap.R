@@ -155,7 +155,7 @@ make_graphs <- function(finalDF, firstM) {
 }
 
 #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
-#counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base)) 
+counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base)) 
 #for future reference data.frame(table(PlotData$ECBase, PlotData$SalBase)[,]) is another way
 #for this method each row represents a unique value for ECBase
 #each of the columns then is the count for each unique value of SalBase
