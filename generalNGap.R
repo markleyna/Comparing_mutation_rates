@@ -2,6 +2,7 @@
 #http://stackoverflow.com/questions/27893230/installation-of-package-file-path-had-non-zero-exit-status-in-r
 #install.packages("stringr", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
 library(stringr)
+library(parallel)
 #library('readr')
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
@@ -13,6 +14,9 @@ CitroBacDNA<-gsub("\n","",CitroBacDNA)
 EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
 Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
+#-------Testing line!-------
+#Genes <- head(Genes, n=1)
+#---------------------------
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-data.frame(Genes$Genes.cbgeneseq)
 G3<-data.frame(Genes$Genes.ecgeneseq)
@@ -23,25 +27,30 @@ Gene1Base <- c(buildchar,buildchar)
 Gene2Base<-c(buildchar,buildchar)
 PreCount<-c(-1,-1)
 PostCount<-c(-1,-1)
-Gene1break = ""
-Gene2break = ""
 DF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
 DF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
 Gene1RunTitle <- paste(">", "ECGap_number","k",sep = "")
 Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
-n = 1
+
 #CLUSAL Run on Genes
-while (n <= nrow(Genes)){
-#while(n<=1){ #testing line when not running full version of code
-  testnum<-G1[n]
-  Gene1Test <- toString(G2[n,1])
-  Gene2Test <- toString(G3[n,1])
+clusal_run <- function(testNum, Gene1, Gene2) {
+  Gene1Base <- c(buildchar,buildchar)
+  Gene2Base<-c(buildchar,buildchar)
+  PreCount<-c(-1,-1)
+  PostCount<-c(-1,-1)
+  tempDF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
+  tempDF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
+  Gene1Test = toString(Gene1)
+  Gene2Test = toString(Gene2)
+  Gene1break = ""
+  Gene2break = ""
   
   #write text file
-  fileConn<-file("FastaIn.txt")
+  fileName <- paste("FastaIn-", testNum, ".txt", sep = "")
+  fileConn<-file(fileName)
   writeLines("\n",fileConn)
   close(fileConn)
-  sink("FastaIn.txt")
+  sink(fileName)
   cat(Gene1RunTitle)
   cat("\n")
   cat(Gene1Test)
@@ -50,8 +59,9 @@ while (n <= nrow(Genes)){
   cat("\n")
   cat(Gene2Test)
   sink()
-  system("clustalw2 -infile=FastaIn.txt -type=DNA")
-  alnlines<-readLines("/home/nmarkle/FastaIn.aln")
+  systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
+  system(systemCall)
+  alnlines<-readLines(paste("/home/nmarkle/FastaIn-", testNum, ".aln", sep= ""))
   #Testing line for llc server
   #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
   
@@ -66,7 +76,6 @@ while (n <= nrow(Genes)){
   Gene1gapstring <- alnlines1
   Gene2gapstring <- alnlines2
    
-  n=n+1
   s = 1
   Flag1 = FALSE
   Flag2 = FALSE
@@ -83,7 +92,7 @@ while (n <= nrow(Genes)){
       #print(nchar(Gene1break))
       if (nchar(Gene1break) == numInRow) {
         Addrow = c(Gene1break,Gene2break,PreCounter,PostCounter)
-        DF = rbind(DF, Addrow)
+        tempDF = rbind(tempDF, Addrow)
       }
       Flag2 = TRUE
       Flag1 = FALSE
@@ -117,7 +126,11 @@ while (n <= nrow(Genes)){
     
     # end of intra-gene break identification
   }
+  return(tempDF)
 }
+
+DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores = 8)
+DF <- do.call(rbind,DF)
 
 # now looking at results for n mismatches--but isn't depedent on n.
 DF$PostCount <- as.integer(DF$PostCount)
@@ -162,7 +175,7 @@ counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
 
 #gap_vector_of_names <- paste(counts$Var1, counts$Var2)
 
-pdf("SalCBGap Plots")
+pdf("SalCBGap Plots.pdf")
 hist(as.numeric(PlotData$PreCount))
 hist(as.numeric(PlotData$PostCount))
 hist(as.numeric(ModDF$PreCount))
@@ -276,5 +289,7 @@ if (nrow(graphDF) != 0) {
 }
 
 barplot(counts$Freq,names.arg = gap_vector_of_names) #constructing barplot of mutation frequencies
+
+system("rm /home/nmarkle/FastaIn-*")
 
 dev.off()
