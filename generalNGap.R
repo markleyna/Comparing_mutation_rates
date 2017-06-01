@@ -101,16 +101,16 @@ clusal_run <- function(testNum, Gene1, Gene2) {
       Gene2break = Gene2workingcharacter
     }
     else if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE && PostCounter == 0) {
-      if (nchar(Gene1Break) < numInRow) {
+      if (nchar(Gene1break) < numInRow) {
         Gene1break <- paste(Gene1break, Gene1workingcharacter, sep = '')
         Gene2break <- paste(Gene2break, Gene2workingcharacter,sep = '')
       }
       else {
-	PreCounter = 0
-	Flag2 = False
-	Flag1 = True
-	Gene1break = ""
-	Gene2break = ""
+	      PreCounter = 0
+	      Flag2 = FALSE
+	      Flag1 = FALSE
+	      Gene1break = ""
+	      Gene2break = ""
       }
     }
     else if (Gene1workingcharacter == Gene2workingcharacter && Flag2 == TRUE) {
