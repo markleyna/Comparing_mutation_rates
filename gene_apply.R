@@ -54,7 +54,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #I don't feel like rewriting this to hold generality, so these need to stay as is to keep the parsing working correctly
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
-  fileName <- paste("FastaIn", testNum, ".txt", sep = "") # want the files to be unique when going parallel
+  fileName <- paste("FastaIn_", testNum, ".txt", sep = "") # want the files to be unique when going parallel
   #Where to start commenting out for llc.stat.purdue.edu
   fileConn<-file(fileName) #reset the file to being blank text again
   writeLines("\n",fileConn)
@@ -72,7 +72,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep = "")
   system(systemCall)
   #pull the gapped strings out of the .aln file
-  alnlines <- readLines(paste("FastaIn", testNum, ".aln", sep = ""))
+  alnlines <- readLines(paste("FastaIn_", testNum, ".aln", sep = ""))
   #Stop commenting and un-comment the next line for llc that is
   #alnlines <- readLines(paste("Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep = ""))
   
@@ -178,4 +178,8 @@ Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT"
 
 pdf('CBECgeneplotMapply.pdf')
 barplot(Gene_vector_of_Lengths,names.arg = Gene_vector_of_names)
+  
+
+system("rm /home/nmarkle/FastaIn_*")
+
 dev.off()
