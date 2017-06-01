@@ -21,7 +21,6 @@ G1<-as.vector(Genes$Genes.gapnum)
 G2<-data.frame(Genes$Genes.cbgeneseq)
 G3<-data.frame(Genes$Genes.ecgeneseq)
 
-#redeclaring everything resets the variables since I didn't bother to rename when I adapted code, and this is probably was a mistake
 buildchar = "Q"
 Gene1Base <- c(buildchar,buildchar)
 Gene2Base<-c(buildchar,buildchar)
@@ -102,10 +101,17 @@ clusal_run <- function(testNum, Gene1, Gene2) {
       Gene2break = Gene2workingcharacter
     }
     else if (Gene1workingcharacter != Gene2workingcharacter && Flag2 == TRUE && PostCounter == 0) {
-      #Gene1break <- c(Gene1break, Gene1workingcharacter)
-      Gene1break <- paste(Gene1break, Gene1workingcharacter, sep = '')
-      #Gene2break <- c(Gene2break, Gene2workingcharacter)
-      Gene2break <- paste(Gene2break, Gene2workingcharacter,sep = '')
+      if (nchar(Gene1Break) < numInRow) {
+        Gene1break <- paste(Gene1break, Gene1workingcharacter, sep = '')
+        Gene2break <- paste(Gene2break, Gene2workingcharacter,sep = '')
+      }
+      else {
+	PreCounter = 0
+	Flag2 = False
+	Flag1 = True
+	Gene1break = ""
+	Gene2break = ""
+      }
     }
     else if (Gene1workingcharacter == Gene2workingcharacter && Flag2 == TRUE) {
       PostCounter = PostCounter + 1
