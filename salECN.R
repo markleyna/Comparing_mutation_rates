@@ -8,18 +8,18 @@ library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
 numInRow <- 2
-Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionCBECGenes.csv", stringsAsFactors = FALSE)
-CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
-CitroBacDNA<-gsub("\n","",CitroBacDNA)
+Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionSalECGenes.csv", stringsAsFactors = FALSE)
+SalDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt")
+SalDNA<-gsub("\n","",SalDNA)
 EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
-Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
+Genes <- data.frame(Genes$gapnum, Genes$ecgeneseq, Genes$salgeneseq, stringsAsFactors = FALSE)
 #-------Testing line!-------
 #Genes <- head(Genes, n=1)
 #---------------------------
 G1<-as.vector(Genes$Genes.gapnum)
-G2<-as.vector(Genes$Genes.cbgeneseq)
-G3<-as.vector(Genes$Genes.ecgeneseq)
+G2<-as.vector(Genes$Genes.ecgeneseq)
+G3<-as.vector(Genes$Genes.salgeneseq)
 
 buildchar = "Q"
 Gene1Base <- c(buildchar,buildchar)
@@ -47,7 +47,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
  
   #write text file
-  fileName <- paste("FastaIn-", testNum, ".txt", sep = "")
+  fileName <- paste("FastaInSE", testNum, ".txt", sep = "")
   fileConn<-file(fileName)
   writeLines("\n",fileConn)
   close(fileConn)
@@ -62,7 +62,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   sink()
   systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
   system(systemCall)
-  alnlines<-readLines(paste("FastaIn-", testNum, ".aln", sep= ""))
+  alnlines<-readLines(paste("FastaInSE", testNum, ".aln", sep= ""))
   #Testing line for llc server
   #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
   #alnlines<-readLines(paste("/home/nmarkle/Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep=""))
@@ -185,7 +185,7 @@ counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
 
 gap_vector_of_names <- paste(counts$Var1, counts$Var2)
 
-pdf("CBECGene Plots.pdf")
+pdf("SalECGene Plots.pdf")
 hist(as.numeric(PlotData$PreCount))
 hist(as.numeric(PlotData$PostCount))
 hist(as.numeric(ModDF$PreCount))
@@ -300,6 +300,6 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq,names.arg = gap_vector_of_names) #constructing barplot of mutation frequencies
 
-system("rm /home/nmarkle/FastaIn-*")
+system("rm /home/nmarkle/FastaInSE*")
 
 dev.off()
