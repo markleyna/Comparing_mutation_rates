@@ -138,8 +138,8 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   return(tempDF)
 }
 
-#DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
-DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores = 8)
+DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
+#DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores = 8)
 DF <- do.call(rbind,DF)
 
 # now looking at results for n mismatches--but isn't depedent on n.
@@ -162,6 +162,7 @@ make_graphs <- function(finalDF, firstM) {
   GeneTC = subset(finalDF, (substring(graphDF$Gene1Base,2) == "T" & substring(graphDF$Gene2Base,2) == "C"))
   GeneCT = subset(finalDF, (substring(graphDF$Gene1Base,2) == "C" & substring(graphDF$Gene2Base,2) == "T"))
   GeneTG = subset(finalDF, (substring(graphDF$Gene1Base,2) == "T" & substring(graphDF$Gene2Base,2) == "G"))
+q
   GeneGT = subset(finalDF, (substring(graphDF$Gene1Base,2) == "G" & substring(graphDF$Gene2Base,2) == "T"))
   GeneTdash = subset(finalDF, (substring(graphDF$Gene1Base,2) == "T" & substring(graphDF$Gene2Base,2) == "-"))
   GenedashT = subset(finalDF, (substring(graphDF$Gene1Base,2) == "-" & substring(graphDF$Gene2Base,2) == "T"))
