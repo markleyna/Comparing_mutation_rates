@@ -1644,8 +1644,8 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 
 #CLUSAL Run on Genes
-#while (n <= nrow(Genes)){
-  while(n<=20){ #testing line when not running full version of code
+while (n <= nrow(G2)){
+#  while(n<=20){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test<-toString(G3[n,1])

@@ -1655,10 +1655,10 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
   #write a text file that is in proper FASTA format
-  fileConn<-file("FastaIn.txt") #reset the file to being blank text again
+  fileConn<-file("FastaInSalEC.txt") #reset the file to being blank text again
   writeLines("\n",fileConn)
   close(fileConn)
-  sink("FastaIn.txt")
+  sink("FastaInSalEC.txt")
   cat(Gene1RunTitle)
   cat("\n")
   cat(Gene1Test)
@@ -1668,9 +1668,9 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   cat(Gene2Test)
   sink()
   #Call the clustalw function 
-  system("clustalw2 -infile=FastaIn.txt -type=DNA")
+  system("clustalw2 -infile=FastaInSalEC.txt -type=DNA")
   #pull the gapped strings out of the .aln file
-  alnlines<-readLines("FastaIn.aln")
+  alnlines<-readLines("FastaInSalEC.aln")
 
   print(Gene1RunTitle)
   print(Gene2RunTitle)
@@ -1718,28 +1718,31 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
       DF = rbind(DF,Addrow)
 #      print("ASDF")
       Flag2=FALSE
+	if(Flag1==FALSE){
+	PreCounter=0
+	}
       PostCounter=0
-      PreCounter=0
     }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag2==TRUE)
+    if(Gene1workingcharacter == Gene2workingcharacter && Flag2==TRUE)
     {
       PostCounter = PostCounter +1
       #print(PostCounter) causes too much lag
     }
-    else if(Gene1workingcharacter != Gene2workingcharacter && Flag1==TRUE)
+    if(Gene1workingcharacter != Gene2workingcharacter && Flag1==TRUE)
     {
       Flag1 = FALSE
       Flag2 = TRUE
       Gene1break = Gene1workingcharacter
       Gene2break = Gene2workingcharacter
     }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag1==TRUE)
+    if(Gene1workingcharacter == Gene2workingcharacter && Flag1==TRUE)
     {
       PreCounter = PreCounter+1
     }
-    else if(Gene1workingcharacter== Gene2workingcharacter && Flag1==FALSE)
+    if(Gene1workingcharacter== Gene2workingcharacter && Flag1==FALSE)
     {
       Flag1 = TRUE
+	PreCounter=PreCounter+1
     }
     
     
