@@ -45,25 +45,26 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene2break = ""
   
   #write text file
-  fileName <- paste("FastaIn-", testNum, ".txt", sep = "")
-  fileConn<-file(fileName)
-  writeLines("\n",fileConn)
-  close(fileConn)
-  sink(fileName)
-  cat(Gene1RunTitle)
-  cat("\n")
-  cat(Gene1Test)
-  cat("\n")
-  cat(Gene2RunTitle)
-  cat("\n")
-  cat(Gene2Test)
-  sink()
-  systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
-  system(systemCall)
-  alnlines<-readLines(paste("/home/nmarkle/FastaIn-", testNum, ".aln", sep= ""))
+  #fileName <- paste("FastaIn-", testNum, ".txt", sep = "")
+  #fileConn<-file(fileName)
+  #writeLines("\n",fileConn)
+  #close(fileConn)
+  #sink(fileName)
+  #cat(Gene1RunTitle)
+  #cat("\n")
+  #cat(Gene1Test)
+  #cat("\n")
+  #cat(Gene2RunTitle)
+  #cat("\n")
+  #cat(Gene2Test)
+  #sink()
+  #systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
+  #system(systemCall)
+  #alnlines<-readLines(paste("/home/nmarkle/FastaIn-", testNum, ".aln", sep= ""))
   #Testing line for llc server
   #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
-  
+  alnlines<-readLines(paste("/home/nmarkle/Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep=""))
+
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
   alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
@@ -135,7 +136,8 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   return(tempDF)
 }
 
-DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores = 8)
+DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
+#DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores = 8)
 DF <- do.call(rbind,DF)
 
 # now looking at results for n mismatches--but isn't depedent on n.
@@ -179,7 +181,7 @@ counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
 #for this method each row represents a unique value for ECBase
 #each of the columns then is the count for each unique value of SalBase
 
-#gap_vector_of_names <- paste(counts$Var1, counts$Var2)
+gap_vector_of_names <- paste(counts$Var1, counts$Var2)
 
 pdf("SalCBGap Plots.pdf")
 hist(as.numeric(PlotData$PreCount))
