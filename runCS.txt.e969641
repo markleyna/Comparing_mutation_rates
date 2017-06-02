@@ -1,0 +1,53 @@
+
+Lmod is automatically replacing "intel/16.0.1.150" with "gcc/5.2.0"
+
+
+Due to MODULEPATH changes the following have been reloaded:
+  1) openmpi/1.8.1
+
+This software stack is maintained by the Purdue Bioinformatics Core. Please direct inquires regarding Bioinformatics software to bioinformatics@purdue.edu
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+
+
+ERROR: Empty sequences found: ECGap_numberk
+
+
+Warning message:
+In mclapply(seq_len(n), do_one, mc.preschedule = mc.preschedule,  :
+  all scheduled cores encountered errors in user code
+Error in do.call(rbind, DF) : second argument must be a list
+Execution halted
