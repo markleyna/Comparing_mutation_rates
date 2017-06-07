@@ -15,7 +15,7 @@ SalDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt"
 SalDNA<-gsub("\n","",SalDNA)
 Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$salgeneseq, stringsAsFactors = FALSE)
 #-------Testing line!-------
-Genes <- head(Genes, n=4)
+#Genes <- head(Genes, n=4)
 #---------------------------
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-as.vector(Genes$Genes.cbgeneseq)
@@ -305,6 +305,6 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq,names.arg = gap_vector_of_names) #constructing barplot of mutation frequencies
 
-system("rm /home/nmarkle/FastaIn-*")
+system("rm /home/nmarkle/FastaInCS*")
 
 dev.off()
