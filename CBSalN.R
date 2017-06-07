@@ -15,7 +15,7 @@ SalDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt"
 SalDNA<-gsub("\n","",SalDNA)
 Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$salgeneseq, stringsAsFactors = FALSE)
 #-------Testing line!-------
-#Genes <- head(Genes, n=1)
+Genes <- head(Genes, n=4)
 #---------------------------
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-as.vector(Genes$Genes.cbgeneseq)
@@ -33,12 +33,16 @@ Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
 
 #CLUSAL Run on Genes
 clusal_run <- function(testNum, Gene1, Gene2) {
+  print('hi')
   Gene1Base <- c(buildchar,buildchar)
   Gene2Base<-c(buildchar,buildchar)
   PreCount<-c(-1,-1)
   PostCount<-c(-1,-1)
   tempDF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
   tempDF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
+  if (Gene1 == "" || Gene2 == "") {
+    return(tempDF)
+  }
   Gene1Test = toString(Gene1)
   Gene2Test = toString(Gene2)
   Gene1break = ""
