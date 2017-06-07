@@ -3,6 +3,7 @@
 #install.packages("stringr", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
 library(stringr)
 library(parallel)
+library(lattice)
 #library('readr')
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
@@ -15,7 +16,7 @@ SalDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt"
 SalDNA<-gsub("\n","",SalDNA)
 Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$salgeneseq, stringsAsFactors = FALSE)
 #-------Testing line!-------
-#Genes <- head(Genes, n=4)
+#Genes <- head(Genes, n=1)
 #---------------------------
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-as.vector(Genes$Genes.cbgeneseq)
@@ -33,7 +34,6 @@ Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
 
 #CLUSAL Run on Genes
 clusal_run <- function(testNum, Gene1, Gene2) {
-  print('hi')
   Gene1Base <- c(buildchar,buildchar)
   Gene2Base<-c(buildchar,buildchar)
   PreCount<-c(-1,-1)
@@ -142,8 +142,8 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   return(tempDF)
 }
 
-DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
-#DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores = 8)
+#DF <- mapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE)
+DF <- mcmapply(clusal_run, G1, G2, G3, SIMPLIFY = FALSE, mc.cores = 8)
 DF <- do.call(rbind,DF)
 
 # now looking at results for n mismatches--but isn't depedent on n.
@@ -197,6 +197,17 @@ hist(as.numeric(ModDF$PreCount))
 hist(as.numeric(ModDF$PostCount))
 plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
 plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
+
+#-------Playing with Lattice--------------------------------------
+lDf <- data.frame(paste(substring(PlotData$Gene1Base,1,1),substring(PlotData$Gene2Base,1,1)),paste(substring(PlotData$Gene1Base,2),substring(PlotData$Gene2Base,2)),PlotData$PreCount,PlotData$PostCount)
+names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
+lcounts <- data.frame(table(lDf$Mutation1, lDf$Mutation2)) 
+gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
+attach(lDf)
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(2,10))
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(3,7))
+#-----------------------------------------------------------------
+
 # Plot for each beginning mutation
 # TC
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'T' & substring(Gene2Base,1,1) == 'C')
