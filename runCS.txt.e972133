@@ -10,3 +10,11 @@ The following objects are masked _by_ .GlobalEnv:
 
     PostCount, PreCount
 
+Warning message:
+In chisq.test(ctbl) : Chi-squared approximation may be incorrect
+Error in fisher.test(ctbl) : FEXACT error 5.
+The hash table key cannot be computed because the largest key
+is larger than the largest representable int.
+The algorithm cannot proceed.
+Reduce the workspace size or use another algorithm.
+Execution halted
