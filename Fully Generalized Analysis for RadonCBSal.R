@@ -1645,19 +1645,20 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 
 #CLUSAL Run on Genes
-#while (n <= nrow(G2)){
-  while(n<=20){ #testing line when not running full version of code
-  testnum<-G1[n]
+while (n <= nrow(G2)){
+  while(n<=4){ #testing line when not running full version of code
+#  testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test<-toString(G3[n,1])
   Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #I don't feel like rewriting this to hold generality, so these need to stay as is to keep the parsing working correctly
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
   #write a text file that is in proper FASTA format
-  fileConn<-file("FastaInCBSal.txt") #reset the file to being blank text again
+  teststring <- paste("FastaInCBSal", ".txt", sep="")
+  fileConn<-file(teststring) #reset the file to being blank text again
   writeLines("\n",fileConn)
   close(fileConn)
-  sink("FastaInCBSal.txt")
+  sink(teststring)
   cat(Gene1RunTitle)
   cat("\n")
   cat(Gene1Test)
@@ -1666,11 +1667,23 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   cat("\n")
   cat(Gene2Test)
   sink()
-  #Call the clustalw function 
-  system("clustalw2 -infile=FastaInCBSal.txt -type=DNA")
+  #Call the clustalw function
+  systemstring <- paste("clustalw2 -infile=", teststring," -type=DNA", sep="")
+  system(systemstring)
   #pull the gapped strings out of the .aln file
-  alnlines<-readLines("FastaInCBSal.aln")
-
+  alnlines<-readLines(paste("FastaInCBSal",".aln",sep=""))
+  if(Gene1Test== NULL || Gene2Test== NULL){
+  file.remove("FastaInCBSal.txt")
+  sink(teststring)
+  cat(Gene1RunTitle)
+  cat("\n")
+  cat("AAA")
+  cat("\n")
+  cat(Gene2RunTitle)
+  cat("\n")
+  cat("AAA")
+  sink()
+  }
   print(Gene1RunTitle)
   print(Gene2RunTitle)
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
