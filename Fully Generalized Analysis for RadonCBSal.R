@@ -1667,23 +1667,23 @@ while (n <= nrow(G2)){
   cat("\n")
   cat(Gene2Test)
   sink()
+  if(Gene1Test== NULL || Gene2Test== NULL){
+    file.remove("FastaInCBSal.txt")
+    sink(teststring)
+    cat(Gene1RunTitle)
+    cat("\n")
+    cat("AAA")
+    cat("\n")
+    cat(Gene2RunTitle)
+    cat("\n")
+    cat("AAA")
+    sink()
+  }
   #Call the clustalw function
   systemstring <- paste("clustalw2 -infile=", teststring," -type=DNA", sep="")
   system(systemstring)
   #pull the gapped strings out of the .aln file
   alnlines<-readLines(paste("FastaInCBSal",".aln",sep=""))
-  if(Gene1Test== NULL || Gene2Test== NULL){
-  file.remove("FastaInCBSal.txt")
-  sink(teststring)
-  cat(Gene1RunTitle)
-  cat("\n")
-  cat("AAA")
-  cat("\n")
-  cat(Gene2RunTitle)
-  cat("\n")
-  cat("AAA")
-  sink()
-  }
   print(Gene1RunTitle)
   print(Gene2RunTitle)
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)

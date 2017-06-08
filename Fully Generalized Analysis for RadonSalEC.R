@@ -1667,6 +1667,18 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   cat("\n")
   cat(Gene2Test)
   sink()
+  if(Gene1Test== NULL || Gene2Test== NULL){
+    file.remove("FastaInSalEC.txt")
+    sink("FastaInSalEC.txt")
+    cat(Gene1RunTitle)
+    cat("\n")
+    cat("AAA")
+    cat("\n")
+    cat(Gene2RunTitle)
+    cat("\n")
+    cat("AAA")
+    sink()
+  }
   #Call the clustalw function 
   system("clustalw2 -infile=FastaInSalEC.txt -type=DNA")
   #pull the gapped strings out of the .aln file
