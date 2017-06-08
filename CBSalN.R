@@ -4,6 +4,7 @@
 library(stringr)
 library(parallel)
 library(lattice)
+library(MASS)
 #library('readr')
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
@@ -204,11 +205,22 @@ pdf("CBSalGene Plots.pdf")
 # Actual lattice making stuff
 lDf <- data.frame(paste(substring(PlotData$Gene1Base,1,1),substring(PlotData$Gene2Base,1,1)),paste(substring(PlotData$Gene1Base,2),substring(PlotData$Gene2Base,2)),PlotData$PreCount,PlotData$PostCount)
 names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
-lcounts <- data.frame(table(lDf$Mutation1, lDf$Mutation2))
+ctbl <- table(lDf$Mutation1, lDf$Mutation2)
+lcounts <- data.frame(ctbl)
 gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
 attach(lDf)
 barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(2,10))
 barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(1,7))
+#-----------------------------------------------------------------
+
+#------------Playing with Chi Squared Test------------------------
+# cDf <- data.frame(paste(substring(ModDF$Gene1Base,1,1),substring(ModDF$Gene2Base,1,1)),paste(substring(ModDF$Gene1Base,2),substring(ModDF$Gene2Base,2)))
+# names(cDf) <- c('Mutation1', 'Mutation2')
+# ctbl <- table(cDf$Mutation1,cDf$Mutation2)
+chisq.test(ctbl)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+fisher.test(ctbl)
 #-----------------------------------------------------------------
 
 # Plot for each beginning mutation
