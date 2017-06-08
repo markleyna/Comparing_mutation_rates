@@ -3,6 +3,7 @@
 #install.packages("stringr", "~/Rlibs", "https://cran.cnr.berkeley.edu/")
 library(stringr)
 library(parallel)
+library(lattice)
 #library('readr')
 library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
@@ -177,7 +178,7 @@ make_graphs <- function(finalDF, firstM) {
   
   Gene_vector_of_Lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
   Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
-  barplot(Gene_vector_of_Lengths,names.arg = Gene_vector_of_names, main=firstM)
+  #barplot(Gene_vector_of_Lengths,names.arg = Gene_vector_of_names, main=firstM)
 }
 
 #creates a data frame where it finds the count for each unique combination of ECBase and SalBase
@@ -186,15 +187,29 @@ counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
 #for this method each row represents a unique value for ECBase
 #each of the columns then is the count for each unique value of SalBase
 
-gap_vector_of_names <- paste(counts$Var1, counts$Var2)
+gene_vector_of_names <- paste(counts$Var1, counts$Var2)
 
 pdf("SalECGene Plots.pdf")
-hist(as.numeric(PlotData$PreCount))
-hist(as.numeric(PlotData$PostCount))
-hist(as.numeric(ModDF$PreCount))
-hist(as.numeric(ModDF$PostCount))
-plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
-plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
+# hist(as.numeric(PlotData$PreCount))
+# hist(as.numeric(PlotData$PostCount))
+# hist(as.numeric(ModDF$PreCount))
+# hist(as.numeric(ModDF$PostCount))
+# plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
+# plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
+
+#-------Playing with Lattice--------------------------------------
+#Testing line
+#lDf <- data.frame(paste(substring(DF$Gene1Base,1,1),substring(DF$Gene2Base,1,1)),paste(substring(DF$Gene1Base,2),substring(DF$Gene2Base,2)),DF$PreCount,DF$PostCount)
+# Actual lattice making stuff
+lDf <- data.frame(paste(substring(PlotData$Gene1Base,1,1),substring(PlotData$Gene2Base,1,1)),paste(substring(PlotData$Gene1Base,2),substring(PlotData$Gene2Base,2)),PlotData$PreCount,PlotData$PostCount)
+names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
+lcounts <- data.frame(table(lDf$Mutation1, lDf$Mutation2))
+gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
+attach(lDf)
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(2,10))
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(1,7))
+#-----------------------------------------------------------------
+
 # Plot for each beginning mutation
 # TC
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'T' & substring(Gene2Base,1,1) == 'C')
@@ -301,7 +316,7 @@ if (nrow(graphDF) != 0) {
   make_graphs(graphDF, 'C-')
 }
 
-barplot(counts$Freq,names.arg = gap_vector_of_names) #constructing barplot of mutation frequencies
+barplot(counts$Freq,names.arg = gene_vector_of_names) #constructing barplot of mutation frequencies
 
 system("rm /home/nmarkle/FastaInSE*")
 
