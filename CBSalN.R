@@ -199,13 +199,16 @@ pdf("CBSalGene Plots.pdf")
 #plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
 
 #-------Playing with Lattice--------------------------------------
+#Testing line
+#lDf <- data.frame(paste(substring(DF$Gene1Base,1,1),substring(DF$Gene2Base,1,1)),paste(substring(DF$Gene1Base,2),substring(DF$Gene2Base,2)),DF$PreCount,DF$PostCount)
+# Actual lattice making stuff
 lDf <- data.frame(paste(substring(PlotData$Gene1Base,1,1),substring(PlotData$Gene2Base,1,1)),paste(substring(PlotData$Gene1Base,2),substring(PlotData$Gene2Base,2)),PlotData$PreCount,PlotData$PostCount)
 names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
-lcounts <- data.frame(table(lDf$Mutation1, lDf$Mutation2)) 
+lcounts <- data.frame(table(lDf$Mutation1, lDf$Mutation2))
 gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
 attach(lDf)
 barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(2,10))
-barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(3,7))
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First",layout=c(1,7))
 #-----------------------------------------------------------------
 
 # Plot for each beginning mutation
