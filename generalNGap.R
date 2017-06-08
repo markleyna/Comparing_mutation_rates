@@ -216,7 +216,7 @@ barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab
 chisq.test(ctbl)
 chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
 chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
-fisher.test(ctbl)
+#fisher.test(ctbl)
 #-----------------------------------------------------------------
 
 # Plot for each beginning mutation
