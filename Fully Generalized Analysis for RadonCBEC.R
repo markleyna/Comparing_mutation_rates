@@ -1666,6 +1666,18 @@ while (n <= nrow(G2)){
   cat("\n")
   cat(Gene2Test)
   sink()
+  if(Gene1Test== NULL || Gene2Test== NULL){
+    file.remove("FastaInCBEC.txt")
+    sink("FastaInCBEC.txt")
+    cat(Gene1RunTitle)
+    cat("\n")
+    cat("AAA")
+    cat("\n")
+    cat(Gene2RunTitle)
+    cat("\n")
+    cat("AAA")
+    sink()
+  }
   #Call the clustalw function 
   system("clustalw2 -infile=FastaInCBEC.txt -type=DNA")
   #pull the gapped strings out of the .aln file
