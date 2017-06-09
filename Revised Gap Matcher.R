@@ -1,6 +1,6 @@
-#install.packages("readr")
-#install.packages("dplyr")
-#library("dplyr")
+install.packages("readr")
+install.packages("dplyr")
+library("dplyr")
 library("readr", lib.loc = "/home/french15/Rlibs")
 SalCB <- read.csv("SALCBKBLAST.csv")
 SalStart <- SalCB$X3568909
