@@ -1,12 +1,12 @@
 #install.packages("readr")
 #install.packages("dplyr")
-library("dplyr")
-library("readr")
+#library("dplyr")
+library("readr", lib.loc = "/home/french15/Rlibs")
 SalCB <- read.csv("SALCBKBLAST.csv")
-SalStart <- SalCB$X3427172
-SalEnd<-SalCB$X3453454
-CBStart<-SalCB$X4325524
-CBEnd<-SalCB$X4351821
+SalStart <- SalCB$X3568909
+SalEnd<-SalCB$X3604712
+CBStart<-SalCB$X4324058
+CBEnd<-SalCB$X4359892
 #7 and 8 are query start/end, 9 and 10 are sample start/end
 SalmonellaDNA<-read_file("SalmonellaPureDNA.txt")
 SalmonellaDNA<-gsub("\n","",SalmonellaDNA)
@@ -134,7 +134,7 @@ gapIden <- function(cbend, cbstart, ecend, ecstart) {
 gapList <- mapply(gapIden, myDF$cbgeneend[-1], myDF$cbgenestart[-608], myDF$ecgeneend[-1], myDF$ecgenestart[-608])
 gapDF <-do.call(rbind, gapList) 
 gapDF <- gapDF[complete.cases(gapDF),]
-
+write.csv(gapDF, "UpdatedCBECgaps.csv")
 class(myDF[1,])
 colnames(myDF[1,])
 
