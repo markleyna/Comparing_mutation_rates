@@ -1,7 +1,7 @@
 install.packages("readr")
 install.packages("dplyr")
 library("dplyr")
-library("readr", lib.loc = "/home/french15/Rlibs")
+library("readr")
 SalCB <- read.csv("SALCBKBLAST.csv")
 SalStart <- SalCB$X3568909
 SalEnd<-SalCB$X3604712
@@ -115,7 +115,7 @@ q= 1
 #   }
 #   s=s+1    
 # }
-myDF
+myDF<-GappingCBEC
 factor <- 1
 
 gapIden <- function(cbend, cbstart, ecend, ecstart) {
@@ -131,7 +131,7 @@ gapIden <- function(cbend, cbstart, ecend, ecstart) {
   }
 }
 
-gapList <- mapply(gapIden, myDF$cbgeneend[-1], myDF$cbgenestart[-608], myDF$ecgeneend[-1], myDF$ecgenestart[-608])
+gapList <- mapply(gapIden, as.numeric(myDF$cbgeneend[-1]), as.numeric(myDF$cbgenestart[-367]), as.numeric(myDF$ecgeneend[-1]), as.numeric(myDF$ecgenestart[-367]))
 gapDF <-do.call(rbind, gapList) 
 gapDF <- gapDF[complete.cases(gapDF),]
 write.csv(gapDF, "UpdatedCBECgaps.csv")
