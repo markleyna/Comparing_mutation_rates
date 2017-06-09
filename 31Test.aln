@@ -10,9 +10,9 @@ SalGap_numberk      A-GCTAACGCACATACGCGGCTGTTTTTAACCTGGCGGGCGATGGTTTGCACCGATTCAA
                     * ** ****  ** *        ***             **  ****    * *****  
 
 ECGap_numberk       ---CGTTCGACCGGGAAACTGGAACTATGAGCT-------GGCAATGGGC-TACGTTCGC
-SalGap_numberk      AATCGCCCGGCGAAGAGACGGGGAAACCGACTTCCATCACGTCAACACCCATACGCTCAA
-                       **  ** *   ** ** ** *    **  *       * ***    * **** **  
+SalGap_numberk      AATCGCCCGGCGAAGAGACGGGGAAACCGACTTCCATCACGTCAACACCCATACTCTCGA
+                       **  ** *   ** ** ** *    **  *       * ***    * ***  *** 
 
-ECGap_numberk       CATCTACTACAGCGTGGAGAATAAATTTGTCG---AAGCCGTTTTGCAGCGCGGGATGAG
-SalGap_numberk      GGGCCAGCGCAATTTGCAGTTTTTCTTTCACACTCAAGCTTGCCTGTAACGCCTGTTCAC
-                       * *   **   ** **  *   ***  *    ****     ** * ***  * * * 
+ECGap_numberk       CTTCTACTACAGCTTGGAGAATTAATTTGTCG-T-AAGCCGTTTTGCAGCGCGGGATGAG
+SalGap_numberk      GGGCCAGTACAATTTGCAGTTTTTCTTTCACACTCAAGCTTGCCTGTAACGCCTGTTCAC
+                     * * * ****  *** **  **  ***  *  * ****     ** * ***  * * * 
