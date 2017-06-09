@@ -54,24 +54,24 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
  
   #write text file
-  # fileName <- paste("FastaInSE", testNum, ".txt", sep = "")
-  # fileConn<-file(fileName)
-  # writeLines("\n",fileConn)
-  # close(fileConn)
-  # sink(fileName)
-  # cat(Gene1RunTitle)
-  # cat("\n")
-  # cat(Gene1Test)
-  # cat("\n")
-  # cat(Gene2RunTitle)
-  # cat("\n")
-  # cat(Gene2Test)
-  # sink()
-  # systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
-  # system(systemCall)
-  # alnlines<-readLines(paste("FastaInSE", testNum, ".aln", sep= ""))
+  fileName <- paste("FastaInSE", testNum, ".txt", sep = "")
+  fileConn<-file(fileName)
+  writeLines("\n",fileConn)
+  close(fileConn)
+  sink(fileName)
+  cat(Gene1RunTitle)
+  cat("\n")
+  cat(Gene1Test)
+  cat("\n")
+  cat(Gene2RunTitle)
+  cat("\n")
+  cat(Gene2Test)
+  sink()
+  systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
+  system(systemCall)
+  alnlines<-readLines(paste("FastaInSE", testNum, ".aln", sep= ""))
   #Testing line for llc server
-  alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/FastaTest.aln")
+  #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/31Test.aln")
   #alnlines<-readLines(paste("/home/nmarkle/Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep=""))
 
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
@@ -198,6 +198,10 @@ DF$PreCount <- as.integer((DF$PreCount))
 ModDF = DF
 ModDF = subset(ModDF, PostCount > 0)
 PlotData = subset(ModDF, PostCount>=3 & PreCount>=3)
+ThreeTo1 = subset(PlotData, MutType == 0)
+Not3To1 = subset(PlotData, MutType > 0)
+OneTo2 = subset(PlotData, MutType == 1)
+TwoTo3 = subset(PlotData, MutType == 2)
 #PlotData = ModDF
 
 make_graphs <- function(finalDF, firstM) {
@@ -235,7 +239,7 @@ counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
 
 gene_vector_of_names <- paste(counts$Var1, counts$Var2)
 
-pdf("SalECGene Plots.pdf")
+pdf("SalECGene Plots by Mutation Type.pdf")
 # hist(as.numeric(PlotData$PreCount))
 # hist(as.numeric(PlotData$PostCount))
 # hist(as.numeric(ModDF$PreCount))
@@ -265,6 +269,60 @@ chisq.test(ctbl)
 chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
 chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
 #fisher.test(ctbl)
+#-----------------------------------------------------------------
+
+#-------Lattice and Chi for 3-1-----------------------------------
+lDf <- data.frame(paste(substring(ThreeTo1$Gene1Base,1,1),substring(ThreeTo1$Gene2Base,1,1)),paste(substring(ThreeTo1$Gene1Base,2),substring(ThreeTo1$Gene2Base,2)),ThreeTo1$PreCount,ThreeTo1$PostCount)
+names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
+ctbl <- table(lDf$Mutation1, lDf$Mutation2)
+lcounts <- data.frame(ctbl)
+gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First 3 to 1",layout=c(2,10))
+print('3 To 1 Chi Test')
+chisq.test(ctbl)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+#-----------------------------------------------------------------
+
+
+#-------Lattice and Chi for Not 3-1-------------------------------
+lDf <- data.frame(paste(substring(Not3To1$Gene1Base,1,1),substring(Not3To1$Gene2Base,1,1)),paste(substring(Not3To1$Gene1Base,2),substring(Not3To1$Gene2Base,2)),Not3To1$PreCount,Not3To1$PostCount)
+names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
+ctbl <- table(lDf$Mutation1, lDf$Mutation2)
+lcounts <- data.frame(ctbl)
+gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First Not 3 to 1",layout=c(2,10))
+print('Not 3 To 1 Chi Test')
+chisq.test(ctbl)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+#-----------------------------------------------------------------
+
+
+#-------Lattice and Chi for 1-2-----------------------------------
+lDf <- data.frame(paste(substring(OneTo2$Gene1Base,1,1),substring(OneTo2$Gene2Base,1,1)),paste(substring(OneTo2$Gene1Base,2),substring(OneTo2$Gene2Base,2)),OneTo2$PreCount,OneTo2$PostCount)
+names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
+ctbl <- table(lDf$Mutation1, lDf$Mutation2)
+lcounts <- data.frame(ctbl)
+gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First 1 to 2",layout=c(2,10))
+print('1 To 2 Chi Test')
+chisq.test(ctbl)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+#-----------------------------------------------------------------
+
+#-------Lattice and Chi for 2-3-----------------------------------
+lDf <- data.frame(paste(substring(TwoTo3$Gene1Base,1,1),substring(TwoTo3$Gene2Base,1,1)),paste(substring(TwoTo3$Gene1Base,2),substring(TwoTo3$Gene2Base,2)),TwoTo3$PreCount,TwoTo3$PostCount)
+names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
+ctbl <- table(lDf$Mutation1, lDf$Mutation2)
+lcounts <- data.frame(ctbl)
+gap_vector_of_names <- paste(lcounts$Var1, lcounts$Var2)
+barchart(lcounts$Freq~lcounts$Var2|lcounts$Var1,ylab="Mutation Frequencies",xlab="First Mutation",main="Second Mutation By First 2 to 3",layout=c(2,10))
+print('2 To 3 Chi Test')
+chisq.test(ctbl)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
+chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
 #-----------------------------------------------------------------
 
 # Plot for each beginning mutation
