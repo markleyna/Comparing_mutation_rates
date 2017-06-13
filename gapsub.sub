@@ -1,0 +1,4 @@
+cd /home/french15
+module load r
+
+R --vanilla < "Revised Gap Matcher.R"

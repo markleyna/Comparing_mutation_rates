@@ -1665,9 +1665,9 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   cat("\n")
   cat(Gene2RunTitle)
   cat("\n")
-  cat(Gene2Test)
+   cat(Gene2Test)
   sink()
-  if(Gene1Test== NULL || Gene2Test== NULL){
+  if(is.null(Gene1Test)|| is.null(Gene2Test)){
     file.remove("FastaInSalEC.txt")
     sink("FastaInSalEC.txt")
     cat(Gene1RunTitle)

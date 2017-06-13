@@ -1666,7 +1666,7 @@ while (n <= nrow(G2)){
   cat("\n")
   cat(Gene2Test)
   sink()
-  if(Gene1Test== NULL || Gene2Test== NULL){
+  if(is.null(Gene1Test) || is.null(Gene2Test)){
     file.remove("FastaInCBEC.txt")
     sink("FastaInCBEC.txt")
     cat(Gene1RunTitle)

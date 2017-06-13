@@ -1,0 +1,9 @@
+[user]
+	name = thatfrenchieguy
+	email = french15@purdue.edu
+[color]
+	ui = auto
+[core]
+	editor = nano
+[push]
+	default = simple
