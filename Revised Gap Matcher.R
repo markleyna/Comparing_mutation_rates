@@ -1,16 +1,19 @@
-install.packages("readr")
-install.packages("dplyr")
+#install.packages("readr")
+#install.packages("dplyr")
+strReverse <- function(x){
+  sapply(lapply(strsplit(x, NULL), rev), paste, collapse="")
+}
 library("dplyr")
 library("readr")
-SalCB <- read.csv("SALCBKBLAST.csv")
-SalStart <- SalCB$X3568909
+SalCB <- read.csv("salCBFBLAST.csv")
+SalStart <- SalCB$X3570424
 SalEnd<-SalCB$X3604712
-CBStart<-SalCB$X4324058
-CBEnd<-SalCB$X4359892
-#7 and 8 are query start/end, 9 and 10 are sample start/end
+CBStart<-SalCB$X4701730
+CBEnd<-SalCB$X4736019
+#10 are sample start/end
 SalmonellaDNA<-read_file("SalmonellaPureDNA.txt")
 SalmonellaDNA<-gsub("\n","",SalmonellaDNA)
-CitroBacDNA<-read_file("CitroBacKPureDNA.txt")
+CitroBacDNA<-read_file("CitroBacFPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
 names<-c("gapnum","salgenestart","salgeneend","salgeneseq","cbgenestart","cbgeneend","cbgeneseq")
 ExportDF<-data.frame(-1,-1,-1,"q",-1,-1,"q", stringsAsFactors = FALSE)
@@ -62,8 +65,6 @@ while (i<length(ECEnd)){
   ExportDF<-rbind(ExportDF,row)
 }
 CBEC<-ExportDF[-1,]
-CBEC<- subset(CBEC, (nchar(cbgeneseq)>1000))
-CBEC<- subset(CBEC, (nchar(ecgeneseq)>1000))
 write.csv(CBEC,"RVersionCBECGenes.csv")
 
 #SalECGaps
@@ -138,3 +139,32 @@ write.csv(gapDF, "UpdatedCBECgaps.csv")
 class(myDF[1,])
 colnames(myDF[1,])
 
+#take 3 gap matcher
+orderedSalCB<-SalmonellaCBExportDF[order(as.numeric(SalmonellaCBExportDF$salgenestart)),]
+q=1
+nrow<-nrow(orderedSalCB)
+gaps=data.frame("","","","", stringsAsFactors = FALSE)
+while(q<(nrow-1)){
+  if((as.numeric(orderedSalCB$salgenestart[q+1])-as.numeric(orderedSalCB$salgeneend[q])) < 800 && (as.numeric(orderedSalCB$cbgenestart[q+1])-as.numeric(orderedSalCB$cbgeneend[q])) < 800 && (as.numeric(orderedSalCB$salgenestart[q+1])-as.numeric(orderedSalCB$salgeneend[q])) > 0 && (as.numeric(orderedSalCB$cbgenestart[q+1])-as.numeric(orderedSalCB$cbgeneend[q])) >0 ){
+   gap=c(orderedSalCB$salgeneend[q],orderedSalCB$salgenestart[q+1],orderedSalCB$cbgeneend[q],orderedSalCB$cbgenestart[q+1])
+  gaps<-rbind(gaps,gap)
+   }
+  q=q+1
+}
+gaps<-gaps[-1,]
+names(gaps)<-c("salstart","salend","cbstart","cbend")
+write.csv(gaps, "UpdatedSalCBGaps.csv")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+orderedCBEC<-CBEC[order(as.numeric(CBEC$ecgenestart)),]
+q=1
+nrow<-nrow(CBEC)
+gaps=data.frame("","","","", stringsAsFactors = FALSE)
+while(q<(nrow-1)){
+  if((as.numeric(CBEC$ecgenestart[q+1])-as.numeric(CBEC$ecgeneend[q])) < 800 && (as.numeric(CBEC$cbgenestart[q+1])-as.numeric(CBEC$cbgeneend[q])) < 800 && (as.numeric(CBEC$ecgenestart[q+1])-as.numeric(CBEC$ecgeneend[q])) > 0 && (as.numeric(CBEC$cbgenestart[q+1])-as.numeric(CBEC$cbgeneend[q])) >0 ){
+    gap=c(CBEC$ecgeneend[q],CBEC$ecgenestart[q+1],CBEC$cbgeneend[q],CBEC$cbgenestart[q+1])
+    gaps<-rbind(gaps,gap)
+  }
+  q=q+1
+}
+gaps<-gaps[-1,]
+names(gaps)<-c("ecstart","ecend","cbstart","cbend")
