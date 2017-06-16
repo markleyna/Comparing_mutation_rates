@@ -1,0 +1,5 @@
+module add gcc/5.2.0 
+module add r/3.3.1 
+module add bioinfo 
+module add clustalw/2.1
+R --vanilla < /home/nmarkle/Comparing_mutation_rates/CBECGap.R

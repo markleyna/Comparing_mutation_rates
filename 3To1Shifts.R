@@ -10,7 +10,7 @@ library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
 numInRow <- 2
-Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/RVersionSalECGenes.csv", stringsAsFactors = FALSE)
+Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/UpdatedSalECGenes.csv", stringsAsFactors = FALSE)
 SalDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt")
 SalDNA<-gsub("\n","",SalDNA)
 EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
