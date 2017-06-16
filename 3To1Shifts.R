@@ -15,13 +15,13 @@ SalDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt"
 SalDNA<-gsub("\n","",SalDNA)
 EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
-Genes <- data.frame(Genes$gapnum, Genes$ecgeneseq, Genes$salgeneseq, stringsAsFactors = FALSE)
+Genes <- data.frame(Genes$X, Genes$X.q., Genes$X.q..1, stringsAsFactors = FALSE)
 #-------Testing line!-------
 #Genes <- head(Genes, n=1)
 #---------------------------
-G1<-as.vector(Genes$Genes.gapnum)
-G2<-as.vector(Genes$Genes.ecgeneseq)
-G3<-as.vector(Genes$Genes.salgeneseq)
+G1<-as.vector(Genes$Genes.X)
+G2<-as.vector(Genes$Genes.X.q.)
+G3<-as.vector(Genes$Genes.X.q..1)
 
 buildchar = "Q"
 Gene1Base <- c(buildchar,buildchar)
@@ -54,7 +54,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene2RunTitle <- paste(">", "SalGap_number", "k", sep = "")
  
   #write text file
-  fileName <- paste("FastaInSE", testNum, ".txt", sep = "")
+  fileName <- paste("FastaInM", testNum, ".txt", sep = "")
   fileConn<-file(fileName)
   writeLines("\n",fileConn)
   close(fileConn)
@@ -69,7 +69,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   sink()
   systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
   system(systemCall)
-  alnlines<-readLines(paste("FastaInSE", testNum, ".aln", sep= ""))
+  alnlines<-readLines(paste("FastaInM", testNum, ".aln", sep= ""))
   #Testing line for llc server
   #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/31Test.aln")
   #alnlines<-readLines(paste("/home/nmarkle/Comparing_mutation_rates/Fastas/FastaIn", testNum, ".aln", sep=""))
@@ -433,6 +433,6 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq,names.arg = gene_vector_of_names) #constructing barplot of mutation frequencies
 
-system("rm /home/nmarkle/FastaInSE*")
+system("rm /home/nmarkle/FastaInM*")
 
 dev.off()

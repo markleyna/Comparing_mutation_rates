@@ -10,7 +10,8 @@ library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
 numInRow <- 2
-Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/UpdatedSalCBgaps.csv", stringsAsFactors = FALSE)
+#NOTE! This file doesn't seem right, am skipping
+Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/UpdatedSalECgaps.csv", stringsAsFactors = FALSE)
 CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
 SalDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt")
@@ -59,7 +60,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
   #write a text file that is in proper FASTA format
-  fileName <- paste("FastaInGCS", testNum, ".txt", sep="")
+  fileName <- paste("FastaInGSE", testNum, ".txt", sep="")
   fileConn<-file(fileName) #reset the file to being blank text again
   writeLines("\n",fileConn)
   close(fileConn)
@@ -76,7 +77,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
   system(systemCall)
   #pull the gapped strings out of the .aln file
-  alnlines<-readLines(paste("FastaInGCS", testNum, ".aln", sep=""))
+  alnlines<-readLines(paste("FastaInGSE", testNum, ".aln", sep=""))
   #Test Line for llc server
   alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/Tests/FastaTest.aln")
   
@@ -326,7 +327,7 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq, names.arg = gene_vector_of_names)
 
-system("rm /home/nmarkle/FastaInGCS*")
+system("rm /home/nmarkle/FastaInGSE*")
 
 dev.off()
 

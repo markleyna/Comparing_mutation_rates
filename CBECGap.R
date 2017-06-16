@@ -10,16 +10,16 @@ library('readr', lib.loc="/home/nmarkle/Rlibs/")
 
 #Variable Declaration Block
 numInRow <- 2
-Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/UpdatedSalCBgaps.csv", stringsAsFactors = FALSE)
+Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/UpdatedCBECgaps.csv", stringsAsFactors = FALSE)
 CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
-SalDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt")
-SalDNA<-gsub("\n","",SalDNA)
-Genes$salgeneseq<-substring(SalDNA,first = Genes$cbend,last = Genes$cbstart)
-Genes$cbgeneseq<-substring(CitroBacDNA,first = Genes$ecstart, last = Genes$ecend)
+ECDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
+ECDNA<-gsub("\n","",ECDNA)
+Genes$ecgeneseq<-substring(ECDNA,first = Genes$ecstart,last = Genes$ecend)
+Genes$cbgeneseq<-substring(CitroBacDNA,first = Genes$cbstart, last = Genes$cbend)
 #Genes <- data.frame(Genes$X, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
 #testDF <- subset(Genes, Genes$cbstart > Genes$cbend)
-Genes<-subset(Genes, nchar(Genes$salgeneseq) <= 800)
+Genes<-subset(Genes, nchar(Genes$ecgeneseq) <= 800)
 Genes<-subset(Genes, nchar(Genes$cbgeneseq) <= 800)
 Genes$X<-seq(1,nrow(Genes),1)
 #-----------Testing Line----------------
@@ -27,7 +27,7 @@ Genes$X<-seq(1,nrow(Genes),1)
 #---------------------------------------
 G1<-as.vector(Genes$X)
 G2<-as.vector(Genes$cbgeneseq)
-G3<-as.vector(Genes$salgeneseq)
+G3<-as.vector(Genes$ecgeneseq)
 
 buildchar = "Q" #done to prevent things from crashing later on, don't ask
 Gene1Base <- c(buildchar,buildchar)
@@ -59,7 +59,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
   #write a text file that is in proper FASTA format
-  fileName <- paste("FastaInGCS", testNum, ".txt", sep="")
+  fileName <- paste("FastaInGCE", testNum, ".txt", sep="")
   fileConn<-file(fileName) #reset the file to being blank text again
   writeLines("\n",fileConn)
   close(fileConn)
@@ -76,7 +76,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   systemCall = paste("clustalw2 -infile=", fileName, " -type=DNA", sep="")
   system(systemCall)
   #pull the gapped strings out of the .aln file
-  alnlines<-readLines(paste("FastaInGCS", testNum, ".aln", sep=""))
+  alnlines<-readLines(paste("FastaInGCE", testNum, ".aln", sep=""))
   #Test Line for llc server
   alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/Tests/FastaTest.aln")
   
@@ -326,7 +326,7 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq, names.arg = gene_vector_of_names)
 
-system("rm /home/nmarkle/FastaInGCS*")
+system("rm /home/nmarkle/FastaInGCE*")
 
 dev.off()
 
