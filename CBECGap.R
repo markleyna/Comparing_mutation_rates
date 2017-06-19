@@ -203,7 +203,7 @@ counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
 gene_vector_of_names <- paste(counts$Var1, counts$Var2)
 #write.csv(Gene_vector_of_lengths, file = "CBSalGap2Data.csv")
 
-pdf('CBsalgapplot.pdf')
+pdf('CBECgapplot.pdf')
 
 #-------Lattice and Chi-------------------------------------------
 lDf <- data.frame(paste(substring(DF$Gene1Base,1,1),substring(DF$Gene2Base,1,1)),paste(substring(DF$Gene1Base,2),substring(DF$Gene2Base,2)),DF$PreCount,DF$PostCount)
