@@ -78,7 +78,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   #pull the gapped strings out of the .aln file
   alnlines<-readLines(paste("FastaInGCS", testNum, ".aln", sep=""))
   #Test Line for llc server
-  alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/Tests/FastaTest.aln")
+  #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/Tests/FastaTest.aln")
   
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)

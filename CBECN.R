@@ -41,6 +41,9 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   PostCount<-c(-1,-1)
   tempDF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
   tempDF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE)
+  if (Gene1 == "" || Gene2 == "") {
+    return(tempDF)
+  }
   Gene1Test = toString(Gene1)
   Gene2Test = toString(Gene2)
   Gene1break = ""
