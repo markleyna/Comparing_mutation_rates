@@ -23,7 +23,7 @@ Genes<-subset(Genes, nchar(Genes$salgeneseq) <= 800)
 Genes<-subset(Genes, nchar(Genes$cbgeneseq) <= 800)
 Genes$X<-seq(1,nrow(Genes),1)
 #-----------Testing Line----------------
-#Genes <- head(Genes, n=1)
+#Genes <- head(Genes, n=10)
 #---------------------------------------
 G1<-as.vector(Genes$X)
 G2<-as.vector(Genes$cbgeneseq)
@@ -52,7 +52,7 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   if (Gene1 == "" || Gene2 == "") {
     return(tempDF)
   }
-
+  
   Gene1Test <- toString(Gene1)
   Gene2Test<-toString(Gene2)
   Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #I don't feel like rewriting this to hold generality, so these need to stay as is to keep the parsing working correctly
@@ -326,7 +326,7 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq, names.arg = gene_vector_of_names)
 
-system("rm /home/nmarkle/FastaInGCS*")
+#system("rm /home/nmarkle/FastaInGCS*")
 
 dev.off()
 

@@ -17,17 +17,16 @@ ECDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
 ECDNA<-gsub("\n","",ECDNA)
 Genes$ecgeneseq<-substring(ECDNA,first = Genes$ecstart,last = Genes$ecend)
 Genes$cbgeneseq<-substring(CitroBacDNA,first = Genes$cbstart, last = Genes$cbend)
-#Genes <- data.frame(Genes$X, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
-#testDF <- subset(Genes, Genes$cbstart > Genes$cbend)
+Genes <- data.frame(Genes$X, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
 Genes<-subset(Genes, nchar(Genes$ecgeneseq) <= 800)
 Genes<-subset(Genes, nchar(Genes$cbgeneseq) <= 800)
 Genes$X<-seq(1,nrow(Genes),1)
 #-----------Testing Line----------------
-#Genes <- head(Genes, n=1)
+#Genes <- head(Genes, n=10)
 #---------------------------------------
-G1<-as.vector(Genes$X)
-G2<-as.vector(Genes$cbgeneseq)
-G3<-as.vector(Genes$ecgeneseq)
+G1<-as.vector(Genes$Genes.X)
+G2<-as.vector(Genes$Genes.cbgeneseq)
+G3<-as.vector(Genes$Genes.ecgeneseq)
 
 buildchar = "Q" #done to prevent things from crashing later on, don't ask
 Gene1Base <- c(buildchar,buildchar)
@@ -41,6 +40,7 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 #CLUSAL Run on Genes
 clusal_run <- function(testNum, Gene1, Gene2) {
+  return(data.frame(Gene1,Gene2,-1,-1))
   Gene1Base <- c(buildchar,buildchar)
   Gene2Base<-c(buildchar,buildchar) 
   PreCount<-c(-1,-1)
