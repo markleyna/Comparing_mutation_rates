@@ -45,6 +45,7 @@ while (i<length(ECStart)){
   ExportDF<-rbind(ExportDF,row)
 }
 SalEC<-ExportDF[-1,]
+names(SalEC)<-names
 write.csv(SalEC,"UpdatedSalECGenes.csv")
 
 CBEC <- read.csv("ECCBFBLAST.csv")
@@ -170,7 +171,7 @@ gaps<-gaps[-1,]
 names(gaps)<-c("ecstart","ecend","cbstart","cbend")
 write.csv(gaps,"UpdatedCBECGaps.csv")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-orderedECSal<-ExportDF[order(as.numeric(ExportDF$ecgenestart)),]
+orderedECSal<-SalEC[order(as.numeric(SalEC$ecgenestart)),]
 q=1
 nrow<-nrow(orderedECSal)
 gaps=data.frame("","","","", stringsAsFactors = FALSE)
