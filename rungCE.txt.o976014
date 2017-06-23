@@ -1,0 +1,40 @@
+
+R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #Import Packages
+> #install.packages("stringr")
+> #install.packages("readr")
+> library(stringr)
+> library(parallel)
+> library(lattice)
+> library(MASS)
+> #library('readr')
+> library('readr', lib.loc="/home/nmarkle/Rlibs/")
+> 
+> #Variable Declaration Block
+> numInRow <- 2
+> Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/UpdatedCBECgaps.csv", stringsAsFactors = FALSE)
+> CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
+> CitroBacDNA<-gsub("\n","",CitroBacDNA)
+> ECDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
+> ECDNA<-gsub("\n","",ECDNA)
+> Genes$ecgeneseq<-substring(ECDNA,first = Genes$ecstart,last = Genes$ecend)
+> Genes$cbgeneseq<-substring(CitroBacDNA,first = Genes$cbstart, last = Genes$cbend)
+> Genes <- data.frame(Genes$X, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
+> Genes<-subset(Genes, nchar(Genes$ecgeneseq) <= 800)
+> Genes<-subset(Genes, nchar(Genes$cbgeneseq) <= 800)
+> Genes$X<-seq(1,nrow(Genes),1)

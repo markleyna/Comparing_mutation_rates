@@ -1,0 +1,18 @@
+CLUSTAL 2.1 multiple sequence alignment
+
+
+ECGap_numberk       ---CGGCAATCGCCTTTTTATCTTCGGCATCCAGATGCAGATCGAGCGCCAGCAGGTTGC
+SalGap_numberk      GCTTTGCCAGGGCCGCGCGGT-TTCAAAACCCCCAGACGATATGGCGGCCCGCCGCCAGT
+                         ** *  ***      * ***   * **  *  *     *   *** ** *   * 
+
+ECGap_numberk       TTGCCAGGTTTTCACGTTTAGTGGAAGAAGGAATTACGG-AGTAGCCTTCTCC-CATTGC
+SalGap_numberk      CTGGTAGAATATCCTCCAGCCCATACCAAAGTTCGGCGGCAATATTCGTCTTCACAATGC
+                     **  **  * **           *  ** *     *** * **  * *** * ** ***
+
+ECGap_numberk       CCATGCAAGGATCACCTGCGCCGAAGT-CGCATTGTGCTTAGCGGCAATACGGGCAATCA
+SalGap_numberk      CAAATGATGG--CGCCGGTACTCATGCGCGATCCGTCTTCATTCGCGTTACTCGAACGCA
+                    * *   * **  * ** *  *  * *  **    **  * *   **  ***  * *  **
+
+ECGap_numberk       CTTCATCTTTCAGTGCCTTACCATAAGCCAACGTCATGTAAGAGGTGATGTG
+SalGap_numberk      TACTGACCAGCA-CATTACACACTGCATCGCCCCCTTCTTTACTTCCACT--
+                          *   **       **  *    *  *  * * *        *    

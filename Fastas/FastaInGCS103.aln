@@ -1,0 +1,38 @@
+CLUSTAL 2.1 multiple sequence alignment
+
+
+ECGap_numberk       ------CGCTTTACGCGCCAGATG-CAGCATGACGCTGGAATCTTTACCGATGGAATACA
+SalGap_numberk      CTATGCCGCCGGGTTCGGCAAGCGTCAGGGCCAGCGTACCATCCGCGCCGGTGGCGCCGG
+                          ***      ** **   * ***    *   *   ***    *** ***      
+
+ECGap_numberk       TCATCACCGGATTAGAA-AATTCGGCGGCCACCTCGCGAATGATATGGATGCTTTCCGCT
+SalGap_numberk      TCAGAACCGATGTGGCATAGTAAAACTGTTGCTGCGCACCGGTGAGCGGCGTCACCGTCA
+                    ***  ****   * * * * *    * *   *  ***    *  *  *  *    *  * 
+
+ECGap_numberk       TCCAGCTGCCGCAGGTGGGTG--AGTCGTTTTTGGTCCATAAC-CGTTCCTTTGCAATAC
+SalGap_numberk      TGTTGGTGCCGTTAGTGGCTACAAATTTATTATAGTCAGGGTTGCGCGCCTTCCCGGCGT
+                    *   * *****   **** *   * *   ** * ***       **  ****  *     
+
+ECGap_numberk       CGCTATTTTGCTAAACATTCAGATAACACGACTATAGGGAGCGCAGGAGAACGAATGAAA
+SalGap_numberk      CACGTTTAAGCGAAAAAGTCGCATAA---GGCACCGGGTTGCCCATCGCATCGGTAGTGG
+                    * *  **  ** *** * **  ****   * *    **  ** **    * **   *   
+
+ECGap_numberk       TTACGAATTG---GAATGAGTAGTTCCTCAAAGGAATAACGATTTGAGAAAGCAAATATC
+SalGap_numberk      TGATGAGTAGCGGGATCGACTCGCTGTTTTTCGCCTTCACCGCCTGA-ATAGCGTCATCC
+                    * * ** * *   **  ** * * *  *    *   * **    *** * ***      *
+
+ECGap_numberk       AAAAAATGCTT--AACCCACCGAATTTAGGGCATTTCAGAGCAAATGAAATTGTTTTACG
+SalGap_numberk      ATCGCCTGCGGGGAGGTGAGGGTAATCTGCGTGGCCTGCGGCAG-CGGCGTCGTGGCGCA
+                    *     ***    *    *  * * *  * *         ***   *   * **    * 
+
+ECGap_numberk       GCAATCACGGTTTCATACTAAGCGGGTAAAAATTTCTGCT--CTGTATTTAAGGACTCAC
+SalGap_numberk      AATTTGATACTGCCAGGCAGTGCTGGTCGCGCTGTTTTCTGACCGACGCGAACCATCAGC
+                        * *   *  **  *   ** ***     * * * **  * *     **  *    *
+
+ECGap_numberk       TATGTTTTCCGC---ATCGCGCCTCCGTGCAGCGCTCCTGGCGCTCGGCGTATGCTTTAT
+SalGap_numberk      CAGATCGACTGCGTAATAGAAGTCAAGTTTTGCCCCGCTGGAAAATGACGTCGAGTTCGA
+                     *  *   * **   ** *       **   ** *  ****     * ***    **   
+
+ECGap_numberk       CCTTCC
+SalGap_numberk      TC----
+                     *    
