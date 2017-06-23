@@ -207,7 +207,7 @@ gene_vector_of_names <- paste(counts$Var1, counts$Var2)
 pdf('SalECgapplot.pdf')
 
 #-------Lattice and Chi-------------------------------------------
-lDf <- data.frame(paste(substring(DF$Gene1Base,1,1),substring(DF$Gene2Base,1,1)),paste(substring(DF$Gene1Base,2),substring(DF$Gene2Base,2)),DF$PreCount,DF$PostCount)
+lDf <- data.frame(paste(substring(PlotData$Gene1Base,1,1),substring(PlotData$Gene2Base,1,1)),paste(substring(PlotData$Gene1Base,2),substring(PlotData$Gene2Base,2)),PlotData$PreCount,PlotData$PostCount)
 names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
 ctbl <- table(lDf$Mutation1, lDf$Mutation2)
 lcounts <- data.frame(ctbl)

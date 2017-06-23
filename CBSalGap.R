@@ -79,7 +79,8 @@ clusal_run <- function(testNum, Gene1, Gene2) {
   alnlines<-readLines(paste("FastaInGCS", testNum, ".aln", sep=""))
   #Test Line for llc server
   #alnlines<-readLines("/home/nmarkle/Comparing_mutation_rates/Tests/FastaTest.aln")
-  
+  #alnlines<-readLines(paste("/home/nmarkle/Comparing_mutation_rates/Fastas/FastaInGCS", testNum, ".aln", sep="")) 
+ 
   alnlines1<-grep(substring(Gene1RunTitle,2), alnlines, value=TRUE)
   alnlines2<-grep(substring(Gene2RunTitle,2), alnlines, value=TRUE)
   alnlines1<-gsub(substring(Gene1RunTitle,2), "", alnlines1)
@@ -206,7 +207,7 @@ gene_vector_of_names <- paste(counts$Var1, counts$Var2)
 pdf('CBsalgapplot.pdf')
 
 #-------Lattice and Chi-------------------------------------------
-lDf <- data.frame(paste(substring(DF$Gene1Base,1,1),substring(DF$Gene2Base,1,1)),paste(substring(DF$Gene1Base,2),substring(DF$Gene2Base,2)),DF$PreCount,DF$PostCount)
+lDf <- data.frame(paste(substring(PlotData$Gene1Base,1,1),substring(PlotData$Gene2Base,1,1)),paste(substring(PlotData$Gene1Base,2),substring(PlotData$Gene2Base,2)),PlotData$PreCount,PlotData$PostCount)
 names(lDf) <- c('Mutation1', 'Mutation2', 'PreCount', 'PostCount')
 ctbl <- table(lDf$Mutation1, lDf$Mutation2)
 lcounts <- data.frame(ctbl)
