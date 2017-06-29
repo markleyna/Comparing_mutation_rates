@@ -6,5 +6,6 @@ Due to MODULEPATH changes the following have been reloaded:
   1) openmpi/1.8.1
 
 This software stack is maintained by the Purdue Bioinformatics Core. Please direct inquires regarding Bioinformatics software to bioinformatics@purdue.edu
-Warning message:
-In chisq.test(ctbl) : Chi-squared approximation may be incorrect
+Error in seq.default(1, nrow(Genes), 1) : wrong sign in 'by' argument
+Calls: seq -> seq.default
+Execution halted
