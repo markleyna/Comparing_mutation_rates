@@ -4,7 +4,7 @@ setwd("/home/french15")
 #install.packages("RSelenium")
 #install.packages("stringr")
 #install.packages("readr")
-library("RSelenium")
+#library("RSelenium")
 library(stringr)
 library('readr')
 print("loaded everything successfully")
@@ -1619,12 +1619,16 @@ PAM<- function(Amino1, Amino2){
   }
 }
 #Variable Declaration Block
-Genes <- read.csv("RVersionSALECGaps.csv", stringsAsFactors = FALSE)
+Genes <- read.csv("UpdatedSalECgaps.csv", stringsAsFactors = FALSE)
+names(Genes)
 EColiDNA<-read_file("EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
 SalDNA <- read_file("SalmonellaPureDNA.txt")
 SalDNA<-gsub("\n","",SalDNA)
-Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$salgeneseq, stringsAsFactors = FALSE)
+Genes$ecgeneseq<-substring(ECDNA,Genes$ecstart,Genes$ecend)
+Genes$$salgeneseq<-substring(SalDNA,Genes$salstart,Genes$salend)
+Genes$gapnum<-1:nrow(Genes)
+Genes <- data.frame(Genes$gapnum, Genes$ecgeneseq, Genes$salgeneseq, stringsAsFactors = FALSE)
 G1<-as.vector(Genes$Genes.gapnum)
 G2<-data.frame(Genes$Genes.ecgeneseq)
 G3<-data.frame(Genes$Genes.salgeneseq)
@@ -1645,8 +1649,8 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 
 #CLUSAL Run on Genes
-#while (n <= nrow(G2)){
-  while(n<=20){ #testing line when not running full version of code
+while (n <= nrow(G2)){
+ # while(n<=20){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test<-toString(G3[n,1])
@@ -1654,22 +1658,34 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   Gene2RunTitle <- paste(">","SalGap_number","k", sep = "")
   
   #write a text file that is in proper FASTA format
-  fileConn<-file("FastaIn.txt") #reset the file to being blank text again
+  fileConn<-file("FastaInSalECG.txt") #reset the file to being blank text again
   writeLines("\n",fileConn)
   close(fileConn)
-  sink("FastaIn.txt")
+  sink("FastaInSalEC.txt")
   cat(Gene1RunTitle)
   cat("\n")
   cat(Gene1Test)
   cat("\n")
   cat(Gene2RunTitle)
   cat("\n")
-  cat(Gene2Test)
+   cat(Gene2Test)
   sink()
+  if(is.null(Gene1Test)|| is.null(Gene2Test)){
+    file.remove("FastaInSalECG.txt")
+    sink("FastaInSalECG.txt")
+    cat(Gene1RunTitle)
+    cat("\n")
+    cat("AAA")
+    cat("\n")
+    cat(Gene2RunTitle)
+    cat("\n")
+    cat("AAA")
+    sink()
+  }
   #Call the clustalw function 
-  system("clustalw2 -infile=FastaIn.txt -type=DNA")
+  system("clustalw2 -infile=FastaInSalECG.txt -type=DNA")
   #pull the gapped strings out of the .aln file
-  alnlines<-readLines("FastaIn.aln")
+  alnlines<-readLines("FastaInSalECG.aln")
 
   print(Gene1RunTitle)
   print(Gene2RunTitle)
@@ -1717,28 +1733,31 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
       DF = rbind(DF,Addrow)
 #      print("ASDF")
       Flag2=FALSE
+	if(Flag1==FALSE){
+	PreCounter=0
+	}
       PostCounter=0
-      PreCounter=0
     }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag2==TRUE)
+    if(Gene1workingcharacter == Gene2workingcharacter && Flag2==TRUE)
     {
       PostCounter = PostCounter +1
       #print(PostCounter) causes too much lag
     }
-    else if(Gene1workingcharacter != Gene2workingcharacter && Flag1==TRUE)
+    if(Gene1workingcharacter != Gene2workingcharacter && Flag1==TRUE)
     {
       Flag1 = FALSE
       Flag2 = TRUE
       Gene1break = Gene1workingcharacter
       Gene2break = Gene2workingcharacter
     }
-    else if(Gene1workingcharacter == Gene2workingcharacter && Flag1==TRUE)
+    if(Gene1workingcharacter == Gene2workingcharacter && Flag1==TRUE)
     {
       PreCounter = PreCounter+1
     }
-    else if(Gene1workingcharacter== Gene2workingcharacter && Flag1==FALSE)
+    if(Gene1workingcharacter== Gene2workingcharacter && Flag1==FALSE)
     {
       Flag1 = TRUE
+	PreCounter=PreCounter+1
     }
     
     
@@ -1747,17 +1766,17 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
   #end of intra-gene break identification
 }
 print(names(DF))
-DF$PostCount <- as.integer(DF$PostCount)
-DF$PreCount <- as.integer((DF$PreCount))
-ModDF = DF #DF is the entries from tallying up the mismatches
-ModDF = subset(ModDF, PostCount > 0) #clears up things where an error got through
-PlotData = subset(ModDF, PostCount>=3 & PreCount>=3) #this is the arbitry definition of what we considered conserved, this can change
-hist(as.numeric(PlotData$PreCount)) #plotting up everything
-hist(as.numeric(PlotData$PostCount))
-hist(as.numeric(ModDF$PreCount))
-hist(as.numeric(ModDF$PostCount))
-plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
-plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
+#DF$PostCount <- as.integer(DF$PostCount)
+#DF$PreCount <- as.integer((DF$PreCount))
+#ModDF = DF #DF is the entries from tallying up the mismatches
+#ModDF = subset(ModDF, PostCount > 0) #clears up things where an error got through
+#PlotData = subset(ModDF, PostCount>=3 & PreCount>=3) #this is the arbitry definition of what we considered conserved, this can change
+#hist(as.numeric(PlotData$PreCount)) #plotting up everything
+#hist(as.numeric(PlotData$PostCount))
+#hist(as.numeric(ModDF$PreCount))
+#hist(as.numeric(ModDF$PostCount))
+#plot(jitter(as.numeric(DF$PreCount)),jitter(as.numeric(DF$PostCount)))
+#plot(as.numeric(PlotData$PreCount),as.numeric((PlotData$PostCount)))
 
 GeneAdash = subset(DF, (Gene1Base == "A" & Gene2Base == "-")) #subsetting out all the relevant data to chart Transition and PAM later
 GenedashA = subset(DF, (Gene1Base == "-" & Gene2Base == "A"))
@@ -1782,8 +1801,9 @@ GenedashG = subset(DF, (Gene1Base == "-" & Gene2Base == "G"))
 
 Gene_vector_of_lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
 Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
-
-pdf('ECSalgapplot.pdf')
+names(Gene_vector_of_lengths)=Gene_vector_of_names
+write.csv(Gene_vector_of_lengths,file= "SalECGapData.csv")
+pdf('ECSalgeneplot.pdf')
 barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names) #constructing barplot of mutation frequencies
 dev.off()
 

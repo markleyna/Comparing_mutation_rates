@@ -1,0 +1,9 @@
+module load bioinfo
+module load clustalw
+module load r
+cd /home/french15
+
+R --vanilla < "Fully Generalized Analysis for RadonSalECgap.R"
+R --vanilla < "Fully Generalized Analysis for RadonCBECgap.R"
+R --vanilla < "Fully Generalized Analysis for RadonCBSalgap.R"
+

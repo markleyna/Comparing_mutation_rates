@@ -1619,7 +1619,7 @@ PAM<- function(Amino1, Amino2){
   }
 }
 #Variable Declaration Block
-Genes <- read.csv("RVersionSalECGenes.csv", stringsAsFactors = FALSE)
+Genes <- read.csv("UpdatedSalECGenes.csv", stringsAsFactors = FALSE)
 names(Genes)
 EColiDNA<-read_file("EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)

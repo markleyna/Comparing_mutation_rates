@@ -5,7 +5,7 @@ setwd("/home/french15")
 #install.packages("RSelenium")
 #install.packages("stringr")
 #install.packages("readr")
-library("RSelenium")
+#library("RSelenium")
 library(stringr)
 library('readr')
 print("loaded everything successfully")
@@ -1620,7 +1620,7 @@ PAM<- function(Amino1, Amino2){
   }
 }
 #Variable Declaration Block
-Genes <- read.csv("workingECSalgaps.csv", stringsAsFactors = FALSE)
+Genes <- read.csv("UpdatedECSalGaps.csv", stringsAsFactors = FALSE)
 names(Genes)
 nrow(Genes)
 EColiDNA<-read_file("EColiPureDNA.txt")

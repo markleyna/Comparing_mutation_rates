@@ -3,11 +3,11 @@
 print("entered the script")
 setwd("/home/french15")
 #install.packages("RSelenium")
-#install.packages("stringr")
-#install.packages("readr")
-library("RSelenium")
-library(stringr)
-library('readr')
+#install.packages("stringr", repos="https://cloud.r-project.org")
+#install.packages("readr", repos="https://cloud.r-project.org")
+#library("RSelenium")
+library(stringr, lib.loc = "/home/french15/Rlibs")
+library('readr', lib.loc = "/home/french15/Rlibs")
 print("loaded everything successfully")
 #Predeclaration of Functions
 WhatAmino<-function(threebase){
@@ -1618,10 +1618,33 @@ PAM<- function(Amino1, Amino2){
     print(Amino2)
     return(-20)
   }
-}
+}#Variable Declaration Block
+Genes <- read.csv("UpdatedCBECGenes.csv", stringsAsFactors = FALSE)
+CitroBacDNA<-read_file("RCTest.txt")
+CitroBacDNA<-gsub("\n","",CitroBacDNA)
+EColiDNA <- read_file("EColiPureDNA.txt")
+EColiDNA<-gsub("\n","",EColiDNA)
+Genes <- data.frame(Genes$gapnum, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
+G1<-as.vector(Genes$Genes.gapnum)
+G2<-data.frame(Genes$Genes.cbgeneseq)
+G3<-data.frame(Genes$Genes.ecgeneseq)
+n=1
+buildchar = "Q" #done to prevent things from crashing later on, don't ask
+Gene1Base <- c(buildchar,buildchar)
+Gene2Base<-c(buildchar,buildchar)
+PreCount<-c(-1,-1)
+PostCount<-c(-1,-1)
+Gene1break = ""
+Gene2break = ""
+DF = data.frame(Gene1Base,Gene2Base,PreCount,PostCount)
+DF <- data.frame(lapply(DF, as.character), stringsAsFactors=FALSE) #done to stop shenanigans with strings later on
+Gene1RunTitle <- paste(">","ECGap_number","k", sep = "") #must be 2 digit representation for code to work
+Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit representation for code to work
+
+
 #Variable Declaration Block
-Genes <- read.csv("RVersionCBECGenes.csv", stringsAsFactors = FALSE)
-CitroBacDNA<-read_file("CitroBacKPureDNA.txt")
+Genes <- read.csv("UpdatedCBECGenes.csv", stringsAsFactors = FALSE)
+CitroBacDNA<-read_file("RCTest.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
 EColiDNA <- read_file("EColiPureDNA.txt")
 EColiDNA<-gsub("\n","",EColiDNA)
@@ -1645,8 +1668,8 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 
 #CLUSAL Run on Genes
-while (n <= nrow(G2)){
-#  while(n<=20){ #testing line when not running full version of code
+#while (n <= nrow(G2)){
+  while(n<75){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test<-toString(G3[n,1])

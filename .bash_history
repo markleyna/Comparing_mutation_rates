@@ -1,972 +1,3 @@
-nano SamSub.sub.e969012
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls -t
-nano SamSub.sub.e969013
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls -t
-nano SamSub.sub.e969014
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls -t
-nano SamSub.sub.e969015
-ls -t
-nano SamSub.sub
-qsub SamSub.sub
-rm *.sub.*
-qstat -u french15
-ls -t
-nano SamSub.sub.e969016
-modlue load bcftools
-module load bcftools
-module load bioinfo
-module load samtools
-module load bcftools
-bcftools view -v -c -g SAMoutputS1.bcf
-bcftools view -v -c -g SAMoutputS1.bcf > SAMoutputS1.vcf
-bcftools view SAMoutputS1.bcf
-cd /home/french15/bowtietesting
-ls
-ls -t
-head SAMoutputS1.vcf
-head SAMoutputS1.bcf
-tail SAMoutputS1.bcf
-PuTTYPuTTYPuTTYPuTTYPuTTYPuTTY
-ls
-rm *.sub.*
-ls
-module load bioinfo
-module load samtools
-module load bcftools
-ls -t
-rm SAMoutputS1.vcf
-ls
-ls -t
-bcftools stats SAMoutputS1.bcf
-exit
-cd /home/french15/bowtietesting
-ls
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-cd /home/french15/csonka/
-ls
-cd /home/french15/csonka/hr01944_CHR-Mutations/026326_3363
-ls
-cd /home/french15/csonka/hr01944_CHR-Mutations/026326_3363/Unaligned_filtered
-ls
-qstat -u french15
-nano index.html
-nano inferred_organism.tsv
-nano phiX.stats.txt
-cd /home/french15/csonka/hr01944_CHR-Mutations/026326_3363
-ls
-nano index.html
-cd /home/french15/csonka/hr01944_CHR-Mutations/026326_3363/Unaligned_filtered
-nano quality_control_short.html
-cd /home/french15/csonka/hr01944_CHR-Mutations/026326_3363/Unaligned_filtered/QC
-ls
-cd /home/french15/csonka/hr01944_CHR-Mutations/026326_3363/Unaligned_filtered
-ls
-nano rRNA.stats.txt
-qstat -u french15
-ls
-nano quality_control_full.html
-cd /home/french15/bowtietesting
-ls
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls
-qstat -u french15
-nano SamSub.sub
-qstat -u french15
-qsub SamSub.sub
-qstat -u french15
-ls
-nano SamSub.sub
-qstat -u french15
-qsub SamSub.sub
-qstat -u french15
-ls
-qsub SamSub.sub
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls
-nano SamSub.sub.e969217
-rm *.gz
-ls
-qsub SamSub.sub
-nano SamSub.sub.e969215
-nano SamSub.sub.e969214
-nano SamSub.sub.e969213
-nano SamSub.sub.e969212
-nano SamSub.sub
-qstat -u french15
-qsub SamSub.sub
-qstat -u french15
-qsub SamSub.sub
-qstat -u french15
-ls
-nano SamSub.sub.e969221
-rm *.*.*.tmp.*.*
-ls
-qsub SamSub.sub
-qstat -u french15
-ls
-nano SamSub.sib
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls
-qstat -u french15
-ls
-nano SamSub.sub
-qsub SamSub.sub
-qstat -u french15
-ls
-nano SamSub.sub.969224
-nano SamSub.sub.e969224
-rm *.sub.*
-nano SamSub.sub
-qsub Samsub.sub
-qsub SamSub.sub
-qstat -u french15
-ls
-nano SamSub.sub.e969226
-exit
-module load bioinfo
-module load bamutil
-module load bamUtil
-cd /home/french15/bowtietesting
-ls
-bam diff --onlyDiffs --in1 SAMoutput026317_3362_S1 --in2 SAMoutput026318_3387_S2
-nano SAMCompare.sub
-ls -t
-ls
-nano SAMcompare.sub
-nano SAMCompare.sub
-qsub SamCompare.sub
-qsub SAMCompare.sub
-qstat -u french15
-qstat
-qstat -u french15
-ls
-ls -t
-nano SAMCompare.sub.e969383
-nano SAMCompare
-nano SAMCompare.sub
-qsub SAMCompare.sub
-qstat -u french15
-ls -t
-nano SAMCompare.sub.e969385
-nano SAMCompare.sub
-qsub SAMCompare.sub
-qstat -u french15
-ls
-ls -t
-nano SAMCompare.sub.e969387
-nano SAMCompare.sub
-nano SAMSub.sub
-nano SamSub.sub
-nano SAMCompare.sub
-qsub SAMCompare.sub
-qstat -u french15
-ls
-ls -t
-nano SAMCompare.sub.e969389
-nano SAMoutput026317_3362_S1
-head SAMoutput026317_3362_S1
-nano SAMCompare.sub
-head -n100 SAMoutput026317_3362_S1 > SAMS1Head
-ls -t
-nano SAMS1Head
-head -n100 SAMoutput026319_3387_S2 > SAMS2Head
-ls -t
-nano SAMS2Head
-head -n100 SAMoutput026318_3387_S2 > SAMS2Head
-ls -t
-nano SAMS2Head
-nano SAMCompare.sub
-qsub SAMCompare.sub
-qstat -u frenc15
-qstat -u french15
-ls -t
-nano SAMCompare.sub.e968390
-nano SAMCompare.sub.e969390
-nano SAMCompare.sub
-qsub SAMCompare.su
-qsub SAMCompare.sub
-qstat -u french15
-ls -t
-nano SAM12DiffHead
-rm *.sub.*
-nano SAMCompare.sub
-qsub SAMCompare.sub
-qstat -u french15
-ls
-ls -t
-nano SAMcompare.sub.2969392
-nano SAMcompare.sub.e2969392
-nano SAMCompare.sub.e2969392
-nano SAMCompare.sub.e969392
-nano SAMCompare.sub
-qsub SAMCompare.sub
-qstat -u french15
-ls -t
-nano SAMCompare.sub.e969393
-qsub -l walltime=3:00:00 SAMCompare.sub
-qstat -u french15
-exit
-ls
-git push https://www.github.com/markleyna/comparing_mutation_rates
-ls -t
-git add CBECGeneData.csv
-git add CBSalGeneData.csv
-git add SalECGeneData.csv
-git commit
-git add -u
-cd /home/french15/CsonkaSummerProject
-ls
-cd /home/french15
-rm *.sub.*
-git add -u
-git commit
-git add .
-cd /home/french15/oldruns
-ls
-cd /home/french15
-rm oldruns
-rm -r oldruns
-ls
-git add .
-git add -u
-git reset
-git add -u
-git commit
-git push https://www.github.com/markleyna/comparing_mutation_rates
-ls
-cd /home/french15/bowtietesting
-ls
-ls -t
-nano SAMCompare.sub.e969399
-nano SAMCompare.sub
-nano SAMCompare.sub.e969399
-nano SAMCompare.sub
-nano SAMCompare.sub.e969399
-nano SAMCompare.sub
-qsub -l walltime=3:00:00 SAMCompare13.sub
-qstat -u french15
-nano SAMCompare.sub
-qsub -l walltime=3:00:00 SAMCompare14.sub
-nano SAMCompare.sub
-qsub -l walltime=3:00:00 SAMCompare15.sub
-nano SAMCompare.sub
-qsub -l walltime=3:00:00 SAMCompare16.sub
-nano SAMCompare.sub
-qsub -l walltime=3:00:00 SAMCompare17.sub
-qstat -u french15
-ls -t
-nano SAMCompare14.sub.e969827
-nano SAMCompare14.sub.o969827
-nano SAMCompare15.sub.o969828
-nano SAMCompare15.sub.e969828
-nano SAM15Diff
-head SAM12Diff
-nano SAM12Diff
-nano SAM12DiffHead
-nano SamCompare.sub.e969393
-nano SamCompare.sub.o969393
-nano SamCompare.sub.o969392
-nano SamCompare.sub.e969392
-qstat -u french15
-ls
-ls -t
-nano SAMCompare17.sub.e969880
-nano SAMCompare17.sub.o969880
-nano SAMCompare17
-nano SAMCompare17.sub
-nano SAMCompare13.sub
-head SAM13Diff
-nano SAM13Diff
-SAMCompare13.sub.o969826
-nano SAMCompare13.sub.o969826
-exit
-pwd
-cd /home/french15/bowtietesting
-ls
-head SAMoutputS3.bcf
-SAMoutputS3.bcf
-nano SAMoutputS3.bcf
-cd /home/french15/bowtietesting
-ls
-head 150 SAMoutputS6.bcf
-head 1000 SAMoutputS6.bcf
-head 1000 SAMoutputS3.bcf
-module load bioinfo
-module load bcftools
-bcftools view SAMoutputS3.bcf
-module load bioinfo
-module load bcftools
-cd /home/french15/bowtietesting
-ls
-nano BowtieSub.sub
-nano SAM12DiffHead
-nano SAM12Diff
-rm SAM12Diff
-rm SAM13Diff
-rm SAM14Diff
-rm SAM15Diff
-rm SAM16Diff
-rm SAM17Diff
-ls -t
-head 100 SAMoutput026317_3362_S1
-ls
-cd /home/french15/bowtietesting
-ls
-rm *.sub.*
-ls -t
-nano bcfplottest.sub
-qsub bcfplottest.sub
-qstat -u french15
-ls -y
-ls -t
-nano bcfplottest.sub.e970951
-nano bcfplottest.sub
-qsub bcfplottest.sub
-qstat -u french15
-ls -t
-nano bcfplottest.sub.e970952
-nano bcfplottest.sub.o970952
-head calls.bcf
-PuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTYPuTTY
-ls -t
-bcftools view calls.bcf
-module load bioinfo
-module load samtools
-mosule load bcftools
-module load bcftools
-bcftools view calls.bcf
-bcftools view -i '%QUAL >=20' calls.bcf
-bcftools view -i '%QUAL >=20' calls.bcf | bcftools stats
-bcftools view -i '%QUAL >=20' calls.bcf
-bcftools view -i '%QUAL >50' calls.bcf
-ls -t
-rm *.sub.*
-nano bcfplottest.sub
-qsub bcfplottest.sub
-qstat -u french15
-ls -t
-nano bcfplottest.sub.o970954
-rm SAMcompare17.sub
-rm SAMCompare17.sub
-rm SAMCompare16.sub
-rm SAMCompare15.sub
-rm SAMCompare14.sub
-rm SAMCompare13.sub
-ls -t
-bcfplottest.sub.o970954 > SAMS1_BCF_Data
-cat bcfplottest.sub.o970954 > SAMS1_BCF_Data
-ls -t
-rm *.sub.*
-nano bcfplottest.sub
-qsub bcfplottest.sub
-qstat -u french15
-ls -t
-nano bcfplottest.sub.o970966
-cat bcfplottest.sub.o970966 > SAMS2_BCF_Data
-nano SAMS2_BCF_Data
-calls.bcf
-nano calls.bcf
-bcftools view calls.bcf
-module load vcflib
-vcfaltcount calls.bcf
-nano bcfplottest.sub
-exit
-cd /home/french15/bowtietesting
-ls
-ls -t
-nano SAMS2_BCF_Data
-xit
-exit
-cd /home/french15/bowtietesting
-ls
-ls -t
-nano SAMS2_BCF_Data
-cd /home/french15/csonka/hr01944_CHR-Mutations
-ls
-cd /home/french15/csonka/hr01944_CHR-Mutations/026317_3362
-ls
-nano SAM12DiffHead
-ls /home/french15/bowtietesting
-nano SAM12DiffHead
-cd /home/french15/bowtietesting
-nano SAM12DiffHead
-nano SAMS1_BCF_Data
-exit
-cd /home/french15/bowtietesting
-ls
-ls -t
-nano bcfplottest.sub
-qsub bcfplotttest.sub
-qsub bcfplottest.sub
-qstat -u french15
-ls -t
-nano S2out.vcf
-nano calls.bcf
-nano bcfplottest.sub.o981426
-nano bcfplottest.sub.o971426
-nano bcfplottest.sub.e971426
-nano bcfplottest.sub.o971426
-nano S2out.vcf
-nano bcfplotteste
-nano bcfplottest
-nano bcfplottest.sub
-qsub bcfplottest.sub
-qstat -u french15
-ls -t
-nano S2out.vcf
-nano bcfplottest.sub.o971429
-nano bcfplottest.sub.e971429
-nano bcfplottest.sub
-qsub bcfplottest.sub
-qstat -u french15
-ls -t
-nano bcfplottest.sub.o971433
-nano bcfplottest.sub
-qstat -u french15
-nano bcfplottest.sub
-rm *.*.*.bai
-ls -t
-rm *.sub.*
-ls -t
-qstat -u french15
-nano SAMCompare.sub
-ls -lah
-rm *.sorted.bam
-ls -lah
-rm SAMoutputS8.bcf
-ls -t
-qsub bcfplottest.sub
-qstat -u french15
-ls -t
-nano bcfplottest.sub.e971437
-nano bcfplottest.sub
-qsub bcfplottest.sub
-qstat -u french15
-qstat
-qstat -u french15
-ls -t
-nano S2.vcf
-nano bcfplottest.sub.e971508
-nano bcfplottest.sub
-qsub -l walltime=3:00:00 bcfplottest.sub 
-qstat -u french15
-exit
-qstat -u french15
-cd /home/french15/bowtietesting
-ls
-ls -t
-nano S2.vcf
-nano bcfplottest.sub
-nano bcfplottest3.sub
-ls -t
-qsub bcfplottest1.sub
-qsub bcfplottest2.sub
-qsub bcfplottest3.sub
-qsub bcfplottest4.sub
-qsub bcfplottest5.sub
-qsub bcfplottest6.sub
-qsub bcfplottest7.sub
-qstat -u french15
-exit
-nano "Fully Generalized Analysis for RadonCBSal.R"
-ls
-ls -t
-qsub GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e971700
-nano GenematchCBSal.sub.o971700
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e971702
-nano "Fully Generalized Analysis for RadonCBSal.R"
-nano GenematchCBSal.sub.e971702
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e971703
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e971705
-nano "Fully Generalized Analysis for RadonCBSal.R"
-nano GenematchCBSal.sub.e971705
-nano "Fully Generalized Analysis for RadonCBSal.R"
-nano GenematchCBSal.sub.o971705
-nano GenematchCBSal.sub.e971705
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e71706
-nano GenematchCBSal.sub.e971706
-nano GenematchCBSal.sub.o971706
-nano FastaInBCSal1.txt
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e971707
-exit
-git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
-nano
-ls
-ls -t
-git pull https://www.github.com/markleyna/comparing_mutation_rates "Fully Generalized Analysis for RadonCBSal.R"
-git pull https://www.github.com/markleyna/comparing_mutation_rates
-rm *.sub.*
-git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
-nano "Fully Generalized Analysis for RadonCBSal.R"
-git clone  https://www.github.com/markleyna/comparing_mutation_rates NonParallel
-nano "Fully Generalized Analysis for RadonCBSal.R"
-ls -lah
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub GenematchCBSal.sub
-qstat
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e971720
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub GenematchCBSal.sub
-qstat -u french15
-cd /home/french15/bowtietesting
-ls -t
-qsub -l walltime=2:00:00 bcfplottest4.sub
-exit
-ls
-ls 0-t
-ls -t
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=8:00:00 GenematchCBSal.sub
-qstat -u french15
-cd /home/french15/bowtietesting
-ls
-ls -t
-rm *.sub.*
-ls
-ls -lah
-module load bioinfo
-module load samtools
-module load bcfutil
-ls -t
-pwd
-cd /home
-ls
-cd /home/french15
-echo $RCAC_SCRATCH
-cd /home/french15
-mv bowtietesting /scratch/radon/f/french15
-cd /scratch/radon/f/french15
-ls
-cd /scratch/radon/f/french15/bowtietesting
-ls
-nano bcfplottest1
-nano bcfplottest1.sub
-nano bcfplottest2.sub
-nano bcfplottest3.sub
-nano bcfplottest4.sub
-nano bcfplottest5.sub
-nano bcfplottest6.sub
-nano bcfplottest7.sub
-qsub bcfplottest1.sub
-qstat -u french15
-qsub bcfplottest2.sub
-qsub bcfplottest3.sub
-qsub bcfplottest4.sub
-qsub bcfplottest5.sub
-qsub bcfplottest6.sub
-qsub bcfplottest7.sub
-qstat -u french15
-qstat 
-qstat -u french15
-ls
-ls -t
-nano bcfplottest2.sub.e971962
-nano bcfplottest2.sub
-cd /scratch/radon/f/french15/bowtietesting
-nano bcfplottest2.sub
-cd scratch/radon/f/french15/bowtietesting
-nano bcfplottest1.sub
-nano bcfplottest3.sub
-nano bcfplottest4.sub
-nano bcfplottest5.sub
-nano bcfplottest6.sub
-nano bcfplottest7.sub
-nano bcfplottest5.sub.e971965
-rm *.sorted.bam.*.*.*
-ls
-rm *.sorted.*
-ls -t
-rm *.sub.*
-ls
-rm *.vcf
-ls
-rm calls.bcf
-rm calls1.bcf
-rm calls7.bcf
-ls
-qstat -u french15
-qsub bcfplottest1.sub
-qstat -u french15
-kill 971969.radon-adm.rcac.
-qstat -u french1
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e971968
-nano bcfplottest1.sub.o971968
-rm *.sub.*
-qstat -u french15
-ls -t
-rm *.sorted.bam
-qsub bcfplottest2.sub
-qstat -u french15
-ls
-nano bcfplottest2.sub.e971970
-qstat -u french15
-ls -t
-nano bcfplottest2.sub.e971971
-rm *.sub.*
-rm *.sorted.bam
-module load bioinfo
-module load samtools
-module load bcftools
-nano bcfplottest2
-nano bcfplottest2.sub
-bcftools view SAMoutputS4.bcf
-ls -t
-bcftools view SAMoutputS1.bcf
-qstat -u french15
-exit
-ls -t
-ls 0-t
-ls -t
-nano GenematchCBSal.sub.e971938
-nano GenematchCBSal.sub.o971938
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e972132
-nano GenematchCBSal.sub.o972132
-nano GenematchCBSal.sub.e972132
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e972135
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e972136
-nano FastaInCBSal.txt
-nano "Fully Generalized Analysis for RadonCBSal.R"
-module load bioinfo
-module load clustalw
-nano "Fully Generalized Analysis for RadonCBSal.R"
-git add "Fully Generalized Analysis for RadonCBSal.R"
-git commit
-git push https://www.github.com/markleyna/comparing_mutation_rates
-git pull https://www.github.com/markleyna/comparing_mutation_rates
-git pull https://www.github.com/markleyna/comparing_mutation_rates Nonparallel
-git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
-ls -t
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e972140
-nano GenematchCBSal.sub.o972140
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e972131
-nano GenematchCBSal.sub.e972141
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e972142
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.e972143
-nano GenematchCBSal.sub.o972143
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.o972144
-nano GenematchCBSal.sub.e972144
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.o972145
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-qstat -u french15
-ls -t
-nano GenematchCBSal.sub.o972147
-nano GenematchCBSal.sub.e972147
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=1:00:00 GenematchCBSal.sub
-rm *.sub.*
-qstat -u french15
-exit
-qstat -u french15
-ls -t
-rm FastaInCBSal3.txt
-rm FastaInCBSal2.txt
-rm FastaInCBSal1.txt
-rm FastaInCBSal1.aln
-rm FastaInCBSal2.aln
-rm FastaInCBSal2.dnd
-rm FastaInCBSal1.dnd
-ls -t
-qstat -u french15
-ls -t
-echo $RCAC_SCRATCH
-cd /scratch/radon/f/french15
-ls
-cd /scratch/radon/f/french15/bowtietesting
-ls
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-ls -lah
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972165
-exit
-ls
-nano "Revised Gap Matcher.R"
-git add "Fully Generalized Analysis for RadonSalECgap.R"
-git commit
-git push https://www.github.com/markleyna/comparing_mutation_rates
-exit
-ls 0t
-ls -t
-nano Revised Gap Matcher.R
-nano "Revised Gap Matcher.R"
-nano gapsub.sub
-nano Genematch.sub
-nano GenematchCBEC.sub
-nano gapsub
-nano gapsub.sub
-qsub gapsub.sub
-qstat -u french15
-git pull 
-git pull NonParallel
-git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
-qsub gapsub.sub
-qstat -u french15
-ls -t
-nano gapsub.sub.e972340
-nano gapsub.sub
-nano GenematchCBEC.sub
-nano gapsub.sub
-qsub gapsub.sub
-qstat -u french15
-ls -t
-nano gasub.sub.e972341
-nano gasub.sub.o972341
-nano gapsub.sub.o972341
-nano gapsub.sub.e972341
-nano "Revised Gap Matcher.R"
-qsub gapsub.sub
-qstat -u french15
-ls -t
-nano gapsub.sub.e972342
-nano "Revised Gap Matcher.R"
-qsub gapsub.sub
-qstat -u french15
-ls -t
-nano gapsub.sub.e972343
-cd /home/french15/Rlibs
-ls
-cd /home/french15
-nano "Revised Gap Matcher.R"
-qsusb gapsub.sub
-qsub gapsub.sub
-qstat -u french15
-ls -t
-nano gapsub.sub.e972344
-nano gapsub.sub.o972344
-nano gapsub.sub.e972344
-nano "Revised Gap Matcher.R"
-qsub gapsub.sub
-qstat -u french15
-lls -t
-ls -t
-nano gapsub.sub.e972345
-nano "Revised Gap Matcher.R"
-qsub gapsub.sub
-rm *.sub.*
-qstat -u french15
-ls -t
-nano gapsub.sub.e972346
-git add "Revised Gap Matcher.R"
-git commit
-git push
-git push http://www.github.com/markleyna/comparing_mutation_rates
-git pull http://www.github.com/markleyna/comparing_mutation_rates
-git pull http://www.github.com/markleyna/comparing_mutation_rates NonParallel
-ls
-ls -t
-rm *.sub.*
-qsub -l walltime=12:00:00  GenematchSalEC.sub
-qsub -l walltime=12:00:00  GenematchCBSal.sub
-qsub -l walltime=12:00:00  GenematchCBEC.sub
-qstat -u french15
-ls 0t
-ls -t
-nano GenematchSalEc.sub.e972347
-nano GenematchSalEC.sub.e972347
-nano "Fully Generalized Analysis for RadonSalEC.R"
-nano "Fully Generalized Analysis for RadonCBEC.R"
-qsub -l walltime=12:00:00  GenematchCBEC.sub
-qsub -l walltime=12:00:00  GenematchSalEC.sub
-qstat -u french15
-ls -t
-exit
-ls -t
-qstat -u french15
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=12:00:00  GenematchCBSal.sub
-qstat -u french15
-nano "Fully Generalized Analysis for RadonCBEC.R"
-exit
-ls
-ls -t
-nano GenematchCBSal.sub.e972352
-nano GenematchCBSal.sub.o972352
-nano "Fully Generalized Analysis for Radon CBSal.R"
-nano "Fully Generalized Analysis for RadonCBSal.R"
-qsub -l walltime=24:00:00  GenematchCBSal.sub
-qstat -u french15
-echo $RCAC_SCRATCH
-cd /scratch/radon/f/french15
-ls
-cd /scratch/radon/f/french15/bowtietesting
-ls
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972849
-cp bcfplottest1.sub /home/french15/bowtietesting
-cd /home/french15/bowtietesting
-ls
-cd /home/french15
-ls
-rm bowtietesting
-mkdir bowtietesting
-ls
-cd /scratch/radon/f/french15/bowtietesting
-cp bcfplottest1.sub /home/french15/bowtietesting
-cd /home/french15
-lks
-ls
-cd /home/french15/bowtietesting
-ls
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972854
-cd /home/french15
-ls 
-rm bowtietesting
-rm -rf bowtietesting
-ls
-cd /scratch/radon/f/french15/bowtietesting
-qstat -u french15
-exit
-ls'
-
-
-'
-ls -t
-cd /scratch/radon/f/french15/bowtietesting
-ls
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-exit
-qstat -u french15
-cd /scratch/radon/f/french15/bowtietesting
-ls
-ls -t
-nano bcfplottest1.sub.e972869
-nano bcfplottest1.sub.o972869
-nano bcfplottest1.sub.e972869
-nano bcfplottest1.sub
-nano bcfplottest1.sub.e972869
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972871
-qsub bcfplottest1.sub
-nano bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972872
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972873
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972874
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfplottest1.sub.e972876
-rm *.sub.*
-nano bcfplottest1.sub
-ls -t
-nano bcfplottest1.sub.e972876
-nano bcfplottest1.sub
-qsub bcfplottest1.sub
-qstat -u french15
-ls -t
-nano bcfpolottest1.sub.e972880
-nano bcfplottest1.sub.e972880
-nano bcfplottest1.sub
-qsub bacfplotest1.sub
 
 qsub bcfplottest1.sub
 qstat -u french15
@@ -997,4 +28,973 @@ qsub bcfplottest1.sub
 qstat -u french15
 ls -t
 nano bcfplottest1.sub.e972886
+exit
+echo $RCAC_SCRATCH
+ls
+ls -t
+cd /scratch/radon/f/french15/bowtietesting
+ls
+nano bcfplottest1.sub
+qsub bcfplottest1.sub
+qstat -u french15
+cd /home/french15
+ls
+ls -t
+git add CBSalGeneData.csv
+git add CBECGeneData.csv
+git commit
+git push www.github.com/markleyna/comparing_mutation_rates
+git push www.github.com/markleyna/compiaring_mutation_rates
+git push www.github.com/markleyna/compairing_mutation_rates
+git push http://www.github.com/markleyna/comparing_mutation_rates
+git add .
+git commit
+git reset
+rm *.sub.*
+git add .
+git commit
+git push http://www.github.com/markleyna/comparing_mutation_rates
+qstat -u french15
+cd /scratch/radon/f/french15/bowtietesting
+ls
+ls -t
+nano bcfplottest1.sub.e973095
+nano bcfplotttest1.sub
+nano bcfplottest1.sub
+qsub bcfplottest1.sub
+qstat -u french15
+ls -t
+nano bcfplottest1.sub.e973097
+nano bcfplottest1.sub
+nano bcfplottest1.sub.o973097
+nano bcfplottest1.sub
+qsub bcfplottest1.sub
+qstat -u french15
+ls -t
+nano bcfplottest1.sub.e973098
+rm *.sub.*
+nano bcfplottest2.sub
+nano bcfplottest3.sub
+nano bcfplottest4.sub
+nano bcfplottest5.sub
+nano bcfplottest6.sub
+nano bcfplottest7.sub
+qsub bcfplottest2.sub
+qsub bcfplottest3.sub
+qsub bcfplottest4.sub
+qsub bcfplottest5.sub
+qsub bcfplottest6.sub
+qsub bcfplottest7.sub
+ls -t
+qstat -u french15
+ls -t
+nano bcfplottest4.sub.e973102
+nano bcfplottest4.sub
+qsub bcfplottest4.sub
+qstat -u french15
+ls -t
+nano bcfplottest7.sub.e973105
+nano bcfplottest7.sub
+nano bcfplottest7.sub.e973105
+nano bcfplottest7.sub
+qstat -u french15
+ls -t
+nano bcfplottest2.sub.e973100
+nano bcfplottest1.sub
+nano bcfplottest2.sub
+nano bcfplottest1.sub
+nano bcfplottest2.sub
+nano bcfplottest2.sub.e973100
+nano bcfplottest1.sub
+nano bcfplottest2.sub
+rm *.sub.*
+nano bcfplottest3.sub
+nano bcfplottest4.sub
+nano bcfplottest5.sub
+nano bcfplottest6.sub
+nano bcfplottest7.sub
+qsub bcfplottest2.sub
+qsub bcfplottest3.sub
+qsub bcfplottest4.sub
+qsub bcfplottest5.sub
+qsub bcfplottest6.sub
+qsub bcfplottest7.sub
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+nano bcfplottest6.sub.e973111
+qstat -u french15
+qstat -u french15'
+'
+qstat -u french15
+nano vcfcompare.sub
+ls -t
+rm *.sub.*
+ls -t
+nano vcfcompare.sub
+echo $RCAC_SCRATCH
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e73113
+nano vcfcompare.sub.e973113
+module load vcftools
+module spider vcftools
+module spider vcftools/0.1.9
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973113
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973115
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973116
+nano vcfcompare.sub.o973116
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973117
+vcf-compare -h
+module load vcftools
+module load vcftools/0.1.14
+module spider vcftools/0.1.14
+module load bioinfo
+module load vcftools/0.1.14
+vcf-compare -h
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973118
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973121
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973122
+nano vcfcompare.sub
+rm *.sub.*
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973125
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.o973129
+nano vcfcompare.sub.e973129
+nano vcfcompare.sub
+rm *.sub.*
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973131
+nano vcfcompare.sub.o973131
+cat vcfcompare.sub.o973131 > vcfcompare.txt
+ls
+rm *.sub.*
+vcfcompare.sub
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973144
+nano vcfcompare.sub
+nano vcfcompare.sub.e973144
+nano vcfcompare.sub
+qstat -u french15
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973145
+ls -t
+head similarities.vcf.gz
+head similarites.vcf.gz
+nano vcfcompare.sub
+qsub vcfcompare.sub
+ls -t
+nano vcfcompare.sub.o973146
+nano vcfcompare.sub.e973146
+nano vcfcompare.sub
+nano vcfcompare.sub.e973146
+nano vcfcompare.sub
+qsub vcfcompare.sub
+ls -t
+nano vcfcompare.sub.o973147
+cat vcfcompare.sub.o973147 > vcfcompare.txt
+rm *.sub.*
+nano vcfcompare.txt
+exit
+cd /scratch/radon/f/french15/bowtietesting
+ls -t
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e93333
+nano vcfcompare.sub.e973333
+nano vcfcomposite.vcf
+module load bioinfo
+module load bcftools
+module load vcftools
+vcftools --vcf vcfcomposite.vcf --gzdiff S1.vcf.gz --out 1compare
+ls -t
+1compare.log
+nano 1compare.log
+vcftools --vcf vcfcomposite.vcf --gzdiff S1.vcf.gz --out 1compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S1.vcf.gz --out 1compare --diff-site
+ls -t
+nano 1compare.diff.sites_in_files
+nano 1compare.log
+vcftools --diff vcfcomposite.vcf --gzvcf S2.vcf.gz --out 2compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S3.vcf.gz --out 3compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S4.vcf.gz --out 4compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S5.vcf.gz --out 5compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S6.vcf.gz --out 6compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S7.vcf.gz --out 7compare --diff-site
+ls -t
+rm *.sub.*
+nano SamSub.sub
+qsub SamSub.sub
+qstat -u french15
+ls -t
+rm *.sub.*
+nano SamSub.sub
+qsub SamSub.sub
+qstat -u french15
+ls -t
+nano SamSub.sub.e973336
+nano SamSub.sub
+qsub SamSub.sub
+qstat -u french15
+ls -t
+nano SamSub.sub.e973338
+nano SamSub.sub
+qsub SamSub.sub
+qstat -u french15
+ls -t
+nano bcfplottest.sib
+nano bcfplottest.sub
+qsub bcfplottest.sub
+qstat -u french15
+ls -t
+nano bcfplottest.sub.e973341
+nano bcfplottest.sub
+qsub bcfplottest.sub
+qstat -u french15
+ls -t
+nano bcfplottest.sub
+qsub bcfplottest.sub
+qstat -u french15
+ls -t
+nano bcfplottest.sub.e973344
+nano bcfplottest.sub
+nano bcfplottest.sub.e973344
+nano bcfplottest.sub
+qsub bcfplottest.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973347
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973348
+vcftools --diff vcfcomposite.vcf --gzvcf S1.vcf.gz --out 1compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S2.vcf.gz --out 2compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S3.vcf.gz --out 3compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S4.vcf.gz --out 4compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S5.vcf.gz --out 5compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S6.vcf.gz --out 6compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S7.vcf.gz --out 7compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S8.vcf.gz --out 8compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S9.vcf.gz --out 9compare --diff-site
+vcftools --diff vcfcomposite.vcf --gzvcf S10.vcf.gz --out 10compare --diff-site
+exit
+ls
+ls 
+nano gapsub.sub
+nano "Revised Gap Matcher.R"
+nano gapsub.sub
+R --vanilla "Revised Gap Matcher.R"
+module load R
+nano gapsub.sub
+module load r
+R --vanilla "Revised Gap Matcher.R"
+nano gapsub.sub
+R --vanilla <  "Revised Gap Matcher.R"
+nano "Revised Gap Matcher.R"
+R --vanilla <  "Revised Gap Matcher.R"
+nano "Revised Gap Matcher.R"
+R --vanilla <  "Revised Gap Matcher.R"
+nano "Revised Gap Matcher.R"
+R --vanilla <  "Revised Gap Matcher.R"
+ls
+R --vanilla <  "Revised Gap Matcher.R"
+nano "Revised Gap Matcher.R"
+R --vanilla <  "Revised Gap Matcher.R"
+nano "Revised Gap Matcher.R"
+qsub gapsub.sub
+qstat -u french15
+ls -t
+nano gapsub.sub.e973653
+git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
+exit
+cd /scratch/radon/f/french15
+ls
+cd /scratch/radon/f/french15/bowtietesting
+ls
+nano 10compare.diff.sites_in_files
+qstat -u french15
+cd /home/french15
+ls
+qstat
+git pull http://www.githu.com/markleyna/comparing_mutation_rates NonParallel
+git pull http://www.github.com/markleyna/comparing_mutation_rates NonParallel
+rm "Revised Gap Matcher.R"
+git pull http://www.github.com/markleyna/comparing_mutation_rates NonParallel
+nano "Revised Gap Matcher.R"
+cd /scratch/radon/f/french15/bowtietesting
+ls
+5compare.sidd.sites_in_files
+nano 5compare.sidd.sites_in_files
+nano 5compare.diif.sites_in_files
+nano 5compare.diff.sites_in_files
+diff 3compare.diff.sites_in_files 10compare.diff.sites_in_files
+ls -t
+nano 10compare.log
+nano 1compare.log
+nano 5compare.log
+nano 2compare.log
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+ls -t
+nano vcfcompare.sub.e973885
+vcftools --diff vcfcomposite.vcf --gzvcf S1.vcf.gz --out 1compare --diff-site
+module load bioinfo
+module load vcftools
+vcftools --diff vcfcomposite.vcf --gzvcf S1.vcf.gz --out 1compare --diff-site
+nano Bowtiesub.sub
+nano BowtieSub.sub
+ls
+nano 1compare.diff.sites_in_files
+nano BowtieSub.sub
+exit
+cd /scratch/radon/f/french15/bowtietesting
+ls
+ls -t
+nano BowtieSub.sub
+qsub BowtieSub.sub
+qstat -u french15
+ls BowtieSub.sub
+nano BowtieSub.sub
+qstat -u french15
+nano BowtieSub.sub
+qstat -u french15
+nano BowtieSub.sub
+module load samtools
+module load bioinfo
+module load samtools
+samtools view
+ls -t
+samtools view SAMoutput026322_3377_S6
+samtools depth SAMoutput026322_3377_S6
+ls -t
+samtools depth SAMoutput026323_5586_S7
+ls -t
+samtools depth SAMoutputS2.sorted.bam
+samtools depth SAMoutputS7.sorted.bam
+samtools depth SAMoutputS4.sorted.bam
+ls -t
+nano FullRun.sub
+exit
+cd /scratch/radon/f/french15/bowtietesting
+ls
+ls -t
+nano bowtiesub.sub
+nano Bowtiesub.sub
+nano BowtieSub.sub
+nano SamCompare.sub
+bcfplottest.sub
+nano bcfplottest.sub
+exit
+cd /scratch/radon/f/french15/bbmaptesting
+ls
+nano mastersub.sub
+qsub walltime =10:00:00 mastersub.sub
+qsub -l walltime =10:00:00 mastersub.sub
+qsub -l walltime=10:00:00 mastersub.sub
+qstat -u french15
+exit
+cd /csonka
+ls
+cd /home/french15/csonka
+ls
+cd /home/french15/csonka/hr01933_CHR-Mutations
+cd /home/french15/csonka/hr01944_CHR-Mutations
+ls
+cd /home/french15/csonka/hr01944_CHR-Mutations/026317_3362
+ls
+cd /home/french15/csonka/hr01944_CHR-Mutations/026317_3362/Unaligned_filtered
+ls
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /scratch/radon/f/french15
+mkdir bbmaptesting
+ls
+cd /home/french15/csonka/hr01944_CHR-Mutations/026317_3362/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations
+ls
+cd /home/french15/csonka/hr01944_CHR-Mutations/026318_3387
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026318_3387/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026319_3366/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026320_5538/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026321_3368/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026322_3377/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026323_5586/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026324_5589/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /home/french15/csonka/hr01944_CHR-Mutations/026325_5456/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /scratch/radon/f/french15/bbmaptesting
+ls
+cd /home/french15/csonka/hr01944_CHR-Mutations/026326_3363/Unaligned_filtered
+cp *.gz /scratch/radon/f/french15/bbmaptesting
+cd /scratch/radon/f/french15/bbmaptesting
+ls
+nano mastersub.sub
+cd /scratch/radon/f/french15/bbmaptesting
+ls
+cd /scratch/radon/f/french15/bowtietesting
+ls
+cp sequence.fasta /scratch/radon/f/french15/bbmaptesting
+ls
+cd /scratch/radon/f/french15/bbmaptesting
+ls
+nano mastersub.sub
+qsub mastersub.sub
+qstat -u french145
+qstat -u french15
+ls -t
+nano mastersub.sub.e974403
+nano mastersub.sub
+qsub mastersub.sub
+qstat -u french15
+ls 0t
+ls -t
+nano mastersub.sub.e974404
+nano mastersub.sub
+qsub mastersub.sub
+qstat -u french15
+ls -t
+nano mastersub.sub.e974405
+nano mastersub.sub
+qsub mastersub.sub
+rm *.sub.*
+ls -t
+qstat -u french15
+ls -t
+nano mastersub.sub.e974406
+nano mastersub.sub
+qsub mastersub.sub
+qstat -u french15
+ls -t
+nano mastersub.sub.e9744407
+nano mastersub.sub.e974407
+nano mastersub.sub
+cd /scratch/radon/f/french15/bowtietesting
+ls
+nano bcfplottest.sub
+nano SamSub.sub
+ls -t
+nano vcfcompare.sub
+ls
+nano vcfcompare.sub
+nano bcfplottest.sub
+nano vcfcompare.sub
+exit
+qstat -u french15
+exit
+ls
+cd /scratch/radon/f/french15/bbmaptesting
+ls
+ls -t
+nano mastersub,e974409
+nano mastersub.sub.e974409
+nano mastersub.sub
+rm *.sub.*
+nano mastersub.sub
+module load bioinfo
+module load java
+module load samtools
+module load BBTools
+nano mastersub.sub
+bbmap.sh in1=026325_5456_S9_R1_filtered.fastq.gz in2=026325_5456_S9_R2_filtered.fastq.gz out=samS9.sam ref=sequence.fasta
+ls -t
+nano mastersub.sub
+qsub mastersub.sub -l walltime=10:00:00
+qstat -u french15
+cp *.gz /scratch/radon/f/french15/bowtietesting
+cp mastersub.sub /scratch/radon/f/french15/bowtietesting
+cd /scratch/radon/f/french15/bowtietesting
+ls -t
+nano mastersub.sub
+nano bowtiesub.sub
+nano BowtieSub.sub
+nano mastersub.sub
+nano BowtieSub.sub
+nano mastersub.sub
+nano BowtieSub.sub
+nano mastersub.sub
+nano BowtieSub.sub
+qsub mastersub.sub
+qstat -u french15
+ls
+ls -t
+qsub mastersub.sub -l walltime=10:00:00
+qstat -u french15
+exit
+cd /scratch/f/french15/bowtietesting
+cd /scratch/radon/f/french15/bowtietesting
+ls
+ls -t
+sftp
+module load bioinfo
+nano mastersub.sub.e974583
+nano mastersub.sub
+nano BowtieSub.sub
+nano mastersub.sub
+nano mastersub.sub.e974583
+module load bowtie2
+bowtie-build sequence.fasta
+bowtie2-build sequence.fasta
+bowtie2-build sequence.fasta SalmonellaBT
+ls
+ls -t
+nano mastersub.sub
+qsub -l walltime=10:00:00 mastersub.sub
+nano mastersub.sub
+qsub -l walltime=10:00:00 mastersub.sub
+qstat -u french15
+ls -lah
+exit
+cd /scratch/radon/f/french15/bowtietesting
+ls
+ls -t
+module load bioinfo
+module load bcftools
+bcftools view S10.vcf.gz
+qstat -u french15
+ls
+ls -t
+nano mastersub.sub.e974932
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+bcftools S1.vcf.gz
+bcftools view S1.vcf.gz
+nano mastersub.sub.e974933
+nano mastersub.sub
+rm *.vcf.gz
+rm *.vcf.gz.tbi
+ls -t
+qsub -l walltime=10:00:00 mastersub.sub
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+cd /scratch/radon/f/french15/bowtietesting
+ls
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+qstat -u french15
+ls -t
+nano mastersub.sub.e974960
+bcftools view S10.vcf.gz
+module load bcftools
+module load bioinfo
+module load bcftools
+bcftools view S10.vcf.gz
+nano vcfcompare.sub
+qsub vcfcompare.sub
+qstat -u french15
+nano mastersub.sub.e974960
+bcftools view S6.bcf
+bcftools view S1.bcf -o S1.vcf
+ls -t
+bcftools view S1.vcf
+ls -t
+nano vcfcompare.sub.e974985
+nano mastersub.sub
+nano vcfcompare.sub.e974985
+nano vcfcompare.sub
+qsub vcfcompare.sub
+bgzip S1.vcf
+ls -t
+bcftools view S1.vcf.gz
+ls -t
+qstat -u french15
+bcftools view S8.vcf.gz
+nano mastersub.sub
+bcftools view -i '%QUAL>50' 
+nano mastersub.sub
+bcftools view -i '%QUAL>50' S1.bcf -o S1.vcf
+bcftools view -i '%QUAL>50' S2.bcf -o S2.vcf
+bcftools view -i '%QUAL>50' S3.bcf -o S3.vcf
+bcftools view -i '%QUAL>50' S4.bcf -o S4.vcf
+bcftools view -i '%QUAL>50' S5.bcf -o S5.vcf
+bcftools view -i '%QUAL>50' S6.bcf -o S6.vcf
+bcftools view -i '%QUAL>50' S7.bcf -o S7.vcf
+bcftools view -i '%QUAL>50' S8.bcf -o S8.vcf
+bcftools view -i '%QUAL>50' S9.bcf -o S9.vcf
+bcftools view -i '%QUAL>50' S10.bcf -o S10.vcf
+ls -t
+bcftools view S4.vcf
+bcftools view S2.vcf
+bcftools view S1.vcf
+nano mastersub.sub.e974
+ls -t
+bcftools view S2.bcf
+ls -t
+nano SamSub.sub
+nano bcfplottest.sub
+nano mastersub
+nano mastersub.sub
+nano mastersub
+nano bcfplottest.sub
+nano mastersub.sub
+bcftools view calls10.bcf
+nano mastersub.sub
+ls -t
+rm *.vcf.gz.tbi
+rm *.vcf.gz
+ls -t
+qsub mastersub.sub -l walltime=10:00:00
+qstat -u french15
+ls -t
+cd /scratch/radon/f/french15/bowtietesting
+ls
+ls t
+ls -t
+qstat -u french15
+module load bioinfo
+module load bcftools
+bcftools view S10.vcf.gz
+nano mastersub.sub
+ls n-t
+ls -t
+nano mastersub.sub.e974989
+nano mastersub.sub
+qsub mastersub.sub -l walltime=10:00:00
+exit
+cd /scratch/radon/f/french15/bowtietesting
+ls -t
+rm *.vcf.gz
+rm *.vcf.gz.tbi
+exit
+cd /scratch/radon/f/french15/bowtietesting
+qstat -u french15
+exit
+cd /scratch/radon/f/french15/bowtietesting
+exit
+cd /scratch/radon/f/french15/bowtietesting
+qstat -u french15
+ls -t
+module load bioinfo
+module load bcftools
+bcftools view S10.vcf.gz
+s -t
+bcftools view S7.vcf.gz
+exit
+cd /scratch/radon/f/french15/bbmaptesting
+ls
+ls -t
+nano mastersub.sub
+rm *.vcf.gz.tbi
+rm *.vcf.gz
+qsub mastersub.sub -l walltime=10:00:00
+nano mastersub.sub
+qsub mastersub.sub -l walltime=10:00:00
+ls -t
+nano mastersub.sub
+qsub mastersub.sub -l walltime=10:00:00
+nano mastersub.sub
+qsub mastersub.sub -l walltime=10:00:00
+qstat -u french15
+exit
+cd /scratch/radon/f/french15/bbmaptesting
+ls -t
+nano mastersub.sub.e975964
+qstat -u french15
+module load bioinfo
+module load bcftools
+bcftools view S9.vcf.gz
+bcftools view S3.vcf.gz
+bcftools view S5.vcf.gz
+exit
+ls
+cd /scratch/radon/f/french15/bbmaptesting
+ls -t
+exit
+cd /scratch/radon/f/french15/bowtietesting
+exit
+ls
+ls -t
+git pull https://www.github.com/markleyna/comparing_mutation_rates
+git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
+nano "Fully Generalized Analysis for RadonCBSal.R"
+qsub -l walltime=10:00:00 "Fully Generalized Analysis for RadonCBSal.R"
+qsub -l walltime=10:00:00 GenematchCBSal.sub
+qstat -u french15
+nano "Fully Generalized Analysis for RadonECSal.R"
+nano "Fully Generalized Analysis for RadonSalEC.R"
+qsub -l walltime=10:00:00 GenematchSalEC.sub
+qstat -u french15
+ls
+nano "Fully Generalized Analysis for RadonCBEC.R"
+qsub GenematchCBEC.sub
+qstat -u french15
+nano "Fully Generalized Analysis for RadonCBSal.R"
+qstat -u french15
+exit
+ls
+ls -t
+nano GenematchCBSal.sub.e988133
+nano GenematchCBSal.sub.e977133
+nano GenematchCBEC.sub.e977133
+nano GenematchCBEC.sub.e977135
+nano CitroBacFPureDNA.txt
+git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
+nano "Fully Generalized Analysis for RadonCBSal.R"
+nano "Fully Generalized Analysis for RadonCBEC.R"
+qsub -l walltime=20:00:00 GenematchCBSal.sub
+qsub -l walltime=20:00:00 GenematchCBEC.sub
+exit
+ls
+ls -t
+nano GenematchCBEC.sub.e977455
+nano GenematchCBSal.sub.e977454
+nano "Fully Generalized Analysis for RadonCBEC.R"
+nano "Fully Generalized Analysis for RadonCBSal.R"
+qsub -l walltime=20:00:00 GenematchCBSal.sub
+qsub -l walltime=20:00:00 GenematchCBEC.sub
+qstat -u french15
+nano "Fully Generalized Analysis for RadonCBEC.R"
+ls -t
+nano GenematchCBEC.sub.e978803
+ls Rlibs
+nano "Fully Generalized Analysis for RadonCBEC.R"
+qsub -l walltime=20:00:00 GenematchCBEC.sub
+qstat -u french15
+ls -t
+nano GenematchBCEC.sub.e978804
+nano GenematchCBEC.sub.e978804
+nano "Fully Generalized Analysis for RadonCBEC.R"
+qsub -l walltime=20:00:00 GenematchCBEC.sub
+qstat -u french15
+ls -t
+nano GenematchCBEC.sub.e78805
+nano GenematchCBEC.sub.e978805
+nano "Fully Generalized Analysis for RadonCBEC.R"
+qsub -l walltime=20:00:00 GenematchCBEC.sub
+qstat -u french15
+nano "Fully Generalized Analysis for RadonCBSal.R"
+qsub -l walltime=20:00:00 GenematchCBSal.sub
+qstat -u french15
+ls -t
+nano GenematchCBSal.sub.e978807
+nano "Fully Generalized Analysis for RadonCBSal.R"
+qsub -l walltime=20:00:00 GenematchCBSal.sub
+qstat -u french15
+ls -t
+nano GenematchBCSal.sub.e978808
+nano GenematchCBSal.sub.e978808
+qstat -u french15
+ls -t
+qsub -l walltime=20:00:00 GenematchCBSal.sub
+qstat -u french15
+exit
+qsub -l walltime=40:00:00 GenematchCBEC.sub
+qsub -l walltime=40:00:00 GenematchCBSal.sub
+qstat -u french15
+ls -t
+nano GenematchCBSal.sub.e978973
+qstat -u french15
+qsub -l walltime=40:00:00 GenematchCBSal.sub
+qstat -u french15
+rm *.sub.*
+ls -t
+nano GapSub.sub
+nano "Fully Generalized 
+"
+nano "Fully Generalized Analysis for RadonECSalgap.R"
+git pull https://www.github.com/markleyna/comparing_mutation_rates NonParallel
+nano "Fully Generalized Analysis for RadonECSalgap.R"
+nano Genematch.sub
+nano GapSub.sub
+nano Genematch.sub
+nano GapSub.sub
+nano Genematch.sub
+nano "Fully Generalized Analysis for RadonCBECgap.R"
+nano GapSub.sub
+nano "Fully Generalized Analysis for RadonCBSalgap.R"
+nano GapSub.sub
+qsub -l walltime=20:00:00 GapSub.sub
+qstat -u french15
+ls -t
+qstat GapSub.sub.e979000
+nano GapSub.sub.e979000
+nano GapSub.sub
+nano Genematch.sub
+nano GapSub.sub
+qsub -l walltime=20:00:00 GapSub.sub
+qstat -u french15
+ls -t
+nano GapSub.sub.e979001
+nano "Fully Generalized Analysis for RadonECSalgap.R"
+nano "Fully Generalized Analysis for RadonCBECgap.R"
+nano "Fully Generalized Analysis for RadonCBSalgap.R"
+qsub -l walltime=20:00:00 GapSub.sub
+qstat -u french15
+ls -t
+nano GapSub.sub.e979002
+nano "Fully Generalized Analysis for RadonECSalgap.R"
+nano GapSub.sub.e979002
+nano "Fully Generalized Analysis for RadonCBSalgap.R"
+qsub -l walltime=20:00:00 GapSub.sub
+qstat -u french15
+ls -t
+nano GapSub.sub.e979003
+nano "Fully Generalized Analysis for RadonCBEC.R"
+nano "Fully Generalized Analysis for RadonECSalgap.R"
+nano "Fully Generalized Analysis for RadonCBEC.R"
+nano "Fully Generalized Analysis for RadonECSal.R"
+nano "Fully Generalized Analysis for RadonSalEC.R"
+ls -t
+nano "Fully Generalized Analysis for RadonCBSal.R"
+ls -t
+nano GapSub.sub
+qsub -l walltime=20:00:00 GapSub.sub
+qstat -u french15
+ls -t
+nano GapSub.sub.e979004
+nano GapSub
+nano GapSub.sub
+exitr
+exit
+ls -t
+nano "Fully Generalized Analysis for RadonCBSal.R"
+qsub -l walltime=40:00:00 GenematchCBSal.sub
+qstat
+qstat -u french14=5
+qstat -u french145
+qstat -u french15
+ls -t
+nano 
+nano GenematchCBSal.sub.o978987
+qstat -u french15
+ls -t
+nano "Fully Generalized Analysis for RadonCBSal.R"
+qsub -l walltime=40:00:00 GenematchCBSal.sub
+nano "Fully Generalized Analysis for RadonCBEC.R"
+qsub -l walltime=40:00:00 GenematchCBEC.sub
+qsub -l walltime=40:00:00 GenematchCBSalgap.sub
+nano "Fully Generalized Analysis for RadonCBECgap.R"
+nano GapSub.sub.e979004
+nano "Fully Generalized Analysis for RadonCBECgap.R"
+nano GapSub.sub
+qsub GapSub.sub
+qstat -u french15
+ls -t
+nano GapSub.sub.e979622
+nano "Fully Generalized Analysis for RadonCBECgap.R"
+qsub GapSub.sub
+qstat -u french15
+\ls -t
+nano GapSub.sub.e979623
+nano "Fully Generalized Analysis for RadonCBECgap.R"
+qsub GapSub.sub
+qstat -u french15
+ls -t
+nano GapSub.sub.e979624
+nano GapSub.sub.o979624
+nano "Fully Generalized Analysis for RadonCBSalgap.R"
+nano "Fully Generalized Analysis for RadonECSalgap.R"
+nano "Fully Generalized Analysis for RadonSalECgap.R"
+nano "Fully Generalized Analysis for RadonCBSalgap.R"
+nano "Fully Generalized Analysis for RadonSalECgap.R"
+nano "Fully Generalized Analysis for RadonCBSalgap.R"
+nano "Fully Generalized Analysis for RadonCBECgap.R"
+nano "Fully Generalized Analysis for RadonSalECgap.R"
+nano GapSub.sub
+qsub -l walltime=5:00:00 GapSub.sub
+qstat -u french15
+ls -t
+nano GapSub.sub.e979625
+nano GapSub.sub.o979625
 exit

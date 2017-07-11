@@ -2,11 +2,11 @@
 print("entered the script")
 setwd("/home/french15")
 #install.packages("RSelenium")
-#install.packages("stringr")
-#install.packages("readr")
-library("RSelenium")
-library(stringr)
-library('readr')
+#install.packages("stringr", repos="https://cloud.r-project.com")
+#install.packages("readr", repos="https://cloud.r-project.com")
+#library("RSelenium")
+library(stringr, lib.loc="/home/french15/Rlibs")
+library('readr', lib.loc="/home/french15/Rlibs")
 print("loaded everything successfully")
 #Predeclaration of Functions
 WhatAmino<-function(threebase){
@@ -1619,8 +1619,8 @@ PAM<- function(Amino1, Amino2){
   }
 }
 #Variable Declaration Block
-Genes <- read.csv("RVersionCBSalGenes.csv", stringsAsFactors = FALSE)
-CitroBacDNA<-read_file("CitroBacKPureDNA.txt")
+Genes <- read.csv("UpdatedCBSalGenes.csv", stringsAsFactors = FALSE)
+CitroBacDNA<-read_file("CitroBacFRCPureDNA.txt")
 CitroBacDNA<-gsub("\n","",CitroBacDNA)
 SalDNA <- read_file("SalmonellaPureDNA.txt")
 SalDNA<-gsub("\n","",SalDNA)
@@ -1645,8 +1645,8 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 
 #CLUSAL Run on Genes
-while (n <= nrow(G2)){
-#  while(n<=4){ #testing line when not running full version of code
+#while (n <= nrow(G2)){
+  while(n<=75){ #testing line when not running full version of code
   testnum<-G1[n]
   Gene1Test <- toString(G2[n,1])
   Gene2Test<-toString(G3[n,1])
