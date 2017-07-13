@@ -58,6 +58,7 @@
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.5}
+\usepackage{siunitx}
 \usetikzlibrary{calc}
 \usepackage{amsmath,amsthm, amssymb, latexsym}
 \boldmath
@@ -135,7 +136,7 @@ Pairwise comparisons using BLASTN were used to identify regions that had shared 
 
 \begin{column}{.32 \linewidth}
  \begin{block}{\large Hypothesis}
-	We hypothesize that there is no preservation of order shown in gap regions, so they should be substantially more random than genes.
+	We hypothesize that genes will be different than gaps because they have to code information essential to cell survival.
 	
 \end{block}
 \begin{block}{\large Illustrations}
@@ -166,11 +167,14 @@ Genomes were run through BLAST to identify matching regions for each pair compar
 Matched regions (both genes and gaps) were run through CLUSTALw and any base mismatch preceded and followed by at least 3 matching bases was presumed to be a mutation. Mutation rates were then tabulated, plotted, and chi-squared tested on mutation counts.
 \end{block}
 \begin{block}{\large Conclusion}
-Looking at the three figures off to the left, we have depictions of the three pairwise comparisons. The plots show the relative frequency of mutations in genes vs gaps. Gaps are shown in black, genes are in white. What immediately stands out is that the A to G/G to A and T to C/C to T mutation is clearly more frequent. Likely, this is because A and G are the two purine bases and T and C are the two pyrimidines.
-
-Running statistical tests across the comparison, the gene and gap mutations are clearly from different distributions. Comparing the distribution of gene and gap mutations for Salmonella and E Coli with insertions and deletions left in, a chi-squared test returns a probability that they came from the same distribution of less than 2.2x10\^-16. When insertions and deletions are ignored, the likelihood that gene and gap mutations are from the same distribution rises to 1.766x10\^-13. Similar numbers arise from chi-squared testing the other two pairwise comparisons. 
-
-This is conclusive evidence that genes and gaps have differing distributions for mutation frequencies. From this, we can conclude that there is some mechanism limiting mutations in genes. As mentioned in the background section, this is likely due to genes having to maintain function despite mutation, while gaps can mutate freely.
+\begin{itemize}
+	\item Purine->purine and pyramidine->pyramidine mutations still show as being markedly different, which shows that (something?)
+	\item 
+	Genes and gaps are statistically different as per a chi-square test (p $<$ \num{2.2} * \num{10e-16}) in all three gene pairs
+	\item This suggests that genes and gaps have different mutation patterns
+	\item When insertions and deletions are removed, the differences are no longer significant
+	\item 
+\end{itemize}
 
 
 
