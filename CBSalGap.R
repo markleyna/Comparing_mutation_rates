@@ -197,7 +197,7 @@ GenedashG = subset(DF, (Gene1Base == "-" & Gene2Base == "G"))
 
 Gene_vector_of_lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
 Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
-barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names, main=firstM) #constructing barplot of mutation frequencies
+#barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names, main=firstM) #constructing barplot of mutation frequencies
 }
 
 counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
@@ -327,7 +327,7 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq, names.arg = gene_vector_of_names)
 
-#system("rm /home/nmarkle/FastaInGCS*")
+system("rm /home/nmarkle/FastaInGCS*")
 
 dev.off()
 

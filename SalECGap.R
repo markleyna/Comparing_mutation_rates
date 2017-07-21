@@ -12,22 +12,22 @@ library('readr', lib.loc="/home/nmarkle/Rlibs/")
 numInRow <- 2
 #NOTE! This file doesn't seem right, am skipping
 Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/UpdatedSalECgaps.csv", stringsAsFactors = FALSE)
-CitroBacDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/CitroBacKPureDNA.txt")
-CitroBacDNA<-gsub("\n","",CitroBacDNA)
+EColiDNA<-read_file("/home/nmarkle/Comparing_mutation_rates/EColiPureDNA.txt")
+EColiDNA<-gsub("\n","",EColiDNA)
 SalDNA <- read_file("/home/nmarkle/Comparing_mutation_rates/SalmonellaPureDNA.txt")
 SalDNA<-gsub("\n","",SalDNA)
-Genes$salgeneseq<-substring(SalDNA,first = Genes$cbend,last = Genes$cbstart)
-Genes$cbgeneseq<-substring(CitroBacDNA,first = Genes$ecstart, last = Genes$ecend)
+Genes$salgeneseq<-substring(SalDNA,first = Genes$salstart,last = Genes$salend)
+Genes$ecgeneseq<-substring(EColiDNA,first = Genes$ecstart, last = Genes$ecend)
 #Genes <- data.frame(Genes$X, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
 #testDF <- subset(Genes, Genes$cbstart > Genes$cbend)
 Genes<-subset(Genes, nchar(Genes$salgeneseq) <= 800)
-Genes<-subset(Genes, nchar(Genes$cbgeneseq) <= 800)
+Genes<-subset(Genes, nchar(Genes$ecgeneseq) <= 800)
 Genes$X<-seq(1,nrow(Genes),1)
 #-----------Testing Line----------------
 #Genes <- head(Genes, n=1)
 #---------------------------------------
 G1<-as.vector(Genes$X)
-G2<-as.vector(Genes$cbgeneseq)
+G2<-as.vector(Genes$ecgeneseq)
 G3<-as.vector(Genes$salgeneseq)
 
 buildchar = "Q" #done to prevent things from crashing later on, don't ask
@@ -197,7 +197,7 @@ GenedashG = subset(DF, (Gene1Base == "-" & Gene2Base == "G"))
 
 Gene_vector_of_lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
 Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
-barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names, main=firstM) #constructing barplot of mutation frequencies
+#barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names, main=firstM) #constructing barplot of mutation frequencies
 }
 
 counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))

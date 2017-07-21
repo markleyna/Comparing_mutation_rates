@@ -18,8 +18,9 @@ ECDNA<-gsub("\n","",ECDNA)
 Genes$ecgeneseq<-substring(ECDNA,first = Genes$ecstart,last = Genes$ecend)
 Genes$cbgeneseq<-substring(CitroBacDNA,first = Genes$cbstart, last = Genes$cbend)
 Genes <- data.frame(Genes$X, Genes$cbgeneseq, Genes$ecgeneseq, stringsAsFactors = FALSE)
-Genes<-subset(Genes, nchar(Genes$ecgeneseq) <= 800)
-Genes<-subset(Genes, nchar(Genes$cbgeneseq) <= 800)
+print(colnames(Genes))
+Genes<-subset(Genes, nchar(Genes$Genes.ecgeneseq) <= 800)
+Genes<-subset(Genes, nchar(Genes$Genes.cbgeneseq) <= 800)
 Genes$X<-seq(1,nrow(Genes),1)
 #-----------Testing Line----------------
 #Genes <- head(Genes, n=10)
@@ -40,7 +41,7 @@ Gene2RunTitle <- paste(">","SalGap_number","k", sep = "") #must be 3 digit repre
 
 #CLUSAL Run on Genes
 clusal_run <- function(testNum, Gene1, Gene2) {
-  return(data.frame(Gene1,Gene2,-1,-1))
+  #return(data.frame(Gene1,Gene2,-1,-1))
   Gene1Base <- c(buildchar,buildchar)
   Gene2Base<-c(buildchar,buildchar) 
   PreCount<-c(-1,-1)
@@ -196,7 +197,7 @@ GenedashG = subset(DF, (Gene1Base == "-" & Gene2Base == "G"))
 
 Gene_vector_of_lengths = c(nrow(GeneAdash),nrow(GenedashA),nrow(GeneAC),nrow(GeneCA),nrow(GeneAG),nrow(GeneGA),nrow(GeneAT),nrow(GeneTA),nrow(GeneTC),nrow(GeneCT),nrow(GeneTG),nrow(GeneGT),nrow(GeneTdash),nrow(GenedashT),nrow(GeneCG),nrow(GeneGC),nrow(GeneCdash),nrow(GenedashC),nrow(GeneGdash),nrow(GenedashG))
 Gene_vector_of_names = c("Adash","dashA","AC","CA","AG","GA","AT","TA","TC","CT","TG","GT","Tdash","dashT","CG","GC","Cdash","dashC","Gdash","dashG")
-barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names, main=firstM) #constructing barplot of mutation frequencies
+#barplot(Gene_vector_of_lengths,names.arg = Gene_vector_of_names, main=firstM) #constructing barplot of mutation frequencies
 }
 
 counts <- data.frame(table(PlotData$Gene1Base, PlotData$Gene2Base))
