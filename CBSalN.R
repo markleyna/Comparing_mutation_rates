@@ -331,6 +331,10 @@ if (nrow(graphDF) != 0) {
 
 barplot(counts$Freq,names.arg = gene_vector_of_names) #constructing barplot of mutation frequencies
 
+Gene_vector_of_Lengths <- as.vector(counts$Freq)
+names(Gene_vector_of_Lengths)=gene_vector_of_names
+write.csv(Gene_vector_of_Lengths,file="CBSalGapData.csv")
+
 system("rm /home/nmarkle/FastaInCS*")
 
 dev.off()
