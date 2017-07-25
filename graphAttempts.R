@@ -1,4 +1,6 @@
-install.packages("plotly")
+#install.packages("plotly")
+#install.packages("RColorBrewer")
+library("RColorBrewer")
 library("plotly")
 library(readr)
 Genes <- read.csv("/home/nmarkle/Comparing_mutation_rates/CBSalGapData.csv", stringsAsFactors = FALSE)
@@ -22,12 +24,18 @@ workingSet[workingSet$first=="TC","Freq"] <- abs((28.2-as.numeric(as.character((
 workingSet[workingSet$first=="TG","Freq"] <- abs((17.05-as.numeric(as.character((workingSet$Freq[workingSet$first=="TG"]))))/17.05)
 workingSet$Freq <- workingSet$Freq*10
 
+attemptSet<-workingSet[order(workingSet$second),]
+workingSet <- attemptSet
+
 xlab<-c("T-","TA","TC","TG")
+i<-1
+rownames(attemptSet)<-1:nrow(attemptSet)
+ylab<-as.vector(attemptSet$second[seq(1,length(attemptSet$second),4)])
 m<-matrix(workingSet$Freq,nrow=4, ncol = 20)
-p<-plot_ly(x=head(workingSet$second,n=20),y=xlab,z=m,type="heatmap", colorbar=list(title="Percent Away\nfrom Uniform")) %>%
+p<-plot_ly(x=ylab,y=xlab,z=m,colors=colorRamp(c("blue","red")), type="heatmap", colorbar=list(title="Percent Away\nfrom Uniform")) %>%
   layout(title="Percentage Away From Uniform For Two Mutations in Salmonella and Citrobacter",
          xaxis=list(title = "Second Mutation"),
          yaxis=list(title="First Mutation"))
 ggplotly(p) 
 
-
+#,marker=list(color=colorRampPalette(brewer.pal(9,"OrRd"))(100))
