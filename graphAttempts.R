@@ -18,10 +18,10 @@ colnames(sanity)<-c("first","second",'Freq')
 workingSet <- subset(sanity, substr(first,0,1)=="T" & substr(first,2,2)!="T")
 workingSet <- subset(workingSet, substr(second,2,2)!=substr(second,0,1))
 
-workingSet[workingSet$first=="T-","Freq"] <- abs((6.2-as.numeric(as.character((workingSet$Freq[workingSet$first=="T-"]))))/6.2)
-workingSet[workingSet$first=="TA","Freq"] <- abs((14.5-as.numeric(as.character((workingSet$Freq[workingSet$first=="TA"]))))/14.5)
-workingSet[workingSet$first=="TC","Freq"] <- abs((28.2-as.numeric(as.character((workingSet$Freq[workingSet$first=="TC"]))))/28.2)
-workingSet[workingSet$first=="TG","Freq"] <- abs((17.05-as.numeric(as.character((workingSet$Freq[workingSet$first=="TG"]))))/17.05)
+workingSet[workingSet$first=="T-","Freq"] <- (6.2-as.numeric(as.character((workingSet$Freq[workingSet$first=="T-"]))))/6.2
+workingSet[workingSet$first=="TA","Freq"] <- (14.5-as.numeric(as.character((workingSet$Freq[workingSet$first=="TA"]))))/14.5
+workingSet[workingSet$first=="TC","Freq"] <- (28.2-as.numeric(as.character((workingSet$Freq[workingSet$first=="TC"]))))/28.2
+workingSet[workingSet$first=="TG","Freq"] <- (17.05-as.numeric(as.character((workingSet$Freq[workingSet$first=="TG"]))))/17.05
 workingSet$Freq <- workingSet$Freq*10
 
 attemptSet<-workingSet[order(workingSet$second),]
