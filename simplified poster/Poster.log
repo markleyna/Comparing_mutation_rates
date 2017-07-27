@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.7.3)  25 JUL 2017 13:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.7.3)  27 JUL 2017 10:43
 entering extended mode
 **./Poster.tex
 (Poster.tex
@@ -2118,13 +2118,13 @@ Package pdftex.def Info: phylogeny.png  used on input line 218. on input line 2
 18.
 Package pdftex.def Info: Requested size: 403.50652pt x 223.58475pt on input lin
 e 218.
-<FinalPlotMaybe.jpg, id=23, 526.96875pt x 338.76563pt>
-File: FinalPlotMaybe.jpg Graphic file (type jpg)
-<use FinalPlotMaybe.jpg>
-Package pdftex.def Info: FinalPlotMaybe.jpg  used on input line 218. on input l
-ine 218.
-Package pdftex.def Info: Requested size: 790.45117pt x 508.14717pt on input lin
-e 218.
+<thursVersion.jpeg, id=23, 526.96875pt x 338.76563pt>
+File: thursVersion.jpeg Graphic file (type jpg)
+<use thursVersion.jpeg>
+Package pdftex.def Info: thursVersion.jpeg  used on input line 218. on input li
+ne 218.
+Package pdftex.def Info: Requested size: 853.6847pt x 548.79729pt on input line
+ 218.
 <CBSalPercentage.jpeg, id=24, 1927.2pt x 1084.05pt>
 File: CBSalPercentage.jpeg Graphic file (type jpg)
 <use CBSalPercentage.jpeg>
@@ -2176,8 +2176,8 @@ Overfull \hbox (72.45084pt too wide) has occurred while \output is active
 [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
 
  <./transparentStatisticsLaura201617.jpg> <./nsf.png> <./Purduelogo.jpg> <./phy
-logeny.png> <./FinalPlotMaybe.jpg> <./CBSalPercentage.jpeg> <./CBECPercentage.j
-peg> <./hit_matrixECSal.png (PNG copy)>]
+logeny.png> <./thursVersion.jpeg> <./CBSalPercentage.jpeg> <./CBECPercentage.jp
+eg> <./hit_matrixECSal.png (PNG copy)>]
 \tf@nav=\write6
 \openout6 = `Poster.nav'.
 
@@ -2197,8 +2197,8 @@ Package rerunfilecheck Info: File `Poster.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  41839 strings out of 493314
- 975655 string characters out of 3138845
- 1326154 words of memory out of 3000000
+ 975649 string characters out of 3138845
+ 1325916 words of memory out of 3000000
  44653 multiletter control sequences out of 15000+200000
  568912 words of font info for 120 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2210,7 +2210,7 @@ type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
 blic/amsfonts/symbols/msam10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/h
 elvetic/uhvb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a
 .pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on Poster.pdf (1 page, 1666749 bytes).
+Output written on Poster.pdf (1 page, 1667134 bytes).
 PDF statistics:
  88 PDF objects out of 1000 (max. 8388607)
  3 named destinations out of 1000 (max. 500000)
