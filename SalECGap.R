@@ -219,6 +219,17 @@ chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
 chisq.test(ctbl, simulate.p.value = TRUE, B=10000)
 #-----------------------------------------------------------------
 
+#Looking at it from the other direction---------------------------
+backctbl <- table(lDf$Mutation2, lDf$Mutation1)
+backcounts <- data.frame(ctbl)
+back_vector_of_names <- paste(backcounts$Var1, backcounts$Var2)
+barchart(backcounts$Freq~backcounts$Var2|backcounts$Var1,ylab="Mutation Frequencies-Backwards",xlab="First Mutation",main="Second Mutation By First",layout=c(2,10))
+barchart(backcounts$Freq~backcounts$Var2|backcounts$Var1,ylab="Mutation Frequencies-Backwards",xlab="First Mutation",main="Second Mutation By First",layout=c(1,7))
+chisq.test(backctbl)
+chisq.test(backctbl, simulate.p.value = TRUE, B=10000)
+chisq.test(backctbl, simulate.p.value = TRUE, B=10000)
+#-----------------------------------------------------------------
+
 # Plot for each beginning mutation
 # TC
 graphDF <- subset(PlotData, substring(Gene1Base,1,1) == 'T' & substring(Gene2Base,1,1) == 'C')
