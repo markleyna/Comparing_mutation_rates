@@ -12,3 +12,5 @@ The following objects are masked _by_ .GlobalEnv:
 
 Warning message:
 In chisq.test(ctbl) : Chi-squared approximation may be incorrect
+Warning message:
+In chisq.test(backctbl) : Chi-squared approximation may be incorrect
